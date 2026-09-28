@@ -12,8 +12,8 @@
    3. Text built by JavaScript uses T('español', 'English'), and every module
       that draws something listens to the 'langchange' event to redraw it.
 
-   The initial language is the one saved by the user; otherwise English when the
-   browser is set to English and Spanish in every other case. The theme follows
+   The initial language is the one saved by the user; otherwise Spanish, the
+   first language of the whole suite. The theme follows
    the operating system until the user picks one. */
 
 (function () {
@@ -23,9 +23,9 @@
 
   function initialLang() {
     const saved = read(KEY_LANG);
-    if (saved === 'es' || saved === 'en') return saved;
-    const nav = (navigator.languages && navigator.languages[0]) || navigator.language || 'es';
-    return /^en\b/i.test(nav) ? 'en' : 'es';
+    /* Spanish first, as in the whole suite, even when the browser is set to
+       English: only a choice the user made before counts */
+    return saved === 'es' || saved === 'en' ? saved : 'es';
   }
 
   const I18N = {
@@ -54,7 +54,10 @@
       });
       const t = document.querySelector('title');
       if (t && t.dataset.es) document.title = t.getAttribute('data-' + L);
-      document.querySelectorAll('.lang-seg button').forEach(b => b.classList.toggle('on', b.dataset.lang === L));
+      document.querySelectorAll('.lang-seg button').forEach(b => {
+        b.classList.toggle('on', b.dataset.lang === L);
+        b.setAttribute('aria-pressed', b.dataset.lang === L ? 'true' : 'false');
+      });
     },
   };
 

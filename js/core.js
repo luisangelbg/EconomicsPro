@@ -76,6 +76,8 @@ function showMessage(container, type, text) {
   if (typeof container === 'string') container = el(container);
   if (!container) return null;
   const div = mk('div', { class: 'msg msg-' + type }, text);
+  /* errors and warnings are read out by screen readers */
+  if (window.LABG) LABG.messageRole(div, type);
   container.appendChild(div);
   return div;
 }
@@ -198,19 +200,110 @@ function slug(s) {
 }
 
 /* ---------------- step navigation ---------------- */
+const stepBtn = n => document.querySelector('.step-btn[data-step="' + n + '"]');
+const stepOn = n => { const b = stepBtn(n); return !!b && !b.disabled; };
+const STEP_ORDER = STEPS.map(s => String(s.n));
+/* the slot of `state` that a block fills when it has been worked through */
+const STEP_SLOT = { 2: 'project', 3: 'market', 4: 'budget', 5: 'statements', 6: 'appraisal',
+  7: 'risk', 8: 'social', 9: 'decisions', 10: 'report' };
+const visitedSteps = new Set();
+let currentStep = '1';
+
 function goStep(n) {
   n = String(n);
+  if (currentStep !== n) visitedSteps.add(currentStep);
+  currentStep = n;
   els('.step-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + n));
   els('.step-btn').forEach(b => b.classList.toggle('active', b.dataset.step === n));
   document.body.classList.toggle('on-home', n === '1');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  const btn = document.querySelector('.step-btn[data-step="' + n + '"]');
-  if (btn && btn.scrollIntoView) btn.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  const btn = stepBtn(n);
+  if (window.LABG) {
+    LABG.setCurrentStep(n);     /* aria-current, one tab stop and the button brought into view */
+    const s = STEPS.find(x => String(x.n) === n);
+    if (s) LABG.announce(T('Bloque ', 'Block ') + s.n + ': ' + T(s.es, s.en));
+  } else if (btn && btn.scrollIntoView) btn.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   document.dispatchEvent(new CustomEvent('stepchange', { detail: { step: Number(n) } }));
+  refreshStepMarks();
+  refreshStepFooters();
 }
 function enableStep(n, on) {
-  const b = document.querySelector('.step-btn[data-step="' + n + '"]');
+  const b = stepBtn(n);
   if (b) b.disabled = (on === false);
+  refreshStepMarks();
+  refreshStepFooters();
+}
+
+/* A block is «done» once the user has worked in it (its slot of the state is
+   filled) and moved on; it is flagged «check» when its own review found an error. */
+function refreshStepMarks() {
+  if (!window.LABG) return;
+  STEPS.forEach(s => {
+    const key = String(s.n);
+    const slot = STEP_SLOT[s.n] && state[STEP_SLOT[s.n]];
+    if (!slot || !stepOn(key) || !visitedSteps.has(key)) { LABG.markStep(key, null); return; }
+    const errors = Array.isArray(slot.messages) && slot.messages.some(m => m && m.level === 'error');
+    LABG.markStep(key, errors ? 'warn' : key === currentStep ? null : 'done');
+  });
+}
+
+/* Foot of every block: Previous / Next, with the name of the block in both
+   languages (CSS shows the active one). */
+function stepLabel(n) {
+  const s = STEPS.find(x => String(x.n) === n);
+  return s ? s.n + ' · ' + L2(s.es, s.en) : '';
+}
+function refreshStepFooters() {
+  if (!stepBtn('1')) return;               /* the block bar is not built yet */
+  els('.step-panel').forEach(p => {
+    const n = p.id.replace('panel-', '');
+    const i = STEP_ORDER.indexOf(n);
+    if (i < 0) return;
+    let f = p.querySelector(':scope > .step-footer');
+    if (!f) {
+      f = mk('nav', { class: 'step-footer no-print' });
+      f.innerHTML = '<button type="button" class="btn btn-secondary prev"></button><button type="button" class="btn btn-primary next"></button>';
+      f.addEventListener('click', e => { const b = e.target.closest('button[data-go]'); if (b && !b.disabled) goStep(b.dataset.go); });
+      p.appendChild(f);
+    }
+    f.setAttribute('aria-label', T('Bloque anterior y siguiente', 'Previous and next block'));
+    const prev = STEP_ORDER.slice(0, i).reverse().find(stepOn);
+    const next = STEP_ORDER.slice(i + 1).find(s => stepBtn(s));
+    const bp = f.querySelector('.prev'), bn = f.querySelector('.next');
+    bp.hidden = !prev;
+    if (prev) { bp.dataset.go = prev; bp.innerHTML = `← <span><small>${L2('Anterior', 'Previous')}</small>${stepLabel(prev)}</span>`; }
+    bn.hidden = !next;
+    if (next) {
+      bn.dataset.go = next; bn.disabled = !stepOn(next);
+      bn.innerHTML = `<span><small>${L2('Siguiente', 'Next')}</small>${stepLabel(next)}</span> →`;
+    }
+  });
+}
+
+/* Can the browser keep the project? It is saved there on every change, so
+   leaving only loses work when that storage is unavailable. */
+function storageWorks() {
+  try { const k = 'economicspro:probe'; localStorage.setItem(k, '1'); localStorage.removeItem(k); return true; }
+  catch (e) { return false; }
+}
+
+/* The common bar of the suite: theme, shortcuts, keyboard, warning before
+   leaving. Called by home.js once the block bar exists; the tests load this
+   file without labg-core.js, so everything waits for window.LABG. */
+function initSuiteBar() {
+  if (!window.LABG) return;
+  LABG.theme.init('economicspro:theme');    /* same key as Theme in i18n.js */
+  document.addEventListener('themechange', () => LABG.theme.paint());
+  const hb = el('helpBtn');
+  if (hb) hb.addEventListener('click', () => LABG.showShortcuts());
+  LABG.shortcuts([]);
+  LABG.bindStepKeys(goStep);
+  LABG.guardUnload(() => !!state.project && !storageWorks());
+  const nav = el('stepper');
+  const relabel = () => { if (nav) nav.setAttribute('aria-label', T('Bloques', 'Blocks')); LABG.theme.paint(); refreshStepMarks(); refreshStepFooters(); };
+  document.addEventListener('langchange', relabel);
+  LABG.setCurrentStep(currentStep);
+  relabel();
 }
 
 /* Persisted preferences (figure style, last settings) */
@@ -257,7 +350,7 @@ Object.assign(window, {
   STEPS, el, els, mk, esc, L2, keepGreek, svgEl, showMessage, clearMessages,
   fmtNum, fmtFixed, fmtP, pEq, fmtPct, fmtRate, plural, Money, fmtMoney, moneyScale,
   parseNum, parseRate, csvEscape, download, slug,
-  goStep, enableStep, Prefs, rng, randn, shuffle, cssVar,
+  goStep, enableStep, initSuiteBar, Prefs, rng, randn, shuffle, cssVar,
 });
 
 /* A message that belongs above the ones a block has just written (the note of

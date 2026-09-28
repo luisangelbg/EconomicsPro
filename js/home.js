@@ -204,7 +204,7 @@
   function renderStepper() {
     const nav = el('stepper');
     if (!nav) return;
-    nav.innerHTML = STEPS.map(s => `<button class="step-btn${s.n === 1 ? ' active' : ''}" data-step="${s.n}"${s.ready ? '' : ' disabled'}><span class="step-num">${s.n}</span>${L2(s.es, s.en)}</button>`).join('');
+    nav.innerHTML = STEPS.map(s => `<button type="button" class="step-btn${s.n === 1 ? ' active' : ''}" data-step="${s.n}"${s.ready ? '' : ' disabled'}><span class="step-num">${s.n}</span>${L2(s.es, s.en)}</button>`).join('');
   }
 
   function renderFeatures() {
@@ -361,7 +361,7 @@
     const nav = el('stepper');
     if (nav) nav.addEventListener('click', e => { const b = e.target.closest('.step-btn'); if (b && !b.disabled) goStep(b.dataset.step); });
     const brand = el('brand');
-    if (brand) brand.addEventListener('click', () => goStep(1));
+    if (brand) brand.addEventListener('click', e => { e.preventDefault(); goStep(1); });
     const scrollTo = id => { const n = el(id); if (n) n.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
     const on = (id, fn) => { const n = el(id); if (n) n.addEventListener('click', fn); };
     on('startBtn', () => {
@@ -405,6 +405,8 @@
     renderCompare();
     renderRefs();
     wire();
+    /* the common bar of the LABG Suite, now that the block bar exists */
+    if (window.initSuiteBar) initSuiteBar();
     I18N.apply();
   }
 
