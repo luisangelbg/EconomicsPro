@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.7 — 2026-09-28
+
+- **Published, and the citation now carries its DOI.** The source is on GitHub, the app runs on GitHub Pages and
+  every release is archived on Zenodo. The concept DOI —the one that represents all versions and always resolves to
+  the latest— is `10.5281/zenodo.23005974`, and it is now written in the citation of the home page, in the citation
+  at the end of every report, in `CITATION.cff`, in `codemeta.json`, in the README and in appendix F of the manual.
+  It is read from a single `APP_DOI` constant in `core.js`, next to `APP_VERSION`, so it cannot drift either.
+
+
 ## 1.0.6 — 2026-09-24
 
 - **The version of the app was written in four places and three of them had gone stale**: the citation in the

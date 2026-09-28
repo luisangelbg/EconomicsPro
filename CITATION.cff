@@ -21,10 +21,15 @@ authors:
     family-names: "Barrera-Guzmán"
     email: lbarrerag@chapingo.mx
     orcid: "https://orcid.org/0000-0001-8057-2583"
-version: "1.0.6"
-date-released: "2026-09-27"
+version: "1.0.7"
+date-released: "2026-09-28"
 repository-code: "https://github.com/luisangelbg/EconomicsPro"
 url: "https://luisangelbg.github.io/EconomicsPro/"
+doi: "10.5281/zenodo.23005974"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23005974"
+    description: "Concept DOI of all versions on Zenodo"
 license: GPL-3.0-or-later
 keywords:
   - project appraisal

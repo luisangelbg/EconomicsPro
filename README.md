@@ -1,6 +1,6 @@
 # EconomicsPro
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23005974.svg)](https://doi.org/10.5281/zenodo.23005974)
 
 **Economic and financial appraisal of agrifood projects — without writing code.** The ten blocks are complete: the home
 page with the financial engine and its two laboratories, the project and its assumptions, market and revenue,
@@ -172,7 +172,14 @@ joined into a single PDF.
 ## How to cite it
 
 > Barrera-Guzmán, L.Á. (2026). *EconomicsPro: a browser-based platform for the economic and financial appraisal of
-> agrifood projects* (Version 1.0) [Computer software].
+> agrifood projects* (Version 1.0) [Computer software]. https://doi.org/10.5281/zenodo.23005974
 
 The app carries the same citation on its home page, with a button that copies it, and writes it at the end of every
 report it generates.
+
+## Published
+
+- Source code: <https://github.com/luisangelbg/EconomicsPro>
+- Running app: <https://luisangelbg.github.io/EconomicsPro/>
+- Archived versions with a DOI on Zenodo: concept DOI <https://doi.org/10.5281/zenodo.23005974> (always the latest
+  version); each release has its own version DOI (v1.0.6: 10.5281/zenodo.23005975).

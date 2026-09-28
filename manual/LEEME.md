@@ -112,6 +112,8 @@ fondo** activado.
 
 ## Cómo obtener el PDF
 
+El PDF final está en `manual/EconomicsPro User's Manual.pdf` (128 hojas, 12.2 MB, 28 sep 2026).
+
 Desde la carpeta `manual/`:
 
 ```

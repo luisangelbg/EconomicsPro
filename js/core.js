@@ -6,8 +6,11 @@
 
 /* the version of the app, written once: the report cites it and the page shows
    it, so it cannot drift from one place to another */
-const APP_VERSION = "1.0.6";
+const APP_VERSION = "1.0.7";
+/* the concept DOI of Zenodo: it always resolves to the latest archived version */
+const APP_DOI = "10.5281/zenodo.23005974";
 window.APP_VERSION = APP_VERSION;
+window.APP_DOI = APP_DOI;
 
 const state = {
   /* --- Block 2: the project and its assumptions --- */
@@ -269,7 +272,8 @@ function notice(container, type, text) {
 }
 Object.assign(window, { notice });
 
-/* every place on the page that shows the version reads it from the constant */
+/* every place on the page that shows the version or the DOI reads them from the constants */
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.app-v').forEach(n => { n.textContent = APP_VERSION; });
+  document.querySelectorAll('.app-doi').forEach(n => { n.textContent = APP_DOI; });
 });

@@ -408,8 +408,8 @@
     const year = new Date().getFullYear();
     return `<section class="cite"><h2>${T('Cómo citar la herramienta', 'How to cite the tool')}</h2>` +
       P_(T(
-        `Barrera-Guzmán, L.Á. (${year}). EconomicsPro: plataforma en el navegador para la evaluación económica y financiera de proyectos agroindustriales (versión ${APP_VERSION}) [software].`,
-        `Barrera-Guzmán, L.Á. (${year}). EconomicsPro: a browser-based platform for the economic and financial appraisal of agrifood projects (Version ${APP_VERSION}) [Computer software].`)) +
+        `Barrera-Guzmán, L.Á. (${year}). EconomicsPro: plataforma en el navegador para la evaluación económica y financiera de proyectos agroindustriales (versión ${APP_VERSION}) [software]. https://doi.org/${APP_DOI}`,
+        `Barrera-Guzmán, L.Á. (${year}). EconomicsPro: a browser-based platform for the economic and financial appraisal of agrifood projects (Version ${APP_VERSION}) [Computer software]. https://doi.org/${APP_DOI}`)) +
       '</section>';
   }
 
