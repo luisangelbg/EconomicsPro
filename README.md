@@ -182,4 +182,4 @@ report it generates.
 - Source code: <https://github.com/luisangelbg/EconomicsPro>
 - Running app: <https://luisangelbg.github.io/EconomicsPro/>
 - Archived versions with a DOI on Zenodo: concept DOI <https://doi.org/10.5281/zenodo.23005974> (always the latest
-  version); each release has its own version DOI (v1.0.6: 10.5281/zenodo.23005975).
+  version); each release has its own version DOI (v1.0.6: 10.5281/zenodo.23005975; v1.0.7: 10.5281/zenodo.23006090).
