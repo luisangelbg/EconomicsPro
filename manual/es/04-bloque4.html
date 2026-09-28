@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EconomicsPro · Manual de usuario · Capítulo 4</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../interior.css">
+<script src="../paginar.js"></script>
+<style>
+  .formula { font-family: var(--mono); font-size: 9pt; background: var(--marino-suave); border-radius: 5px; padding: 0.07in 0.12in; margin: 0.08in 0; }
+</style>
+</head>
+<body>
+
+<section class="capitulo" id="cap-b4" data-pestana="B4" data-orden="4" style="--acento: var(--b4)">
+  <div class="cap-apertura">
+    <div class="cap-num">4</div>
+    <div class="cap-etiqueta">Bloque 4 · Inversión y costos</div>
+    <h1>Inversión, costos y capital de trabajo</h1>
+    <div class="cap-regla"></div>
+    <p class="cap-resumen">La parte más laboriosa del estudio y la que más pesa en el resultado. Cinco mini-hojas convierten cotizaciones y paquetes tecnológicos en tres cosas que los bloques siguientes necesitan: el calendario de inversiones, el costo de cada año y el dinero que hay que tener parado para operar.</p>
+    <ul class="cap-contenido">
+      <li><b>4.1</b>Dónde se gana la credibilidad</li>
+      <li><b>4.2</b>La inversión fija</li>
+      <li><b>4.3</b>La inversión diferida</li>
+      <li><b>4.4</b>Los presupuestos de costos</li>
+      <li><b>4.5</b>El capital de trabajo</li>
+      <li><b>4.6</b>Lo que resulta</li>
+      <li><b>4.7</b>Los avisos de este bloque</li>
+    </ul>
+  </div>
+
+  <!-- 4.1 -->
+  <h2 id="s4-1"><span class="num">4.1</span>Dónde se gana la credibilidad</h2>
+  <p class="lead">Un jurado puede discutir la tasa de descuento media hora, pero lo que de verdad revisa con lápiz es este bloque: si las cotizaciones son reales, si el paquete tecnológico corresponde al cultivo y a la región, y si no falta nada. Un estudio se cae más veces por un presupuesto incompleto que por un error de método.</p>
+
+  <p>La app separa cada partida en <b>cantidad</b> y <b>costo unitario</b> precisamente por eso: actualizar un precio que quedó viejo es cambiar una celda, no rehacer el presupuesto. Y todo se escribe <b>por unidad productiva</b> —por hectárea, por cabeza, por línea—, así que el mismo presupuesto sirve para tres hectáreas o para trescientas.</p>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.7in">Lo que sale de aquí</th><th>Quién lo usa</th></tr></thead>
+    <tbody>
+      <tr><td><b>Calendario de inversiones</b></td><td>El Bloque 5, para saber cuánto crédito hace falta y en qué año; y el flujo del proyecto del Bloque 6.</td></tr>
+      <tr><td><b>Depreciación de cada compra</b></td><td>El estado de resultados del Bloque 5: no es dinero, pero baja el impuesto.</td></tr>
+      <tr><td><b>Costo de cada año</b></td><td>El estado de resultados, el punto de equilibrio y el costo por tonelada.</td></tr>
+      <tr><td><b>Capital de trabajo</b></td><td>El crédito de avío del Bloque 5 y el saldo de caja que decide si el proyecto arranca.</td></tr>
+      <tr><td><b>Valor de rescate</b></td><td>El último año del flujo, en el Bloque 6.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 4.2 -->
+  <h2 id="s4-2"><span class="num">4.2</span>La inversión fija</h2>
+  <p>La primera mini-hoja lista lo que se compra: terreno, obra, plantación, maquinaria, equipo, vehículos, pie de cría. Cada renglón lleva siete datos y ninguno sobra.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b4-inversion.png" alt="Tarjeta 1 del Bloque 4: la mini-hoja de inversión fija del cafetal"></div>
+    <figcaption><b>Figura 4.1.</b> La inversión fija del cafetal: seis partidas por $1,212,000. La columna <span class="ui">tipo</span> se escribe con palabras —«maquinaria», «obra civil»— y la app la interpreta; de ella salen la vida útil sugerida y si el activo se deprecia.</figcaption>
+  </figure>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.2in">Columna</th><th>Qué hace</th></tr></thead>
+    <tbody>
+      <tr><td><b>Concepto</b></td><td>El nombre que aparecerá en el calendario y en la tabla de depreciación.</td></tr>
+      <tr><td><b>Tipo</b></td><td>Se escribe con palabras y la app lo reconoce. Decide dos cosas: si el activo se deprecia y qué vida útil proponer.</td></tr>
+      <tr><td><b>Cantidad × costo unitario</b></td><td>Separados a propósito: 8 hectáreas × $55,000 de establecimiento, un beneficio húmedo × $280,000.</td></tr>
+      <tr><td><b>Año</b></td><td>En qué año del proyecto se compra. Casi todo va en el año 0, pero una ampliación puede ir en el 3.</td></tr>
+      <tr><td><b>Vida útil</b></td><td>Años que dura. De ella salen la depreciación y, si se marca, la reposición.</td></tr>
+      <tr><td><b>Rescate (%)</b></td><td>Qué porcentaje de su valor conserva al final de su vida. Baja la base depreciable.</td></tr>
+      <tr><td><b>¿Se repone?</b></td><td>Sí o no. Si sí y la vida termina antes del horizonte, la app vuelve a comprarlo solo.</td></tr>
+    </tbody>
+  </table>
+
+  <table class="compacta">
+    <thead><tr><th style="width:2.15in">Tipo de activo</th><th style="width:1in">¿Se deprecia?</th><th>Vida útil que propone</th></tr></thead>
+    <tbody>
+      <tr><td>Terreno</td><td>No</td><td>—</td></tr>
+      <tr><td>Obra civil e instalaciones</td><td>Sí</td><td>20 años</td></tr>
+      <tr><td>Establecimiento de la plantación</td><td>Sí</td><td>25 años</td></tr>
+      <tr><td>Maquinaria</td><td>Sí</td><td>10 años</td></tr>
+      <tr><td>Equipo y herramienta</td><td>Sí</td><td>5 años</td></tr>
+      <tr><td>Vehículos</td><td>Sí</td><td>8 años</td></tr>
+      <tr><td>Pie de cría y semovientes</td><td>Sí</td><td>6 años</td></tr>
+      <tr><td>Otros activos</td><td>Sí</td><td>10 años</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · las reposiciones del cafetal, sin escribir un renglón más</div>
+    <p>El cafetal tiene seis partidas y un horizonte de 20 años. Con solo marcar <span class="ui">¿se repone?</span> en cuatro de ellas, la app programa siete compras adicionales:</p>
+    <table class="compacta"><tbody>
+      <tr><td style="width:46%">Herramienta y equipo menor (5 años)</td><td>se vuelve a comprar en los años 5, 10 y 15</td></tr>
+      <tr><td>Vehículo de acarreo (8 años)</td><td>en los años 8 y 16</td></tr>
+      <tr><td>Beneficio húmedo (12 años)</td><td>en el año 12</td></tr>
+      <tr><td>Patios y secadoras (15 años)</td><td>en el año 15</td></tr>
+      <tr class="total"><td><b>Reposiciones en el horizonte</b></td><td><b>$1,004,000</b></td></tr>
+    </tbody></table>
+    <p>La plantación (25 años) y la obra de conservación (20) no se reponen: su vida alcanza para todo el horizonte. Cada reposición se deprecia por separado, desde el año en que se compra.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Reponer o no reponer no es un detalle</div>
+    <p>Si un activo se agota a la mitad del horizonte y no se repone, el proyecto seguiría produciendo sin herramienta, sin vehículo o sin planta de beneficio. La app lo advierte. Pero la decisión contraria también cuesta: cada reposición es una salida de dinero que puede volver a hundir la caja, y por eso conviene que las reposiciones grandes caigan en años de producción plena, no en los primeros.</p>
+  </div>
+
+  <!-- 4.3 -->
+  <h2 id="s4-3"><span class="num">4.3</span>La inversión diferida</h2>
+  <p>Lo que se paga antes de operar y no es un activo que se pueda tocar: el proyecto ejecutivo, los permisos, la certificación, la capacitación, la puesta en marcha. No se deprecia —<b>se amortiza</b>— y la app la reparte en partes iguales durante los años que indiques.</p>
+
+  <figure class="media">
+    <div class="marco"><img src="../img/b4-diferida.png" alt="Tarjeta 2 del Bloque 4: la inversión diferida del cafetal"></div>
+    <figcaption><b>Figura 4.2.</b> La inversión diferida del cafetal: $165,000 entre proyecto, certificación y capacitación, amortizados en cinco años.</figcaption>
+  </figure>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Diferida no es lo mismo que gasto del primer año</div>
+    <p>Un gasto se resta completo el año en que ocurre; una inversión diferida se reparte. La diferencia cambia el impuesto de los primeros años, que es justo cuando el proyecto menos aguanta. Si el horizonte termina antes de amortizarla toda, la app avisa cuánto quedó sin amortizar.</p>
+  </div>
+
+  <!-- 4.4 -->
+  <h2 id="s4-4"><span class="num">4.4</span>Los presupuestos de costos</h2>
+  <p>Tres mini-hojas: lo que cuesta <b>establecer</b> (los años de gestación), lo que cuesta <b>operar</b> (los años de producción) y los <b>costos fijos</b> que se pagan pase lo que pase.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b4-costos.png" alt="Tarjeta 3 del Bloque 4: los presupuestos de establecimiento, de operación y los costos fijos"></div>
+    <figcaption><b>Figura 4.3.</b> Los tres presupuestos del cafetal. Cada renglón lleva su grupo —mano de obra, insumos, servicios— y su base: por hectárea, por tonelada producida o total al año.</figcaption>
+  </figure>
+
+  <h3>Las tres bases</h3>
+  <table class="compacta">
+    <thead><tr><th style="width:1.9in">Base</th><th>Qué significa</th><th style="width:1.35in">Ejemplo del café</th></tr></thead>
+    <tbody>
+      <tr><td><b>Por unidad de producción</b></td><td>Se multiplica por la escala. Sigue al tamaño del proyecto, no a la cosecha: se paga aunque el año salga malo.</td><td>60 jornales × $350 por hectárea</td></tr>
+      <tr><td><b>Por tonelada producida</b></td><td>Se multiplica por la producción del año que calculó el Bloque 3. Es cero durante la gestación y crece con la maduración.</td><td>Pizca, $9,500 por tonelada</td></tr>
+      <tr><td><b>Monto total al año</b></td><td>Una cantidad fija, independiente de la escala y de la cosecha.</td><td>Certificación anual, $45,000</td></tr>
+    </tbody>
+  </table>
+
+  <p>Los seis <b>grupos</b> —mano de obra, insumos, maquinaria y energía, servicios y fletes, administración y otros— no cambian ningún cálculo financiero, pero sí sirven para dos cosas: la figura de composición del costo y, sobre todo, la <b>evaluación social del Bloque 8</b>, que aplica un factor de conversión distinto a cada grupo. Vale la pena clasificarlos bien desde aquí.</p>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · el costo de un año pleno del cafetal</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:56%">Mano de obra, 60 jornales × $350 × 8 ha</td><td>$168,000</td></tr>
+      <tr><td>Fertilización, $16,000 × 8 ha</td><td>$128,000</td></tr>
+      <tr><td>Control de roya y broca, $9,000 × 8 ha</td><td>$72,000</td></tr>
+      <tr><td>Pizca, $9,500 × 16.32 t</td><td>$155,040</td></tr>
+      <tr><td>Beneficiado y secado, $4,200 × 16.32 t</td><td>$68,544</td></tr>
+      <tr><td>Flete y comisión de exportación, $3,800 × 16.32 t</td><td>$62,016</td></tr>
+      <tr><td><b>Costo variable</b></td><td><b>$653,600</b></td></tr>
+      <tr><td>Administración de la sociedad + certificación</td><td>$185,000</td></tr>
+      <tr class="total"><td><b>Costo total del año</b></td><td><b>$838,600</b></td></tr>
+    </tbody></table>
+    <p>Son <b>$104,825 por hectárea</b> y <b>$51,385 por tonelada</b>, con un 78&nbsp;% de costo variable. Ese costo por tonelada es el número que hay que comparar con el precio proyectado del Bloque 3 —$102,178— antes de seguir: si fuera mayor, el proyecto perdería dinero operando, y la app lo avisaría.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · variable y fijo no es lo mismo que por unidad y total</div>
+    <p>Para el punto de equilibrio del Bloque 5 lo que importa es qué costo <b>sigue al volumen vendido</b>. Los costos por tonelada lo hacen; los de por hectárea, no: un jornal de poda se paga igual aunque la cosecha salga mala. Por eso la app guarda los costos con sus dos cortes a la vez —variable y fijo, por un lado; por unidad, por tonelada y total, por otro— y cada bloque usa el que le corresponde.</p>
+  </div>
+
+  <!-- 4.5 -->
+  <h2 id="s4-5"><span class="num">4.5</span>El capital de trabajo</h2>
+  <p>El dinero que hay que tener parado para que el proyecto opere: lo que se gasta antes de cobrar. No es un gasto —se recupera al final— pero mientras el proyecto vive, ese dinero está inmovilizado y hay que conseguirlo.</p>
+
+  <figure class="media">
+    <div class="marco"><img src="../img/b4-capital.png" alt="Tarjeta 4 del Bloque 4: el capital de trabajo por ciclo de caja"></div>
+    <figcaption><b>Figura 4.4.</b> El capital de trabajo del cafetal, por ciclo de caja: 90 días de inventario más 45 de cobranza menos 30 de crédito de proveedores dan 105 días de operación que hay que financiar.</figcaption>
+  </figure>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.5in">Método</th><th>Cómo se calcula</th><th>Cuándo usarlo</th></tr></thead>
+    <tbody>
+      <tr><td><b>Ciclo de caja</b></td><td>Días de inventario + días de cobranza − días que dan los proveedores, sobre el costo del año.</td><td>El más defendible: cada plazo se justifica con la práctica del cultivo y del mercado.</td></tr>
+      <tr><td><b>Meses de operación</b></td><td>Los meses que indiques del costo anual.</td><td>Cuando el ciclo es evidente: «se necesitan tres meses de operación».</td></tr>
+      <tr><td><b>Porcentaje del costo</b></td><td>El porcentaje que indiques.</td><td>Cuando hay una regla de la institución que financia.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="formula">capital de trabajo = costo del año × (días del ciclo / 365)</div>
+
+  <p>En el cafetal, el costo del primer año es $471,000 y el ciclo son 105 días: <b>$135,493</b>. Conforme la plantación madura y el costo sube, la necesidad crece hasta <b>$241,241</b> a plena producción.</p>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Se invierte el año <i>anterior</i>, y se recupera al final</div>
+    <p>El capital de trabajo del año 1 hay que tenerlo <b>antes</b> de empezar el año 1, así que la app lo pone en el año 0; cuando la necesidad crece, invierte solo el incremento en el año previo. Al terminar el horizonte, todo lo acumulado se recupera y entra como parte del valor de rescate —en el cafetal, $241,241 de los $796,574 de rescate total son capital de trabajo que regresa—. Equivocarse en esto es el error que hacía que el balance general del Bloque 5 no cuadrara.</p>
+  </div>
+
+  <!-- 4.6 -->
+  <h2 id="s4-6"><span class="num">4.6</span>Lo que resulta</h2>
+  <p>La quinta tarjeta reúne todo y es la que se lleva a la revisión: la inversión total, su estructura, el costo de cada año y el calendario completo.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b4-resulta.png" alt="Tarjeta 5 del Bloque 4: el resumen de la inversión, su estructura y el costo por año"></div>
+    <figcaption><b>Figura 4.5.</b> El resumen del cafetal. Los recuadros dan la inversión inicial y sus partes, el costo a plena producción y el costo por tonelada; las figuras, la composición de la inversión y la evolución del costo año por año.</figcaption>
+  </figure>
+
+  <table class="compacta">
+    <thead><tr><th style="width:2.4in">Concepto</th><th>En el cafetal</th></tr></thead>
+    <tbody>
+      <tr><td>Inversión fija</td><td>$1,212,000</td></tr>
+      <tr><td>Inversión diferida</td><td>$165,000</td></tr>
+      <tr><td>Capital de trabajo del primer año</td><td>$135,493</td></tr>
+      <tr class="total"><td><b>Inversión inicial</b></td><td><b>$1,512,493</b></td></tr>
+      <tr><td>Reposiciones durante el horizonte</td><td>$1,004,000</td></tr>
+      <tr><td>Costo de operación a plena producción</td><td>$838,600 al año</td></tr>
+      <tr><td>Valor de rescate al final</td><td>$796,574</td></tr>
+    </tbody>
+  </table>
+
+  <figure class="media">
+    <div class="marco"><img src="../img/b4-depreciacion.png" alt="Tabla de depreciación de cada compra del cafetal"></div>
+    <figcaption><b>Figura 4.6.</b> La depreciación se calcula <b>por compra</b>, no por partida: cada reposición arranca su propia tabla desde el año en que se compra, y la última columna dice cuánto vale todavía al terminar el horizonte.</figcaption>
+  </figure>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · la depreciación no es dinero, pero sí cambia el resultado</div>
+    <p>Depreciar no saca un peso de la caja: el dinero salió cuando se compró el activo. Pero la depreciación es deducible, así que baja el impuesto, y ese ahorro sí es dinero. Por eso el estado de resultados del Bloque 5 la resta para calcular el impuesto y después la vuelve a sumar para llegar al flujo de efectivo. Quien la olvida en el flujo subestima el proyecto; quien la resta dos veces lo hunde.</p>
+  </div>
+
+  <!-- 4.7 -->
+  <h2 id="s4-7"><span class="num">4.7</span>Los avisos de este bloque</h2>
+  <table class="compacta">
+    <thead><tr><th style="width:0.95in">Clase</th><th>Lo que revisa</th></tr></thead>
+    <tbody>
+      <tr><td><b>Error</b></td><td>Un proyecto sin ninguna inversión; un proyecto sin costos de producción —sin ellos parecería rentable por construcción—.</td></tr>
+      <tr><td><b>Advertencia</b></td><td>Activos que terminan su vida antes del horizonte y no están marcados para reposición; costos por tonelada cuando el Bloque 3 todavía no reporta producción; un ciclo de caja de más de un año o de cero días; que el costo supere al ingreso en todos los años con producción; que el <b>costo por tonelada sea mayor que el precio proyectado</b>.</td></tr>
+      <tr><td><b>Nota</b></td><td>Cuánto suman las reposiciones del horizonte; que el terreno no se deprecia y se recupera completo; que el capital de trabajo pesa más que la inversión fija —normal en engordas y agroindustria—; cuánta inversión diferida queda sin amortizar.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión · antes de pasar al Bloque 5</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Si</b> el costo por tonelada se acerca al precio proyectado</td><td><b>entonces</b> el margen es delgado: revisa el presupuesto antes de seguir, porque el Bloque 7 va a mostrar que cualquier viento tumba el proyecto.</td></tr>
+      <tr><td><b>Si</b> hay activos que se agotan sin reposición</td><td><b>entonces</b> decide: repón, o acorta el horizonte a la vida del activo que define el proyecto.</td></tr>
+      <tr><td><b>Si</b> el capital de trabajo salió muy grande</td><td><b>entonces</b> revisa los días de inventario y de cobranza: son el supuesto menos discutido y el que más dinero mueve.</td></tr>
+      <tr><td><b>Si</b> ya cuadra</td><td><b>entonces</b> descarga el calendario en <code>.csv</code>: es el anexo de inversiones del estudio.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">El Bloque 5 va a pedir crédito sobre esta inversión: si vuelves aquí y agregas una partida, el monto del crédito se recalcula solo.</p>
+  </div>
+</section>
+
+</body>
+</html>

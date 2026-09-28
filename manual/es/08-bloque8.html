@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EconomicsPro · Manual de usuario · Capítulo 8</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../interior.css">
+<script src="../paginar.js"></script>
+<style>
+  .formula { font-family: var(--mono); font-size: 9pt; background: var(--marino-suave); border-radius: 5px; padding: 0.07in 0.12in; margin: 0.08in 0; }
+</style>
+</head>
+<body>
+
+<section class="capitulo" id="cap-b8" data-pestana="B8" data-orden="8" style="--acento: var(--b8)">
+  <div class="cap-apertura">
+    <div class="cap-num">8</div>
+    <div class="cap-etiqueta">Bloque 8 · Evaluación económica y social</div>
+    <h1>Evaluación económica y social</h1>
+    <div class="cap-regla"></div>
+    <p class="cap-resumen">Hasta aquí la pregunta era si al dueño le conviene. Este bloque cambia de dueño: pregunta si al país le conviene. Corrige los precios de mercado con factores de conversión, quita las transferencias, valora la divisa, descuenta a la tasa social y entrega el VAN económico junto con el puente —pieza por pieza y exacto— que lo separa del VAN privado. Después mide lo que el VAN no ve: empleo, divisas, valor agregado y a quién le queda.</p>
+    <ul class="cap-contenido">
+      <li><b>8.1</b>Qué hace este bloque y qué no</li>
+      <li><b>8.2</b>Los factores de conversión</li>
+      <li><b>8.3</b>Los datos de los indicadores sociales</li>
+      <li><b>8.4</b>Del VAN privado al VAN económico</li>
+      <li><b>8.5</b>Los dos perfiles y la tasa social</li>
+      <li><b>8.6</b>El flujo económico, año por año</li>
+      <li><b>8.7</b>Empleo, divisas y valor agregado</li>
+      <li><b>8.8</b>Los avisos de este bloque</li>
+    </ul>
+  </div>
+
+  <!-- 8.1 -->
+  <h2 id="s8-1"><span class="num">8.1</span>Qué hace este bloque y qué no</h2>
+  <p class="lead">Un proyecto puede convenirle a su dueño y no convenirle al país, y al revés. Convienen cosas distintas porque cuentan cosas distintas: el impuesto es un costo para el dueño y no es un costo para el país —cambia de bolsillo dentro del mismo país—, y el jornal de un peón que de otro modo estaría desocupado le cuesta al dueño lo que le paga, pero al país le cuesta mucho menos.</p>
+
+  <p>Este bloque toma el flujo del proyecto del Bloque 5 —el flujo sin deuda, no el del inversionista— y lo vuelve a valorar con <b>precios cuenta</b>: cada rubro multiplicado por un factor que dice cuánto de ese peso es un recurso real. Lo que <b>no</b> hace es inventar beneficios que nadie midió: no valora el paisaje, ni la erosión evitada, ni la salud. Si el proyecto tiene efectos externos importantes, se declaran aparte y se dice que el VAN económico no los incluye.</p>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · precios de mercado y precios cuenta</div>
+    <p>El precio de mercado incluye impuestos, subsidios, aranceles y cualquier distorsión que haya. El <b>precio cuenta</b> o precio sombra es lo que ese recurso vale para la economía: lo que el país deja de tener por usarlo aquí. La metodología que sigue la app es la de Squire y van der Tak (1975) en la forma en que la usan los bancos de desarrollo, que convierte todo a precios de eficiencia con factores por rubro y con un factor estándar para lo no comerciable.</p>
+    <p>Tres correcciones hacen casi todo el trabajo: quitar las <b>transferencias</b> (impuestos y subsidios, que no crean ni destruyen recursos), poner el <b>trabajo</b> a su costo de oportunidad —que con desempleo estacional es menor que el salario— y darle a la <b>divisa</b> el valor que realmente tiene para el país.</p>
+  </div>
+
+  <figure>
+    <div class="marco"><img src="../img/b8-dictamen.png" alt="Recuadros y lectura del Bloque 8 con el VAN económico, la TIR económica, el VAN privado, el empleo, la inversión por empleo y las divisas"></div>
+    <figcaption><b>Figura 8.1.</b> Los seis recuadros del cafetal y la lectura que la app redacta. El primero y el tercero son las dos respuestas a la misma pregunta hecha por dos dueños distintos.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · el cafetal visto por sus dos dueños</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>VAN económico</b>, a la tasa social del 10&nbsp;%</td><td class="num"><b>$2,884,580</b></td></tr>
+      <tr><td><b>TIR económica</b></td><td class="num">19.40&nbsp;%</td></tr>
+      <tr><td>VAN privado, a la tasa del 8.41&nbsp;%</td><td class="num">$1,296,243</td></tr>
+      <tr><td>Relación beneficio–costo económica</td><td class="num">1.43</td></tr>
+    </tbody></table>
+    <p>El proyecto conviene por los dos lados, y al país le conviene <b>más del doble</b> que a su dueño, a pesar de que el país lo descuenta a una tasa más alta. La sección 8.4 desarma esa diferencia en cuatro piezas que suman exacto.</p>
+  </div>
+
+  <!-- 8.2 -->
+  <h2 id="s8-2"><span class="num">8.2</span>Los factores de conversión</h2>
+  <p>La primera tarjeta es el corazón del bloque: nueve casillas, una por rubro. Cada factor dice cuánto vale para el país un peso de ese rubro.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b8-factores.png" alt="Tarjeta 1 del Bloque 8 con los nueve factores de conversión y la nota del factor de la inversión"></div>
+    <figcaption><b>Figura 8.2.</b> Los factores del cafetal. La casilla de la inversión se deja vacía a propósito: la app la pondera según de qué está hecha la inversión del Bloque 4 y lo explica en la nota.</figcaption>
+  </figure>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · de dónde sale cada factor</div>
+    <table class="compacta">
+      <thead><tr><th style="width:1.35in">Factor</th><th>Qué significa y en qué rango suele estar</th></tr></thead>
+      <tbody>
+        <tr><td><b>Estándar</b></td><td>Para lo <b>no comerciable</b>, lo que no se importa ni se exporta: obra civil, servicios locales, transporte interno. En México suele tomarse entre 0.85 y 0.95; recoge el promedio de impuestos indirectos de la economía.</td></tr>
+        <tr><td><b>Producto</b></td><td>1 si el precio de mercado ya refleja lo que vale; mayor que 1 si es exportable y el tipo de cambio está sobrevaluado, porque entonces el mercado le paga menos de lo que aporta.</td></tr>
+        <tr><td><b>Mano de obra</b></td><td>El costo de oportunidad del jornal. Con desempleo estacional está entre <b>0.5 y 0.8</b>: el peón que se contrata en la cosecha no deja de producir otra cosa por el valor completo de su salario.</td></tr>
+        <tr><td><b>Insumos, maquinaria</b></td><td>Cerca de 1 cuando son comerciables y se compran a precio internacional; menores si llevan impuestos que el país recupera.</td></tr>
+        <tr><td><b>Divisa</b></td><td>Cuánto vale realmente un dólar para el país frente al tipo de cambio oficial. Mayor que 1 cuando la moneda está sobrevaluada; es el factor que hace valer las exportaciones.</td></tr>
+      </tbody>
+    </table>
+    <p>Ninguno de estos números se inventa en el momento: se toman de un estudio nacional, de un manual del banco que financia o de un trabajo publicado, y <b>se citan</b>. Lo que la app trae son valores de arranque razonables para México, no una fuente.</p>
+  </div>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · los factores del cafetal</div>
+    <table class="compacta">
+      <thead><tr><th>Rubro</th><th class="num">Factor</th><th>Por qué</th></tr></thead>
+      <tbody>
+        <tr><td>Estándar</td><td class="num">0.90</td><td>lo no comerciable</td></tr>
+        <tr><td><b>Producto (café)</b></td><td class="num">1.05</td><td>es exportable y el mercado lo subvalúa</td></tr>
+        <tr><td><b>Mano de obra</b></td><td class="num">0.60</td><td>cosecha estacional en una región con desempleo</td></tr>
+        <tr><td>Insumos</td><td class="num">0.95</td><td>comerciables, con poco impuesto recuperable</td></tr>
+        <tr><td>Maquinaria y energía</td><td class="num">1.00</td><td>a precio internacional</td></tr>
+        <tr><td>Servicios, administración, otros</td><td class="num">0.90</td><td>van al factor estándar</td></tr>
+        <tr><td><b>Divisa</b></td><td class="num">1.10</td><td>un dólar vale 10&nbsp;% más de lo que dice el tipo de cambio</td></tr>
+        <tr><td><b>Inversión</b></td><td class="num">0.945</td><td>ponderada por la app según el Bloque 4</td></tr>
+      </tbody>
+    </table>
+    <p>El factor de la inversión no se escribe: la app lo arma con la composición real del presupuesto —el terreno vale 1, la obra civil va al factor estándar y la maquinaria al de los bienes comerciables— y en el cafetal sale <b>0.945</b>. Se puede fijar a mano, pero entonces hay que poder defender ese número.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>El factor de la mano de obra es el que cambia el resultado</div>
+    <p>Es también el más discutible. Ponerlo en 0.60 equivale a afirmar que, en esa región y en esa temporada, cada peón contratado deja de producir sesenta centavos por cada peso que se le paga. Eso es una afirmación sobre el mercado de trabajo local, no un dato técnico, y hay que sostenerla: con empleo pleno el factor sería 1 y buena parte de la ventaja social del proyecto desaparecería. Un capítulo de evaluación social que no explica de dónde sale este número está incompleto.</p>
+  </div>
+
+  <!-- 8.3 -->
+  <h2 id="s8-3"><span class="num">8.3</span>Los datos de los indicadores sociales</h2>
+  <p>La segunda tarjeta pide seis datos que el VAN no necesita pero que sí necesitan los indicadores de la sección 8.7.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b8-datos.png" alt="Tarjeta 2 del Bloque 8 con el jornal, los jornales por empleo, la exportación, la importación, el subsidio y los beneficiarios"></div>
+    <figcaption><b>Figura 8.3.</b> Los seis datos del cafetal. El jornal es el que divide el costo de mano de obra para contar jornales; los porcentajes de exportación e importación son los que valoran la divisa.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · qué significa cada casilla en el cafetal</div>
+    <table class="compacta">
+      <thead><tr><th style="width:1.7in">Dato</th><th class="num">Cafetal</th><th>Para qué sirve</th></tr></thead>
+      <tbody>
+        <tr><td>Jornal pagado</td><td class="num">$350</td><td>divide el costo de mano de obra y da los jornales del año</td></tr>
+        <tr><td>Jornales por empleo permanente</td><td class="num">270</td><td>convierte jornales en empleos equivalentes</td></tr>
+        <tr><td><b>Del ingreso, se exporta</b></td><td class="num">70&nbsp;%</td><td>la parte que gana divisas y que el factor de la divisa premia</td></tr>
+        <tr><td><b>De los costos, es importado</b></td><td class="num">20&nbsp;%</td><td>la parte que gasta divisas y que el mismo factor encarece</td></tr>
+        <tr><td>Subsidio recibido al año</td><td class="num">$0</td><td>es una transferencia: se le devuelve al país en el puente</td></tr>
+        <tr><td>Beneficiarios</td><td class="num">12</td><td>da la inversión por beneficiario que piden los programas</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Exportar no es lo mismo que vender caro</div>
+    <p>El porcentaje de exportación de esta tarjeta y los canales del Bloque 3 son cosas distintas y conviven sin estorbarse. En el Bloque 3, la exportación cambia el <b>precio</b> que el productor recibe, con su premio o su castigo. Aquí cambia el <b>valor para el país</b> de ese mismo peso, porque trae divisas. Si el proyecto exporta, los dos efectos existen y los dos se declaran.</p>
+  </div>
+
+  <!-- 8.4 -->
+  <h2 id="s8-4"><span class="num">8.4</span>Del VAN privado al VAN económico</h2>
+  <p>La tercera tarjeta es la que hay que copiar a la tesis. En vez de entregar dos números sin relación, desarma la diferencia en piezas que <b>suman exacto</b>: si alguna vez no cerrara, sería un error del programa.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b8-puente.png" alt="Tarjeta 3 del Bloque 8 con la cascada del VAN privado al VAN económico y su tabla"></div>
+    <figcaption><b>Figura 8.4.</b> El puente del cafetal. La primera barra es el VAN privado ya traído a la tasa social; cada barra siguiente es una corrección, y la última es el VAN económico.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · las cinco piezas del cafetal</div>
+    <table class="compacta">
+      <thead><tr><th>Concepto</th><th class="num">Valor presente</th><th>Por qué</th></tr></thead>
+      <tbody>
+        <tr><td>VAN privado, a la tasa privada</td><td class="num">$1,296,243</td><td>lo que dice el Bloque 6</td></tr>
+        <tr><td><b>VAN privado, a la tasa social</b></td><td class="num">$702,652</td><td>el país descuenta al 10&nbsp;%, no al 8.41&nbsp;%</td></tr>
+        <tr><td>+ transferencias</td><td class="num">$0</td><td>el cafetal no paga ISR ni recibe subsidio</td></tr>
+        <tr><td>± precio del producto</td><td class="num">$1,024,603</td><td>factor 1.05 y el premio de la divisa sobre el 70&nbsp;% exportado</td></tr>
+        <tr><td>± precios de los costos</td><td class="num">$1,051,137</td><td>sobre todo la mano de obra a 0.60</td></tr>
+        <tr><td>± precios de la inversión</td><td class="num">$106,188</td><td>obra, equipo y capital de trabajo</td></tr>
+        <tr class="total-row"><td><b>VAN económico</b></td><td class="num"><b>$2,884,580</b></td><td>lo que el proyecto le deja al país</td></tr>
+      </tbody>
+    </table>
+    <p>Las cuatro correcciones suman $2,181,928 y, con los $702,652 de partida, dan los $2,884,580 al centavo. Dos de ellas —el precio del producto y el de los costos— explican casi todo, y las dos apuntan a lo mismo: <b>el mercado le paga poco al café y le cobra caro el trabajo</b>.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>La primera resta es la que más sorprende</div>
+    <p>Pasar de $1,296,243 a $702,652 <b>no es una corrección de precios</b>: es solo cambiar la tasa. El proyecto pierde casi $600,000 de valor presente por descontarse al 10&nbsp;% en lugar del 8.41&nbsp;%, y eso ocurre antes de tocar un solo precio. En un proyecto de veinte años con gestación larga, la tasa pesa tanto como los factores; por eso el renglón aparece separado y no escondido dentro de las correcciones.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · por qué las transferencias se devuelven</div>
+    <p>El dueño resta el impuesto porque sale de su bolsa. El país no lo resta porque no sale del país: pasa de la empresa al gobierno y sigue disponible para gastarse. Lo mismo, al revés, con un subsidio: para el dueño es un ingreso y para el país no es un recurso nuevo, sino uno que se le quitó a otra parte del presupuesto.</p>
+    <p>En el cafetal la pieza vale <b>cero</b>, y por una razón que vale la pena decir en la tesis: el proyecto está exento del impuesto sobre la renta por el artículo 74 de la LISR, como se vio en el Bloque 5. No hay impuesto que devolver porque no se pagó ninguno.</p>
+  </div>
+
+  <!-- 8.5 -->
+  <h2 id="s8-5"><span class="num">8.5</span>Los dos perfiles y la tasa social</h2>
+  <p>Debajo del puente, la misma tarjeta dibuja los dos flujos contra toda la escala de tasas, con las dos tasas marcadas.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b8-perfiles.png" alt="Los dos perfiles del VAN del cafetal, el privado y el económico, con la tasa privada y la tasa social marcadas"></div>
+    <figcaption><b>Figura 8.5.</b> El perfil económico va por encima del privado en toda la escala, y cruza el cero mucho más tarde: esa distancia horizontal entre los dos cruces es la diferencia entre la TIR privada (12.47&nbsp;%) y la económica (19.40&nbsp;%).</figcaption>
+  </figure>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · qué es la tasa social de descuento</div>
+    <p>No es el costo del dinero para el productor: es lo que la sociedad exige por posponer consumo. Suele fijarla el gobierno o el organismo que financia —en México se han usado valores alrededor del 10&nbsp;% para la evaluación de proyectos públicos— y <b>se cita, no se calcula</b>. Se escribe en el Bloque 2 y este bloque la usa tal cual.</p>
+    <p>Lo normal es que la tasa social sea <b>menor</b> que la privada, porque el país puede esperar más que un productor y porque diversifica riesgos que un dueño no puede diversificar. Cuando sale al revés, como en el cafetal, la app lo advierte: no es imposible —una tasa privada baja por mucho crédito barato lo explica—, pero hay que justificarlo.</p>
+  </div>
+
+  <!-- 8.6 -->
+  <h2 id="s8-6"><span class="num">8.6</span>El flujo económico, año por año</h2>
+  <p>La cuarta tarjeta pone el flujo completo con las dos versiones de cada renglón, de mercado y económica, para que se vea qué hizo cada factor. Se descarga en .csv.</p>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · tres años del cafetal</div>
+    <table class="compacta">
+      <thead><tr><th>Año</th><th class="num">Ingreso de mercado</th><th class="num">Ingreso económico</th><th class="num">Costo de mercado</th><th class="num">Costo económico</th><th class="num">Flujo económico</th></tr></thead>
+      <tbody>
+        <tr><td><b>2026</b></td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">−$1,423,504</td></tr>
+        <tr><td>2027</td><td class="num">$0</td><td class="num">$0</td><td class="num">$471,000</td><td class="num">$403,520</td><td class="num">−$403,520</td></tr>
+        <tr><td><b>2032</b></td><td class="num">$1,586,774</td><td class="num">$1,777,187</td><td class="num">$838,600</td><td class="num">$684,600</td><td class="num">$1,092,587</td></tr>
+      </tbody>
+    </table>
+    <p>En 2026 la inversión de mercado es de $1,512,493 y la económica de $1,423,504: el factor ponderado de 0.945 le quita al país cerca de $89,000 de costo que en realidad eran impuestos. En 2032, a plena producción, el ingreso <b>sube</b> un 12&nbsp;% al pasar a precios cuenta y el costo <b>baja</b> un 18&nbsp;%: el flujo económico del año ($1,092,587) es un 46&nbsp;% mayor que el privado antes de impuestos ($748,174).</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · cómo se arma cada renglón</div>
+    <p>El <b>ingreso económico</b> es el ingreso de mercado por el factor del producto, más el premio de la divisa sobre la parte exportada:</p>
+    <div class="formula">ingreso econ. = ingreso × f_producto + ingreso × exportado × (f_divisa − 1)</div>
+    <p>En 2032: $1,586,774 × 1.05 + $1,586,774 × 0.70 × 0.10 = $1,666,113 + $111,074 = <b>$1,777,187</b>, que es exactamente lo que muestra la tabla.</p>
+    <p>El <b>costo económico</b> es cada grupo de costo por su propio factor —la mano de obra a 0.60, los insumos a 0.95, los servicios a 0.90, los costos fijos anuales al de administración— más el encarecimiento de la parte importada por el mismo factor de la divisa. En 2032, los $838,600 de costo de mercado se convierten en $684,600.</p>
+  </div>
+
+  <!-- 8.7 -->
+  <h2 id="s8-7"><span class="num">8.7</span>Empleo, divisas y valor agregado</h2>
+  <p>El VAN económico es un número, y hay preguntas que un número no contesta: cuánta gente trabaja, cuántas divisas entran, quién se queda con lo que el proyecto crea. La quinta tarjeta las contesta.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b8-indicadores.png" alt="Tarjeta 5 del Bloque 8 con los indicadores sociales, el empleo por año y el reparto del valor agregado"></div>
+    <figcaption><b>Figura 8.6.</b> Los indicadores del cafetal. A la izquierda, los jornales de cada año —los tres primeros son de mantenimiento, sin cosecha—; a la derecha, a quién le queda el valor agregado, con el excedente en negativo durante la gestación.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · el cafetal en indicadores sociales</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:46%">Jornales al año, a plena producción</td><td class="num">923</td><td>con un jornal de $350</td></tr>
+      <tr><td>Empleos permanentes equivalentes</td><td class="num"><b>3.4</b></td><td>270 jornales por empleo</td></tr>
+      <tr><td>Jornales en todo el horizonte</td><td class="num">16,339</td><td></td></tr>
+      <tr><td>Inversión por empleo permanente</td><td class="num">$442,455</td><td>el indicador que piden los apoyos</td></tr>
+      <tr><td>Divisas netas al año</td><td class="num">$943,022</td><td>$4,768,676 en valor presente</td></tr>
+      <tr><td>Valor agregado a plena producción</td><td class="num"><b>$1,256,214</b></td><td>producción menos consumo intermedio</td></tr>
+      <tr><td>Inversión por beneficiario</td><td class="num">$126,041</td><td>12 beneficiarios declarados</td></tr>
+    </tbody></table>
+    <p>Ocho hectáreas de café sostienen <b>3.4 empleos permanentes</b>. Dicho así suena poco; dicho como 923 jornales al año en una región donde el trabajo es estacional, suena a lo que es. Los dos números son el mismo y conviene reportar los dos.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · el valor agregado y su reparto</div>
+    <p>El <b>valor agregado</b> es lo que el proyecto crea de nuevo: su producción menos lo que compró a otros. En el cafetal, a plena producción, $1,586,774 de producción menos $330,560 de insumos y servicios dan <b>$1,256,214</b>. Es la misma idea con la que se arma el producto interno bruto, aplicada a un proyecto.</p>
+    <p>Ese valor se reparte entre cuatro y solo cuatro destinos, y los cuatro suman el total exacto: quienes trabajaron, el gobierno, quien prestó y el dueño.</p>
+    <table class="compacta">
+      <thead><tr><th>A quién le queda</th><th class="num">Cafetal</th><th class="num">$ al año</th></tr></thead>
+      <tbody>
+        <tr><td><b>Remuneraciones</b></td><td class="num">40&nbsp;%</td><td class="num">$508,040</td></tr>
+        <tr><td>Impuestos</td><td class="num">0&nbsp;%</td><td class="num">$0</td></tr>
+        <tr><td>Intereses</td><td class="num">8&nbsp;%</td><td class="num">$96,380</td></tr>
+        <tr><td><b>Excedente del dueño</b></td><td class="num">52&nbsp;%</td><td class="num">$651,794</td></tr>
+      </tbody>
+    </table>
+    <p>Cuatro de cada diez pesos que el cafetal crea se quedan en la región como salario. Esa es la frase que un proyecto de desarrollo rural necesita, y no está en el VAN.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Divisas netas no es lo mismo que exportaciones</div>
+    <p>Son las exportaciones <b>menos</b> las importaciones: el 70&nbsp;% del ingreso que sale al extranjero menos el 20&nbsp;% de los costos que entra de él. Un proyecto que exporta mucho pero importa todos sus insumos puede aportar muy pocas divisas netas, y reportar solo las exportaciones lo haría ver mejor de lo que es. La app siempre reporta el neto.</p>
+  </div>
+
+  <!-- 8.8 -->
+  <h2 id="s8-8"><span class="num">8.8</span>Los avisos de este bloque</h2>
+  <p>La última tarjeta revisa la coherencia de lo que se declaró. En el cafetal sale uno.</p>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · lo que la app dice del cafetal</div>
+    <p style="font-style:italic">«La tasa social (10.00&nbsp;%) es mayor que la privada (8.41&nbsp;%); normalmente es al revés, porque el país puede esperar más que un productor.»</p>
+    <p>No es un error: la tasa privada del cafetal es baja porque el 45&nbsp;% del proyecto se financia con crédito deducible. Pero la tesis tiene que decirlo, porque de ahí sale la resta de casi $600,000 del puente.</p>
+  </div>
+
+  <table class="compacta">
+    <thead><tr><th style="width:0.95in">Clase</th><th>Lo que revisa</th></tr></thead>
+    <tbody>
+      <tr><td><b>Error</b></td><td>No hay proyecto que evaluar socialmente: falta algo de los bloques anteriores. Y uno que no debería verse nunca: que el puente <b>no cierre</b>, que sería un error del programa y hay que reportarlo.</td></tr>
+      <tr><td><b>Advertencia</b></td><td>La tasa social es mayor que la privada; el proyecto le conviene al dueño pero <b>no al país</b>, señal de que su rentabilidad viene de transferencias o de precios distorsionados; el factor estándar quedó fuera del rango usual de 0.8 a 1.0.</td></tr>
+      <tr><td><b>Nota</b></td><td>El proyecto no le conviene al productor pero sí al país —el caso típico del que merece apoyo público—; la mano de obra se está valuando a su salario de mercado; falta el jornal para poder contar empleos; se declararon exportaciones pero el factor de la divisa quedó en 1, con lo que las divisas no aportan nada.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión · qué reportar de la evaluación económica</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Si</b> el proyecto pide recursos públicos o un apoyo</td><td><b>entonces</b> el VAN económico manda, y el privado va como prueba de que el dueño podrá operarlo.</td></tr>
+      <tr><td><b>Si</b> el proyecto es enteramente privado</td><td><b>entonces</b> este bloque es opcional; si se incluye, sirve para argumentar el apoyo o el permiso, no la rentabilidad.</td></tr>
+      <tr><td><b>Si</b> usas un factor de mano de obra menor a 1</td><td><b>entonces</b> justifícalo con el mercado de trabajo de la región, y cita la fuente del factor.</td></tr>
+      <tr><td><b>Si</b> el VAN económico y el privado se contradicen</td><td><b>entonces</b> el puente dice exactamente por qué, y esa explicación es el resultado del capítulo.</td></tr>
+      <tr><td><b>Si</b> el proyecto tiene efectos ambientales</td><td><b>entonces</b> decláralos aparte: este bloque no los valora y no debe aparentar que sí.</td></tr>
+      <tr><td><b>Si</b> reportas empleo</td><td><b>entonces</b> da los jornales y los empleos equivalentes, y di cuántos jornales cuenta un empleo.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">Con este bloque termina la evaluación del proyecto. El Bloque 9 cambia otra vez de pregunta: ya no si <i>este</i> proyecto conviene, sino cuál de varios conviene más, cuándo reemplazar y qué hacer cuando el dinero no alcanza para todos.</p>
+  </div>
+</section>
+
+</body>
+</html>

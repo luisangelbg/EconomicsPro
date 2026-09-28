@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EconomicsPro · Manual de usuario · Apéndices</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../interior.css">
+<script src="../paginar.js"></script>
+<style>
+  .formula { font-family: var(--mono); font-size: 9pt; background: var(--marino-suave); border-radius: 5px; padding: 0.07in 0.12in; margin: 0.08in 0; }
+  .glosario dt { font-weight: 600; margin-top: 0.09in; }
+  .glosario dd { margin: 0 0 0 0.22in; }
+  .refs { list-style: none; padding: 0; margin: 0.06in 0 0; }
+  .refs li { margin: 0 0 0.09in 0.24in; text-indent: -0.24in; }
+</style>
+</head>
+<body>
+
+<section class="capitulo" id="cap-ap" data-pestana="Ap" data-orden="11" style="--acento: var(--bx)">
+  <div class="cap-apertura">
+    <div class="cap-num">A</div>
+    <div class="cap-etiqueta">Apéndices</div>
+    <h1>Apéndices</h1>
+    <div class="cap-regla"></div>
+    <p class="cap-resumen">Lo que hace falta tener a la mano y no cabía en ningún capítulo: qué archivos lee y escribe la app, las reglas de decisión de los diez bloques reunidas en una sola lista, el vocabulario de la evaluación de proyectos, qué hacer cuando algo no sale, las referencias y la licencia de la herramienta.</p>
+    <ul class="cap-contenido">
+      <li><b>A</b>Los archivos que la app lee y escribe</li>
+      <li><b>B</b>Las reglas de decisión, reunidas</li>
+      <li><b>C</b>Glosario</li>
+      <li><b>D</b>Cuando algo no sale</li>
+      <li><b>E</b>Referencias</li>
+      <li><b>F</b>La herramienta: licencia y cómo citarla</li>
+    </ul>
+  </div>
+
+  <!-- A -->
+  <h2 id="ap-a"><span class="num">A</span>Los archivos que la app lee y escribe</h2>
+  <p class="lead">EconomicsPro es un programa de escritorio que corre en el navegador y no envía nada a ningún servidor: todos los archivos entran y salen de la carpeta de la computadora. Este apéndice dice cuáles son.</p>
+
+  <h3>A.1 · Lo que la app lee</h3>
+  <table class="compacta">
+    <thead><tr><th style="width:1.2in">Formato</th><th>Dónde y para qué</th></tr></thead>
+    <tbody>
+      <tr><td><b>.json</b></td><td>Bloque 2, <span class="ui">Abrir un proyecto</span>. Es el archivo del estudio completo: al abrirlo, los diez bloques se reconstruyen y todos los cálculos se rehacen.</td></tr>
+      <tr><td><b>.csv, .txt, .tsv</b></td><td>Bloque 3, para la serie histórica de precios y rendimientos. La app reconoce la coma, el punto y coma y el tabulador como separadores.</td></tr>
+      <tr><td><b>pegado</b></td><td>Todas las mini-hojas de los bloques 3, 4, 7 y 9 aceptan que se copie un bloque de celdas de una hoja de cálculo y se pegue directamente. Es, de hecho, la forma más rápida de capturar.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Un libro de cálculo no se lee, y es a propósito</div>
+    <p>Si se elige un archivo <span class="ruta">.xlsx</span>, <span class="ruta">.xls</span> o <span class="ruta">.ods</span>, la app no lo abre y lo dice: <i>«Ese archivo es un libro de cálculo. Guárdalo como .csv, o abre la hoja, copia el bloque y pégalo directamente en la tabla»</i>.</p>
+    <p>Leer un libro de cálculo exigiría incorporar una biblioteca de terceros de cientos de miles de líneas para resolver un problema que se resuelve en dos clics, y esa biblioteca quedaría dentro de la app para siempre. Se prefirió que la app <b>no cargue una sola línea que no sea propia</b>: es lo que le permite abrirse con doble clic, sin instalar nada, y funcionar sin internet.</p>
+  </div>
+
+  <h3>A.2 · Lo que la app escribe</h3>
+  <p>Todos los archivos llevan por delante el nombre del estudio. Con un proyecto llamado «Cafetal», por ejemplo, el del Bloque 6 saldría como <span class="ruta">cafetal-evaluacion-financiera.csv</span>.</p>
+  <table class="compacta">
+    <thead><tr><th style="width:0.7in">Bloque</th><th style="width:2.5in">Archivo</th><th>Qué lleva</th></tr></thead>
+    <tbody>
+      <tr><td>2</td><td><span class="ruta">…-economicspro.json</span></td><td>el estudio completo, para volver a abrirlo</td></tr>
+      <tr><td>3</td><td><span class="ruta">…-programa-de-ventas.csv</span></td><td>producción, volumen vendido, precio e ingreso por año</td></tr>
+      <tr><td>4</td><td><span class="ruta">…-inversion-y-costos.csv</span></td><td>inversión por año, costos por grupo y capital de trabajo</td></tr>
+      <tr><td>5</td><td><span class="ruta">…-estados-proforma.csv</span></td><td>estado de resultados, los dos flujos y el balance</td></tr>
+      <tr><td>6</td><td><span class="ruta">…-evaluacion-financiera.csv</span></td><td>los indicadores de los dos flujos y el flujo descontado</td></tr>
+      <tr><td>7</td><td><span class="ruta">…-riesgo.csv</span></td><td>valores límite, tornado, escenarios y la simulación</td></tr>
+      <tr><td>8</td><td><span class="ruta">…-evaluacion-social.csv</span></td><td>el flujo económico y los indicadores sociales</td></tr>
+      <tr><td>9</td><td><span class="ruta">…-decisiones.csv</span></td><td>alternativas, reemplazo, rotación y comprar o rentar</td></tr>
+      <tr><td rowspan="4">10</td><td><span class="ruta">figura.svg · .png · .jpg</span></td><td>una figura, con su título y su resolución dentro</td></tr>
+      <tr><td><span class="ruta">…-figuras.zip</span></td><td>todas las figuras del estudio de una vez</td></tr>
+      <tr><td><span class="ruta">…-informe.html</span></td><td>el estudio entero en un solo archivo</td></tr>
+      <tr><td><span class="ruta">…-estudio.zip</span></td><td>informe, figuras, tablas y el <span class="ruta">proyecto.json</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>El guardado automático no es un respaldo</div>
+    <p>La app guarda sola, en el navegador, lo último que se capturó, y por eso al volver a abrirla el estudio sigue ahí. Pero eso vive <b>en esa computadora y en ese navegador</b>: se pierde al borrar los datos de navegación, no viaja en una memoria y no sirve para entregar. El respaldo de verdad es el <span class="ruta">.json</span> del Bloque 2, y conviene bajarlo cada vez que se termina una sesión de trabajo.</p>
+  </div>
+
+  <!-- B -->
+  <h2 id="ap-b"><span class="num">B</span>Las reglas de decisión, reunidas</h2>
+  <p>Cada capítulo termina con una regla de decisión. Aquí están las de los diez bloques, en una sola lista, para repasar antes de entregar.</p>
+
+  <table class="compacta">
+    <thead><tr><th style="width:0.62in">Bloque</th><th>La regla</th></tr></thead>
+    <tbody>
+      <tr><td><b>1</b></td><td>Antes de capturar nada, jugar con los laboratorios hasta entender qué mueve el resultado; el motor es el mismo que después evalúa el proyecto.</td></tr>
+      <tr><td><b>2</b></td><td>Precios constantes con tasa real, o precios corrientes con tasa nominal: nunca se mezclan. El horizonte lo fija el activo que más dura, y el régimen fiscal se declara aunque no se pague impuesto.</td></tr>
+      <tr><td><b>3</b></td><td>La serie se deflacta antes de proyectar. El método de proyección se elige por lo que dice la prueba de la tendencia, no por el que da el número más cómodo.</td></tr>
+      <tr><td><b>4</b></td><td>Todo activo que no llegue al horizonte se repone, y su depreciación arranca en el año de la compra. El capital de trabajo se invierte antes de producir y se recupera al final.</td></tr>
+      <tr><td><b>5</b></td><td>El flujo del proyecto no lleva deuda; el del inversionista sí. El impuesto se calcula dos veces porque son dos flujos distintos, y el balance tiene que cuadrar al centavo.</td></tr>
+      <tr><td><b>6</b></td><td>Si el estudio es para justificar el proyecto, manda el flujo del proyecto. Si la TIR no existe o es múltiple, manda el VAN y se reporta la TIR modificada. El análisis marginal va en su propia sección.</td></tr>
+      <tr><td><b>7</b></td><td>Sin base para poner probabilidades, solo valores límite y tornado. Un valor límite menor al 10&nbsp;% va en el resumen. La probabilidad de perder arriba del 30&nbsp;% se dice en las conclusiones.</td></tr>
+      <tr><td><b>8</b></td><td>Si el proyecto pide recursos públicos, manda el VAN económico. Un factor de mano de obra menor a 1 se justifica con el mercado de trabajo de la región y se cita.</td></tr>
+      <tr><td><b>9</b></td><td>Entre alternativas que se excluyen manda el VAN, o el valor anual equivalente si duran distinto. Con presupuesto limitado, el índice de rentabilidad, comprobado contra el mejor paquete posible.</td></tr>
+      <tr><td><b>10</b></td><td>Con un error en la revisión final no se entrega. Con avisos sí, pero contestados en el texto. El anexo reproducible es el .zip con el <span class="ruta">proyecto.json</span> dentro.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Las cinco coherencias que no se negocian</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Precios y tasa</b></td><td>constantes con real, corrientes con nominal.</td></tr>
+      <tr><td><b>Los dos flujos</b></td><td>el del proyecto sin deuda, el del inversionista con ella; cada uno con su tasa.</td></tr>
+      <tr><td><b>Horizontes</b></td><td>no se comparan VAN de proyectos que duran distinto.</td></tr>
+      <tr><td><b>Transferencias</b></td><td>son costo para el dueño y no lo son para el país.</td></tr>
+      <tr><td><b>Rangos y probabilidades</b></td><td>los declara quien firma, y se citan como cualquier otro dato.</td></tr>
+    </tbody></table>
+  </div>
+
+  <!-- C -->
+  <h2 id="ap-c"><span class="num">C</span>Glosario</h2>
+  <p>Los términos que el manual usa, en el sentido preciso en que los usa. Entre paréntesis, el bloque donde aparecen.</p>
+
+  <dl class="glosario">
+    <dt>Capital de trabajo (4)</dt><dd>El dinero que hay que tener adelantado para que la operación no se detenga entre que se gasta y que se cobra. Se invierte el año anterior a producir y se recupera al final del horizonte.</dd>
+    <dt>Costo anual equivalente, CAE (9)</dt><dd>El valor presente de un costo repartido en pagos iguales a lo largo de la vida del activo. Su mínimo marca la vida económica.</dd>
+    <dt>CPPC (2)</dt><dd>Costo promedio ponderado de capital: el promedio de lo que cuesta cada peso del proyecto, propio o prestado, con el interés ya descontado del impuesto.</dd>
+    <dt>Dominancia (6)</dt><dd>Un tratamiento está dominado cuando cuesta más y deja menos que otro más barato. Se descarta sin calcular su tasa de retorno.</dd>
+    <dt>Escenario (7)</dt><dd>Un estado del mundo completo, con todos sus supuestos moviéndose a la vez y con una probabilidad declarada. No es lo mismo que mover una variable.</dd>
+    <dt>Factor de conversión (8)</dt><dd>Cuánto vale para el país un peso de un rubro. Corrige el precio de mercado quitándole impuestos y distorsiones.</dd>
+    <dt>Fisher, intersección de (9)</dt><dd>La tasa a la que dos alternativas tienen el mismo VAN. A un lado conviene la cara, al otro la barata.</dd>
+    <dt>Fisher, ecuación de (2)</dt><dd>La relación entre la tasa nominal, la real y la inflación: (1 + nominal) = (1 + real)(1 + inflación).</dd>
+    <dt>Flujo del inversionista (5)</dt><dd>El flujo del dueño: lleva el crédito, sus intereses y su escudo fiscal. Se descuenta al costo del capital propio.</dd>
+    <dt>Flujo del proyecto (5)</dt><dd>El flujo sin deuda, como si todo se pagara de contado. Se descuenta al CPPC y es el que dice si el proyecto es bueno en sí mismo.</dd>
+    <dt>Gestación y maduración (2, 3)</dt><dd>Los años sin cosecha de un cultivo perenne y los años en que el rendimiento sube hasta su nivel pleno.</dd>
+    <dt>Índice de rentabilidad (6, 9)</dt><dd>El valor presente de los beneficios entre la inversión. Sirve para repartir un presupuesto, no para elegir entre alternativas que se excluyen.</dd>
+    <dt>Precio cuenta o precio sombra (8)</dt><dd>Lo que un recurso vale para la economía, que no es lo que cuesta en el mercado cuando hay impuestos, subsidios o desempleo.</dd>
+    <dt>Precios constantes y corrientes (2)</dt><dd>Constantes: todo en el poder de compra del año base. Corrientes: cada año con la inflación encima. Cada uno pide su propia tasa.</dd>
+    <dt>Punto de equilibrio (5)</dt><dd>El volumen al que el ingreso paga exactamente los costos. Se calcula por año, porque el costo fijo y el margen cambian.</dd>
+    <dt>Relación beneficio–costo (6)</dt><dd>El valor presente de los beneficios entre el de los costos. Pasa de uno exactamente cuando el VAN es positivo.</dd>
+    <dt>Rotación, turno de (9)</dt><dd>Los años que se deja crecer una plantación antes de cortarla. Si la tierra se vuelve a plantar, el turno óptimo es el de Faustmann, más corto que el del VAN.</dd>
+    <dt>Tasa interna de retorno, TIR (6)</dt><dd>La tasa que hace cero el VAN. Puede no existir o ser múltiple si el flujo cambia de signo más de una vez.</dd>
+    <dt>TIR incremental (9)</dt><dd>Lo que rinde el dinero adicional que pide la alternativa más cara. Es lo que decide entre dos que se excluyen.</dd>
+    <dt>TIR modificada, TIRM (6)</dt><dd>La TIR calculada suponiendo que lo que sobra se reinvierte a la tasa de descuento y no a la propia TIR. Es la que se reporta cuando hay varias raíces.</dd>
+    <dt>TREMA (2)</dt><dd>Tasa de rendimiento mínima aceptable: lo que el dueño exige por poner su dinero, normalmente inflación más un premio al riesgo.</dd>
+    <dt>Transferencia (8)</dt><dd>Un pago que cambia de bolsillo sin crear ni destruir recursos: impuestos y subsidios. Son costo para el dueño y no lo son para el país.</dd>
+    <dt>Valor actual neto, VAN (6)</dt><dd>La suma de los flujos del proyecto traídos a hoy con la tasa de descuento. Positivo significa que el proyecto rinde más que su costo de oportunidad.</dd>
+    <dt>Valor anual equivalente, VAE (6, 9)</dt><dd>El VAN repartido en anualidades iguales. Es la única forma válida de comparar proyectos que duran distinto.</dd>
+    <dt>Valor de la información perfecta, VEIP (7)</dt><dd>Lo que valdría saber hoy con certeza qué va a pasar. Es el techo de lo que tiene sentido gastar en un estudio.</dd>
+    <dt>Valor límite (7)</dt><dd>Cuánto puede cambiar una variable antes de que el VAN llegue a cero. Menos del 10&nbsp;% es una bandera roja.</dd>
+    <dt>Valor agregado (8)</dt><dd>Lo que el proyecto crea de nuevo: su producción menos lo que compró a otros. Se reparte entre salarios, impuestos, intereses y el dueño.</dd>
+    <dt>Vida económica (9)</dt><dd>Cuántos años conviene conservar un equipo, que casi siempre es menos que su vida útil.</dd>
+  </dl>
+
+  <!-- D -->
+  <h2 id="ap-d"><span class="num">D</span>Cuando algo no sale</h2>
+  <p>Los tropiezos que de verdad ocurren, con lo que hay que hacer en cada caso.</p>
+
+  <table class="compacta">
+    <thead><tr><th style="width:2.1in">Lo que pasa</th><th>Qué hacer</th></tr></thead>
+    <tbody>
+      <tr><td><b>El informe no se abre</b> al pulsar <span class="ui">Ver el informe</span></td><td>El navegador bloqueó la ventana nueva; la app lo avisa. Usa <span class="ui">Descargar el informe (.html)</span> y ábrelo desde tu carpeta con doble clic.</td></tr>
+      <tr><td><b>El archivo de la serie no entra</b></td><td>Es un libro de cálculo. Guárdalo como .csv desde la hoja, o copia el bloque de celdas y pégalo directamente en la mini-hoja.</td></tr>
+      <tr><td><b>Una figura sale como .svg</b> dentro del .zip</td><td>El navegador no pudo convertirla a imagen; la app lo dice al terminar. El .svg sirve igual y es de mejor calidad: solo hay que insertarlo en vez del .png.</td></tr>
+      <tr><td><b>Falta una figura</b> en el estudio de figuras</td><td>Ese análisis no se hizo. Vuelve a su bloque, córrelo —por ejemplo, pulsa <span class="ui">Simular</span> en el Bloque 7— y usa <span class="ui">Volver a leer las figuras</span>.</td></tr>
+      <tr><td><b>Se perdió lo capturado</b></td><td>El guardado automático vive en el navegador y se borra con los datos de navegación. Abre el último <span class="ruta">.json</span> que hayas descargado; a partir de ahora, descárgalo al terminar cada sesión.</td></tr>
+      <tr><td><b>La TIR aparece como «no existe»</b></td><td>El flujo no cambia de signo, o cambia varias veces. Reporta el VAN y la TIR modificada, y explica por qué en una nota. El Bloque 6 lo avisa.</td></tr>
+      <tr><td><b>El balance no cuadra</b></td><td>No debería ocurrir: el Bloque 5 lo comprueba año por año. Si el aviso aparece, es un error del programa y conviene reportarlo con el <span class="ruta">.json</span> del proyecto.</td></tr>
+      <tr><td><b>Un bloque aparece vacío</b> aunque haya datos</td><td>Falta algo de un bloque anterior. La revisión final del Bloque 10 dice cuál, y cada bloque escribe un error explicando qué le falta.</td></tr>
+      <tr><td><b>La simulación tarda</b></td><td>Tres mil corridas rearman el flujo completo tres mil veces; en una computadora modesta toma unos segundos. Bajar a mil corridas cambia el resultado muy poco.</td></tr>
+      <tr><td><b>Los números salen distintos</b> a los de este manual</td><td>Comprueba que el caso de práctica sea el mismo y que no hayas movido un supuesto. Los tres casos se recargan enteros desde la portada.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>La app funciona sin internet, y sin instalar nada</div>
+    <p>Se abre con doble clic en <span class="ruta">index.html</span> y corre entera dentro del navegador. No hay servidor, no hay cuenta, no se sube ningún dato y ningún archivo sale de la computadora salvo los que se descarguen a propósito. Eso también significa que no hay nada que actualizar ni que pueda dejar de funcionar cuando un servicio cierre.</p>
+  </div>
+
+  <!-- E -->
+  <h2 id="ap-e"><span class="num">E</span>Referencias</h2>
+  <p>Las veinticinco obras en que se apoyan los métodos de la app, por familia. La app las tiene en el Bloque 1, con el mismo filtro.</p>
+
+  <h3>Evaluación de proyectos agrícolas</h3>
+  <ul class="refs">
+    <li>Gittinger, J.P. (1982). <i>Economic Analysis of Agricultural Projects</i>, 2.ª ed. Johns Hopkins University Press, Baltimore.</li>
+    <li>Baca Urbina, G. (2013). <i>Evaluación de proyectos</i>, 7.ª ed. McGraw-Hill, México.</li>
+    <li>Sapag Chaín, N. y Sapag Chaín, R. (2011). <i>Preparación y evaluación de proyectos</i>, 5.ª ed. McGraw-Hill, Santiago.</li>
+    <li>Coss Bu, R. (2005). <i>Análisis y evaluación de proyectos de inversión</i>, 2.ª ed. Limusa, México.</li>
+    <li>Perrin, R.K., Winkelmann, D.L., Moscardi, E.R. y Anderson, J.R. (1976). <i>From Agronomic Data to Farmer Recommendations: An Economics Training Manual</i>. CIMMYT, México.</li>
+  </ul>
+
+  <h3>Tasa de descuento y costo de capital</h3>
+  <ul class="refs">
+    <li>Brealey, R.A., Myers, S.C. y Allen, F. (2020). <i>Principles of Corporate Finance</i>, 13.ª ed. McGraw-Hill, Nueva York.</li>
+    <li>Fisher, I. (1930). <i>The Theory of Interest</i>. Macmillan, Nueva York.</li>
+    <li>Sharpe, W.F. (1964). Capital asset prices: a theory of market equilibrium under conditions of risk. <i>The Journal of Finance</i> 19: 425–442.</li>
+    <li>Damodaran, A. (2012). <i>Investment Valuation</i>, 3.ª ed. Wiley, Hoboken.</li>
+  </ul>
+
+  <h3>Costos, flujos y administración de la empresa agrícola</h3>
+  <ul class="refs">
+    <li>Kay, R.D., Edwards, W.M. y Duffy, P.A. (2020). <i>Farm Management</i>, 9.ª ed. McGraw-Hill, Nueva York.</li>
+    <li>Barry, P.J. y Ellinger, P.N. (2012). <i>Financial Management in Agriculture</i>, 7.ª ed. Pearson, Upper Saddle River.</li>
+    <li>Horngren, C.T., Datar, S.M. y Rajan, M.V. (2015). <i>Cost Accounting: A Managerial Emphasis</i>, 15.ª ed. Pearson, Boston.</li>
+  </ul>
+
+  <h3>Mercado y precios agrícolas</h3>
+  <ul class="refs">
+    <li>Tomek, W.G. y Kaiser, H.M. (2014). <i>Agricultural Product Prices</i>, 5.ª ed. Cornell University Press, Ithaca.</li>
+    <li>Norton, G.W., Alwang, J. y Masters, W.A. (2015). <i>Economics of Agricultural Development</i>, 3.ª ed. Routledge, Londres.</li>
+  </ul>
+
+  <h3>Riesgo e incertidumbre</h3>
+  <ul class="refs">
+    <li>Hardaker, J.B., Lien, G., Anderson, J.R. y Huirne, R.B.M. (2015). <i>Coping with Risk in Agriculture</i>, 3.ª ed. CABI, Wallingford.</li>
+    <li>Savvides, S.C. (1994). Risk analysis in investment appraisal. <i>Project Appraisal</i> 9: 3–18.</li>
+    <li>Vose, D. (2008). <i>Risk Analysis: A Quantitative Guide</i>, 3.ª ed. Wiley, Chichester.</li>
+    <li>Iman, R.L. y Conover, W.J. (1982). A distribution-free approach to inducing rank correlation among input variables. <i>Communications in Statistics</i> 11: 311–334.</li>
+  </ul>
+
+  <h3>Evaluación económica y social</h3>
+  <ul class="refs">
+    <li>Squire, L. y van der Tak, H.G. (1975). <i>Economic Analysis of Projects</i>. Johns Hopkins University Press, Baltimore.</li>
+    <li>Dasgupta, P., Marglin, S. y Sen, A. (1972). <i>Guidelines for Project Evaluation</i>. ONUDI, Viena.</li>
+    <li>Belli, P., Anderson, J.R., Barnum, H.N., Dixon, J.A. y Tan, J.-P. (2001). <i>Economic Analysis of Investment Operations</i>. World Bank Institute, Washington.</li>
+    <li>Boardman, A.E., Greenberg, D.H., Vining, A.R. y Weimer, D.L. (2018). <i>Cost-Benefit Analysis: Concepts and Practice</i>, 5.ª ed. Cambridge University Press.</li>
+  </ul>
+
+  <h3>Decisiones de inversión</h3>
+  <ul class="refs">
+    <li>Faustmann, M. (1849). Berechnung des Wertes welchen Waldboden sowie noch nicht haubare Holzbestände für die Waldwirtschaft besitzen. <i>Allgemeine Forst- und Jagd-Zeitung</i> 25: 441–455.</li>
+    <li>Lorie, J.H. y Savage, L.J. (1955). Three problems in rationing capital. <i>The Journal of Business</i> 28: 229–239.</li>
+    <li>Perrin, R.K. (1972). Asset replacement principles. <i>American Journal of Agricultural Economics</i> 54: 60–67.</li>
+  </ul>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Las dos fuentes de datos reales</div>
+    <p>Los tres casos de práctica son <b>ficticios</b>, con una sola excepción que conviene decir cada vez que se usen: el índice de precios con el que se deflactan las series es el <b>Índice Nacional de Precios al Consumidor del INEGI</b>, usado bajo sus términos de libre uso. La otra cifra oficial que la app trae es la <b>UMA</b> publicada en el Diario Oficial de la Federación, que se usa para el límite de exención del artículo 74 de la Ley del Impuesto sobre la Renta.</p>
+  </div>
+
+  <!-- F -->
+  <h2 id="ap-f"><span class="num">F</span>La herramienta: licencia y cómo citarla</h2>
+
+  <h3>F.1 · Qué lleva la app por dentro</h3>
+  <p>Ninguna biblioteca de terceros, ninguna fuente web, ninguna imagen ajena, ninguna llamada a internet. Los diez bloques, el motor financiero, las figuras, el escritor de ZIP y el paginador de este manual son código propio. Eso no es una postura: es lo que permite que la app se abra con doble clic, funcione sin conexión y siga funcionando dentro de diez años.</p>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Lo único de terceros está en este manual</div>
+    <p>El manual —no la app— usa tres tipografías del servicio público de fuentes web, las tres bajo la licencia SIL Open Font License 1.1: <b>Cormorant</b>, de Christian Thalmann; <b>Crimson Pro</b>, de Jacques Le Bailly; y <b>Jost</b>, de Owen Earl. Todo lo demás —ilustraciones, diagramas, capturas y maquetación— es original.</p>
+  </div>
+
+  <h3>F.2 · Licencia</h3>
+  <p>EconomicsPro se distribuye bajo la <b>Licencia Pública General de GNU, versión 3</b>. En corto: se puede usar, copiar, estudiar y modificar libremente, incluso con fines comerciales, con dos condiciones: que se reconozca la autoría y que cualquier versión modificada que se distribuya se publique bajo la misma licencia. El texto completo está en el archivo <span class="ruta">LICENSE</span> que acompaña al programa.</p>
+
+  <h3>F.3 · Cómo citarla</h3>
+  <p>La cita está también dentro de la app, en el Bloque 1, con un botón que la copia, y al final de cada informe que la app genera:</p>
+  <div class="formula">Barrera-Guzmán, L.Á. (2026). EconomicsPro: plataforma en el navegador para la evaluación económica y financiera de proyectos agroindustriales (versión 1.0.6) [software].</div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Citar la herramienta no sustituye citar el método</div>
+    <p>Que un cálculo lo haya hecho la app no exime de citar de dónde sale el método. Si se usaron precios cuenta, se cita a Squire y van der Tak; si se hizo análisis marginal, a Perrin y colaboradores; si se indujo correlación en la simulación, a Iman y Conover. El informe que genera la app ya trae esas citas en su metodología, precisamente para que no se olviden.</p>
+  </div>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Lo último</div>
+    <p style="margin-top:0">Una app no evalúa proyectos: evalúa quien la usa. EconomicsPro calcula rápido, comprueba coherencias y escribe lo que encontró, pero cada supuesto lo pone una persona y cada conclusión la firma esa misma persona. El mejor uso de esta herramienta es el que deja más tiempo para pensar en los supuestos, que es donde de verdad se decide si un proyecto sirve.</p>
+    <p class="regla-pie">Fin del manual.</p>
+  </div>
+</section>
+
+</body>
+</html>

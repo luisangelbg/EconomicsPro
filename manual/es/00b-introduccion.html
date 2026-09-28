@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EconomicsPro · Manual de usuario · Preliminares e introducción</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../interior.css">
+<!-- reparte el contenido en hojas tamaño carta, con encabezados, números de página e índice -->
+<script src="../paginar.js"></script>
+<style>
+  .bloques-10 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.06in 0.22in; }
+  figure.reducida { width: 78%; margin-left: auto; margin-right: auto; }
+</style>
+</head>
+<body>
+
+<!-- ====================================================================== CRÉDITOS -->
+<section class="preliminares creditos" id="creditos">
+  <div class="cred-titulo">EconomicsPro</div>
+  <div class="cred-sub">Manual de usuario · Evaluación de proyectos agroindustriales</div>
+
+  <dl>
+    <dt>Autor</dt><dd><b>Luis Ángel Barrera-Guzmán</b><br><span class="small">ORCID 0000-0001-8057-2583</span></dd>
+    <dt>Programa</dt><dd>EconomicsPro, versión 1.0.6 (septiembre de 2026)</dd>
+    <dt>Manual</dt><dd>Primera edición en español, 2026. Describe la versión 1.0 del programa.</dd>
+    <dt>Licencia del programa</dt><dd>Licencia Pública General de GNU, versión 3 o posterior (GPL-3.0-or-later).</dd>
+    <dt>Derechos del manual</dt><dd>© 2026 Luis Ángel Barrera-Guzmán. Todos los derechos reservados.</dd>
+    <dt>Idioma de la interfaz</dt><dd>Español o inglés, con el botón <span class="ui">ES</span> · <span class="ui">EN</span>. En este manual los nombres de botones y menús se escriben como aparecen en pantalla en español, por ejemplo <span class="ui">Armar el informe</span>.</dd>
+  </dl>
+
+  <h4>Cómo citar el programa</h4>
+  <div class="cita">Barrera-Guzmán, L. Á. (2026). <i>EconomicsPro: plataforma en el navegador para la evaluación económica y financiera de proyectos agroindustriales</i> (versión 1.0) [Programa de cómputo].</div>
+  <h4>Cómo citar este manual</h4>
+  <div class="cita">Barrera-Guzmán, L. Á. (2026). <i>EconomicsPro. Manual de usuario</i> (1.ª ed.). Distribuido con EconomicsPro, versión 1.0.</div>
+  <p class="small">El identificador de objeto digital (DOI) se añadirá a ambas citas cuando la versión 1.0 se archive. Mientras tanto, la cita del programa aparece en la sección <span class="ui">Cómo citar</span> de la portada de la app y al final de cada informe del Bloque 10.</p>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Privacidad</div>
+    <p>EconomicsPro funciona por completo dentro de tu navegador. Los archivos que abres se leen en tu computadora y <b>nunca se envían a ningún servidor</b>. Puedes evaluar el proyecto de una empresa, el expediente de una inversión pública o los datos de una tesis en curso sin que nada de eso salga de tu equipo. El programa tampoco necesita internet: una vez copiado, funciona con la máquina desconectada.</p>
+  </div>
+
+  <p class="small" style="margin-top:0.4in;color:var(--gris)">Las ilustraciones, los diagramas y las capturas de pantalla de este manual son originales: se generaron con el propio programa o con código escrito para el manual. Los tres estudios de práctica que se usan como ejemplo a lo largo del texto —nopal, café y fresa— llevan <b>datos ficticios</b>, y así se dice cada vez que aparecen; las series y los presupuestos de ejemplo de los bloques son <b>ilustrativos</b>, no cifras oficiales. La única serie real que trae el programa es el índice nacional de precios al consumidor del INEGI, usado bajo sus términos de libre uso.</p>
+</section>
+
+<!-- ====================================================================== ÍNDICE -->
+<section class="preliminares indice" id="indice" data-nueva-hoja>
+  <h1>Índice</h1>
+  <div class="indice-sub">Contenido general del manual</div>
+
+  <ol class="toc">
+    <li>
+      <div class="toc-cap"><span class="chip k0">P</span><a href="#como-leer">Cómo leer este manual</a><a class="pag" href="#como-leer"></a></div>
+    </li>
+    <li>
+      <div class="toc-cap"><span class="chip k0">In</span><a href="#cap-intro">Introducción a EconomicsPro</a><a class="pag" href="#cap-intro"></a></div>
+      <ul>
+        <li><span class="n">I.1</span><a href="#si-1"><span class="t">¿Qué es EconomicsPro?</span></a></li>
+        <li><span class="n">I.2</span><a href="#si-2"><span class="t">Preguntas que responde</span></a></li>
+        <li><span class="n">I.3</span><a href="#si-3"><span class="t">Cinco ideas que sostienen el manual</span></a></li>
+        <li><span class="n">I.4</span><a href="#si-4"><span class="t">Datos que acepta y qué entrega</span></a></li>
+        <li><span class="n">I.5</span><a href="#si-5"><span class="t">Qué necesitas y cómo abrirlo</span></a></li>
+        <li><span class="n">I.6</span><a href="#si-6"><span class="t">Recorrido por la interfaz</span></a></li>
+        <li><span class="n">I.7</span><a href="#si-7"><span class="t">Los tres estudios de práctica</span></a></li>
+        <li><span class="n">I.8</span><a href="#si-8"><span class="t">Cómo se recorre un estudio</span></a></li>
+        <li><span class="n">I.9</span><a href="#si-9"><span class="t">Lo que el programa no hace</span></a></li>
+      </ul>
+    </li>
+    <li><div class="toc-cap"><span class="chip k1">B1</span><a href="#cap-b1">Inicio, el motor financiero y los laboratorios</a><a class="pag" href="#cap-b1"></a></div></li>
+    <li><div class="toc-cap"><span class="chip k2">B2</span><a href="#cap-b2">El proyecto y sus supuestos</a><a class="pag" href="#cap-b2"></a></div></li>
+    <li><div class="toc-cap"><span class="chip k3">B3</span><a href="#cap-b3">Mercado, precios e ingresos</a><a class="pag" href="#cap-b3"></a></div></li>
+    <li><div class="toc-cap"><span class="chip k4">B4</span><a href="#cap-b4">Inversión, costos y capital de trabajo</a><a class="pag" href="#cap-b4"></a></div></li>
+    <li><div class="toc-cap"><span class="chip k5">B5</span><a href="#cap-b5">Financiamiento y estados proforma</a><a class="pag" href="#cap-b5"></a></div></li>
+    <li><div class="toc-cap"><span class="chip k6">B6</span><a href="#cap-b6">Evaluación financiera y análisis marginal</a><a class="pag" href="#cap-b6"></a></div></li>
+    <li><div class="toc-cap"><span class="chip k7">B7</span><a href="#cap-b7">Riesgo e incertidumbre</a><a class="pag" href="#cap-b7"></a></div></li>
+    <li><div class="toc-cap"><span class="chip k8">B8</span><a href="#cap-b8">Evaluación económica y social</a><a class="pag" href="#cap-b8"></a></div></li>
+    <li><div class="toc-cap"><span class="chip k9">B9</span><a href="#cap-b9">Comparación y decisiones</a><a class="pag" href="#cap-b9"></a></div></li>
+    <li><div class="toc-cap"><span class="chip k10">B10</span><a href="#cap-b10">Figuras, informe y paquete del estudio</a><a class="pag" href="#cap-b10"></a></div></li>
+    <li><div class="toc-cap"><span class="chip kx">A</span><a href="#apendices">Apéndices</a><a class="pag" href="#apendices"></a></div></li>
+  </ol>
+</section>
+
+<!-- ====================================================================== CÓMO LEER ESTE MANUAL -->
+<section class="preliminares" id="como-leer" data-nueva-hoja style="--acento: var(--b0)">
+  <h2 style="margin-top:0.2in">Cómo leer este manual</h2>
+  <p class="lead">El manual sigue el mismo orden que la app: diez bloques numerados que se recorren de izquierda a derecha en la barra de arriba. Cada capítulo explica un bloque y lleva su mismo número —el capítulo 4 es el Bloque 4, y sus secciones, figuras y tablas se numeran 4.1, 4.2…—. Cada uno empieza con la teoría indispensable, sigue con lo que la pantalla calcula y cómo se lee, y termina con un ejemplo paso a paso usando los datos que ya vienen dentro del programa. Esta introducción va antes de los bloques y se numera aparte: I.1, I.2…</p>
+
+  <h3>Un color para cada bloque</h3>
+  <p>El color del bloque aparece en la apertura de su capítulo, en el número de cada sección, en la pestaña del borde de la hoja y en el índice, y es el mismo de la franja de la portada. Así sabes de un vistazo en qué parte de la app estás.</p>
+  <table class="compacta">
+    <thead><tr><th style="width:0.6in">Bloque</th><th style="width:1.5in">Nombre en la app</th><th>Qué hace</th></tr></thead>
+    <tbody>
+      <tr><td><span class="chip k1">1</span></td><td><span class="ui">Inicio</span></td><td>Portada, el motor financiero completo, dos laboratorios que calculan de verdad, la teoría en lenguaje claro y las referencias</td></tr>
+      <tr><td><span class="chip k2">2</span></td><td><span class="ui">Proyecto</span></td><td>Tipo de proyecto, horizonte, moneda, precios constantes o corrientes, tasa de descuento y régimen fiscal</td></tr>
+      <tr><td><span class="chip k3">3</span></td><td><span class="ui">Mercado</span></td><td>Series de precio y rendimiento, deflación, proyección con banda, demanda y oferta, y programa de ventas</td></tr>
+      <tr><td><span class="chip k4">4</span></td><td><span class="ui">Inversión y costos</span></td><td>Inversión fija y diferida, presupuestos de establecimiento y de operación, reposiciones y capital de trabajo</td></tr>
+      <tr><td><span class="chip k5">5</span></td><td><span class="ui">Estados proforma</span></td><td>Crédito refaccionario y de avío, estado de resultados, los dos flujos, balance, punto de equilibrio y razones</td></tr>
+      <tr><td><span class="chip k6">6</span></td><td><span class="ui">Evaluación financiera</span></td><td>VAN, TIR, TIRM, relación beneficio–costo, recuperación, valor anual equivalente y análisis marginal del CIMMYT</td></tr>
+      <tr><td><span class="chip k7">7</span></td><td><span class="ui">Riesgo</span></td><td>Sensibilidad, valores límite, tornado, escenarios, simulación de Monte Carlo y árbol de decisión</td></tr>
+      <tr><td><span class="chip k8">8</span></td><td><span class="ui">Evaluación social</span></td><td>Precios cuenta, eliminación de transferencias, VANE, empleo, divisas y valor agregado</td></tr>
+      <tr><td><span class="chip k9">9</span></td><td><span class="ui">Decisiones</span></td><td>Alternativas comparadas, TIR incremental, racionamiento de capital, reemplazo, turno óptimo y comprar o rentar</td></tr>
+      <tr><td><span class="chip k10">10</span></td><td><span class="ui">Informe</span></td><td>Estudio de figuras, informe imprimible con metodología y memoria de cálculo, y paquete del estudio</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Tipos de recuadros</h3>
+  <div class="dos">
+    <div class="caja nota" style="margin:0"><div class="caja-t"><span class="ico">i</span>Nota</div><p>Aclaraciones y consejos prácticos que ahorran tiempo.</p></div>
+    <div class="caja importante" style="margin:0"><div class="caja-t"><span class="ico">!</span>Importante</div><p>Lo que puede cambiar tus conclusiones si se pasa por alto.</p></div>
+    <div class="caja teoria" style="margin:0"><div class="caja-t"><span class="ico">θ</span>Teoría en breve</div><p>La idea detrás de un cálculo, sin fórmulas innecesarias.</p></div>
+    <div class="caja ejemplo" style="margin:0"><div class="caja-t"><span class="ico">▸</span>Ejemplo</div><p>Un caso con los datos incluidos en el programa, paso a paso.</p></div>
+  </div>
+  <div class="caja regla" style="margin-top:0.18in">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:40%"><b>Si</b> el resultado cae en este caso…</td><td><b>entonces</b> esta es la lectura recomendada.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">Son guías para interpretar, no leyes: lo que sabes del cultivo, de la empresa y de la región siempre manda.</p>
+  </div>
+  <div class="caja dato">
+    <div class="dato-cifra">900 ppp</div>
+    <div class="dato-txt"><div class="caja-t">Dato clave</div>Una cifra o un hecho que conviene recordar; por ejemplo, la resolución máxima a la que el Bloque 10 exporta las figuras.</div>
+  </div>
+
+  <h3>Convenciones de escritura</h3>
+  <table class="compacta">
+    <thead><tr><th style="width:38%">Así se escribe</th><th>Significa</th></tr></thead>
+    <tbody>
+      <tr><td><span class="ui">Armar el informe</span></td><td>Un botón, casilla o menú de la app, con su texto tal como aparece en pantalla en español.</td></tr>
+      <tr><td><span class="ruta">Bloque 10<span class="sep">›</span>Estudio de figuras</span></td><td>Una ruta: abre lo primero y dentro busca lo segundo.</td></tr>
+      <tr><td><code>Precio</code>, <code>.csv</code></td><td>Un nombre de columna, de archivo o un valor que se escribe tal cual.</td></tr>
+      <tr><td>VAN, TIR, B/C, VAE · NPV, IRR</td><td>Siglas en español; entre paréntesis, cuando ayuda, la sigla inglesa de la literatura.</td></tr>
+      <tr><td>$1,512,493 · $102,177.71</td><td>Dinero: sin decimales cuando es un total, con dos cuando es un precio unitario, como en la app.</td></tr>
+      <tr><td><span class="si">●</span> <span class="parcial">◐</span> <span class="no">—</span></td><td>Disponible · disponible en parte o con condiciones · no aplica.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Las cifras de este manual</div>
+    <p>Todos los resultados que aparecen en el texto se obtuvieron corriendo la app con los datos que se indican, y se copiaron de la pantalla. Si repites los pasos con la misma base de práctica, debes ver los mismos números. Cuando una cifra depende del azar —la simulación de Monte Carlo, por ejemplo— se dice con qué semilla se obtuvo.</p>
+  </div>
+</section>
+
+<!-- ====================================================================== INTRODUCCIÓN -->
+<section class="capitulo" id="cap-intro" data-pestana="In" data-orden="0" style="--acento: var(--b0)">
+  <div class="cap-apertura">
+    <div class="cap-num">In</div>
+    <div class="cap-etiqueta">Introducción · Antes de los bloques</div>
+    <h1 data-corto="Introducción">Introducción a EconomicsPro</h1>
+    <div class="cap-regla"></div>
+    <p class="cap-resumen">Qué es el programa, qué preguntas de un estudio de evaluación responde, qué datos acepta y cómo se recorre de principio a fin. Incluye las cinco ideas de evaluación de proyectos que sostienen todo lo demás, y una lista honesta de lo que el programa no hace.</p>
+    <div class="cap-franja"><span class="k1"></span><span class="k2"></span><span class="k3"></span><span class="k4"></span><span class="k5"></span><span class="k6"></span><span class="k7"></span><span class="k8"></span><span class="k9"></span><span class="k10"></span></div>
+    <ul class="cap-contenido">
+      <li><b>I.1</b>¿Qué es EconomicsPro?</li>
+      <li><b>I.2</b>Preguntas que responde</li>
+      <li><b>I.3</b>Cinco ideas que sostienen el manual</li>
+      <li><b>I.4</b>Datos que acepta y qué entrega</li>
+      <li><b>I.5</b>Qué necesitas y cómo abrirlo</li>
+      <li><b>I.6</b>Recorrido por la interfaz</li>
+      <li><b>I.7</b>Los tres estudios de práctica</li>
+      <li><b>I.8</b>Cómo se recorre un estudio</li>
+      <li><b>I.9</b>Lo que el programa no hace</li>
+    </ul>
+  </div>
+
+  <!-- I.1 -->
+  <h2 id="si-1"><span class="num">I.1</span>¿Qué es EconomicsPro?</h2>
+  <p class="lead">EconomicsPro es una plataforma para armar y evaluar el estudio económico y financiero de un proyecto agropecuario o agroindustrial <b>del mercado a la decisión</b>: proyecta los ingresos, presupuesta la inversión y los costos, arma el crédito y los estados proforma, calcula los indicadores de rentabilidad, mide el riesgo, corrige los precios de mercado para saber qué le conviene al país y no solo al dueño, compara alternativas y entrega un informe con figuras, metodología redactada y memoria de cálculo.</p>
+  <p>Todo ocurre dentro del navegador. No hay que instalar nada, no se necesita saber programar y los datos no salen de la computadora. Está escrito para proyectos del campo y de la agroindustria, no para finanzas corporativas genéricas: sabe que una plantación tarda años en dar, que el capital de trabajo sigue al ciclo del cultivo y no al año calendario, que el precio y el rendimiento se mueven uno contra otro, que el último año del horizonte carga un valor de rescate real y que dos alternativas de distinta duración solo se comparan por su valor anual equivalente.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" font-family="Jost, sans-serif" role="img"
+         aria-label="El camino de un estudio de evaluación a través de los diez bloques de EconomicsPro: los supuestos alimentan el mercado, la inversión y los costos; de ahí salen los estados proforma y los dos flujos; sobre ellos se calculan la evaluación financiera, el riesgo y la evaluación social, y al final la comparación de alternativas y el informe.">
+      <defs>
+        <marker id="fi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#5b6b63"/></marker>
+        <marker id="fiv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#0e3b31"/></marker>
+      </defs>
+
+      <!-- el lazo: el dictamen puede mandarte a cambiar un supuesto -->
+      <path d="M636 62 C 668 40 660 16 560 14 L 150 14 C 44 18 40 46 62 66" fill="none" stroke="#0e3b31" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#fiv)"/>
+      <text x="350" y="10" text-anchor="middle" font-size="10.5" fill="#0e3b31" font-weight="500">si el dictamen no convence, se cambia un supuesto y todo se recalcula</text>
+
+      <!-- estaciones -->
+      <g font-size="10" text-anchor="middle">
+        <rect x="18" y="74" width="106" height="60" rx="9" fill="#eaf2ee" stroke="#b06e0c"/>
+        <text x="71" y="96" font-weight="600" fill="#7d4e08" font-size="11.5">Supuestos</text>
+        <text x="71" y="112" fill="#4a4436">horizonte, tasa,</text><text x="71" y="125" fill="#4a4436">precios, impuestos</text>
+
+        <rect x="146" y="46" width="112" height="56" rx="9" fill="#eaf1f8" stroke="#2d78b0"/>
+        <text x="202" y="67" font-weight="600" fill="#1c527c" font-size="11.5">Ingresos</text>
+        <text x="202" y="83" fill="#33485c">series, proyección</text><text x="202" y="95" fill="#33485c">y programa de ventas</text>
+
+        <rect x="146" y="112" width="112" height="56" rx="9" fill="#fbeee6" stroke="#d0682a"/>
+        <text x="202" y="133" font-weight="600" fill="#8f441a" font-size="11.5">Egresos</text>
+        <text x="202" y="149" fill="#5a4535">inversión, costos y</text><text x="202" y="161" fill="#5a4535">capital de trabajo</text>
+
+        <rect x="282" y="74" width="112" height="60" rx="9" fill="#eef5e6" stroke="#5a8f2b"/>
+        <text x="338" y="96" font-weight="600" fill="#3d651b" font-size="11.5">Los dos flujos</text>
+        <text x="338" y="112" fill="#42513a">crédito, impuestos</text><text x="338" y="125" fill="#42513a">y estados proforma</text>
+
+        <rect x="418" y="30" width="112" height="52" rx="9" fill="#e6f2f0" stroke="#1d7a6f"/>
+        <text x="474" y="50" font-weight="600" fill="#125149" font-size="11.5">¿Conviene?</text>
+        <text x="474" y="66" fill="#2c4a46">VAN, TIR, B/C, VAE</text>
+
+        <rect x="418" y="92" width="112" height="52" rx="9" fill="#fbe9ef" stroke="#c0406a"/>
+        <text x="474" y="112" font-weight="600" fill="#8d2c4c" font-size="11.5">¿Y si falla?</text>
+        <text x="474" y="128" fill="#5e3a46">sensibilidad y riesgo</text>
+
+        <rect x="418" y="154" width="112" height="52" rx="9" fill="#f1ecf8" stroke="#7b5ea7"/>
+        <text x="474" y="174" font-weight="600" fill="#553a80" font-size="11.5">¿Y al país?</text>
+        <text x="474" y="190" fill="#4b4157">precios cuenta, VANE</text>
+
+        <rect x="554" y="74" width="120" height="60" rx="9" fill="#eef0f4" stroke="#4b5a72"/>
+        <text x="614" y="96" font-weight="600" fill="#2f3b4e" font-size="11.5">Dictamen</text>
+        <text x="614" y="112" fill="#3f4b5e">alternativas, informe</text><text x="614" y="125" fill="#3f4b5e">y paquete del estudio</text>
+      </g>
+
+      <!-- flechas -->
+      <g fill="none" stroke="#5b6b63" stroke-width="1.4">
+        <path d="M124 96 L 143 78" marker-end="url(#fi)"/>
+        <path d="M124 112 L 143 132" marker-end="url(#fi)"/>
+        <path d="M258 80 L 279 98" marker-end="url(#fi)"/>
+        <path d="M258 136 L 279 116" marker-end="url(#fi)"/>
+        <path d="M394 96 L 415 66" marker-end="url(#fi)"/>
+        <path d="M394 104 L 415 116" marker-end="url(#fi)"/>
+        <path d="M394 112 L 415 172" marker-end="url(#fi)"/>
+        <path d="M530 58 L 551 90" marker-end="url(#fi)"/>
+        <path d="M530 118 L 551 104" marker-end="url(#fi)"/>
+        <path d="M530 178 L 551 118" marker-end="url(#fi)"/>
+      </g>
+
+      <!-- los bloques que hacen cada cosa -->
+      <g font-size="8.5" font-weight="600" fill="#fff" text-anchor="middle">
+        <rect x="57" y="140" width="28" height="15" rx="3" fill="#b06e0c"/><text x="71" y="151">B2</text>
+        <rect x="188" y="26" width="28" height="15" rx="3" fill="#2d78b0"/><text x="202" y="37">B3</text>
+        <rect x="188" y="174" width="28" height="15" rx="3" fill="#d0682a"/><text x="202" y="185">B4</text>
+        <rect x="324" y="140" width="28" height="15" rx="3" fill="#5a8f2b"/><text x="338" y="151">B5</text>
+        <rect x="536" y="30" width="28" height="15" rx="3" fill="#1d7a6f"/><text x="550" y="41">B6</text>
+        <rect x="536" y="92" width="28" height="15" rx="3" fill="#c0406a"/><text x="550" y="103">B7</text>
+        <rect x="536" y="154" width="28" height="15" rx="3" fill="#7b5ea7"/><text x="550" y="165">B8</text>
+        <rect x="583" y="140" width="28" height="15" rx="3" fill="#8a6a4a"/><text x="597" y="151">B9</text>
+        <rect x="617" y="140" width="32" height="15" rx="3" fill="#4b5a72"/><text x="633" y="151">B10</text>
+      </g>
+
+      <!-- el Bloque 1 sostiene todo -->
+      <rect x="18" y="226" width="656" height="46" rx="9" fill="#e6efec" stroke="#145e4e"/>
+      <text x="40" y="246" font-size="11.5" font-weight="600" fill="#0d463a">Bloque 1</text>
+      <text x="40" y="262" font-size="10" fill="#33514a">el motor financiero que usan todos los bloques, dos laboratorios para entender cada fórmula y la teoría con sus referencias</text>
+      <rect x="628" y="236" width="28" height="15" rx="3" fill="#145e4e"/>
+      <text x="642" y="247" font-size="8.5" font-weight="600" fill="#fff" text-anchor="middle">B1</text>
+      <path d="M350 226 L 350 214" fill="none" stroke="#145e4e" stroke-width="1.4" stroke-dasharray="4 3"/>
+    </svg>
+    <figcaption><b>Figura I.1.</b> El camino de un estudio. Los supuestos del Bloque 2 alimentan los ingresos y los egresos; de ahí salen los estados proforma y los dos flujos de efectivo, y sobre ellos se contestan las tres preguntas que importan —si conviene, qué pasa si falla y qué le deja al país—. El Bloque 1 no es un paso del camino: es el motor que los demás usan.</figcaption>
+  </figure>
+
+  <!-- I.2 -->
+  <h2 id="si-2"><span class="num">I.2</span>Preguntas que responde</h2>
+  <p>Un estudio de evaluación no es una hoja de cálculo bonita: es la respuesta ordenada a unas cuantas preguntas. Estas son las que el programa contesta, y el bloque donde se contesta cada una.</p>
+  <table class="compacta">
+    <thead><tr><th style="width:60%">Pregunta</th><th style="width:0.7in">Bloque</th><th>Con qué</th></tr></thead>
+    <tbody>
+      <tr><td>¿A cuántos años miro el proyecto, y en pesos de cuándo?</td><td><span class="chip k2">2</span></td><td>Horizonte y base de precios</td></tr>
+      <tr><td>¿Qué tasa uso para descontar, y de dónde sale?</td><td><span class="chip k2">2</span></td><td>TREMA, CPPC o CAPM</td></tr>
+      <tr><td>¿A qué precio voy a vender dentro de cinco años?</td><td><span class="chip k3">3</span></td><td>Serie deflactada y proyección con banda</td></tr>
+      <tr><td>¿Cuánto cuesta arrancar, y cuánto cada año?</td><td><span class="chip k4">4</span></td><td>Presupuestos de inversión y de operación</td></tr>
+      <tr><td>¿Cuánto dinero necesito antes de la primera venta?</td><td><span class="chip k4">4</span> <span class="chip k5">5</span></td><td>Capital de trabajo y flujo de caja</td></tr>
+      <tr><td>¿Aguanta el proyecto el crédito que me ofrecen?</td><td><span class="chip k5">5</span></td><td>Servicio de la deuda y su cobertura</td></tr>
+      <tr><td>¿Conviene invertir? ¿Y me conviene a mí, que pongo el enganche?</td><td><span class="chip k6">6</span></td><td>VAN y TIR de los dos flujos</td></tr>
+      <tr><td>¿Cuánto tiene que caer el precio para que deje de convenir?</td><td><span class="chip k7">7</span></td><td>Valores límite y tornado</td></tr>
+      <tr><td>¿Qué probabilidad hay de perder dinero?</td><td><span class="chip k7">7</span></td><td>Simulación de Monte Carlo</td></tr>
+      <tr><td>¿Le conviene al país, y no solo al dueño?</td><td><span class="chip k8">8</span></td><td>Precios cuenta y VANE</td></tr>
+      <tr><td>¿Cuántos empleos y cuántas divisas deja?</td><td><span class="chip k8">8</span></td><td>Indicadores sociales</td></tr>
+      <tr><td>Con un presupuesto fijo, ¿cuáles de todos los proyectos hago?</td><td><span class="chip k9">9</span></td><td>Racionamiento de capital</td></tr>
+      <tr><td>¿Cuándo conviene reemplazar el tractor? ¿Cuándo cortar el árbol?</td><td><span class="chip k9">9</span></td><td>Vida económica y turno de Faustmann</td></tr>
+      <tr><td>¿Cómo entrego todo esto de manera que alguien lo pueda revisar?</td><td><span class="chip k10">10</span></td><td>Informe, figuras y paquete</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>No hace falta contestarlas todas</div>
+    <p>Un anteproyecto puede quedarse en el Bloque 6 y estar completo. La evaluación social del Bloque 8 se pide en los expedientes de inversión pública, no en un plan de negocio; el Bloque 9 solo tiene sentido si hay algo con qué comparar. El informe del Bloque 10 arma lo que haya: lo que no se corrió, no aparece.</p>
+  </div>
+
+  <!-- I.3 -->
+  <h2 id="si-3"><span class="num">I.3</span>Cinco ideas que sostienen el manual</h2>
+  <p>Si estas cinco ideas quedan claras, el resto del manual se lee solo. Ninguna es difícil; lo difícil es aplicarlas sin hacer trampa.</p>
+
+  <h3>1. El dinero tiene fecha</h3>
+  <p>Un peso de hoy y un peso de dentro de cinco años no son la misma cosa, y no por la inflación: un peso de hoy se puede invertir. Por eso ningún flujo se suma tal cual; primero se trae a hoy dividiéndolo entre (1&nbsp;+&nbsp;<i>i</i>)<sup><i>t</i></sup>. Esa operación —el descuento— es la única que aparece en todos los bloques del 5 al 9, y es la que dibuja la portada de este manual.</p>
+
+  <h3>2. Hay dos flujos y dos tasas, y no se mezclan</h3>
+  <p>El <b>flujo del proyecto</b> pregunta si el negocio se sostiene solo, sin importar quién lo pague: no lleva crédito ni intereses. El <b>flujo del inversionista</b> pregunta si le conviene a quien pone el dinero propio: sí lleva el crédito, y con él el escudo fiscal de los intereses. Cada uno se descuenta con su tasa —el costo promedio ponderado del capital para el primero, el costo del capital propio para el segundo—, y comparar el VAN de uno con la tasa del otro es el error más común de una tesis.</p>
+
+  <figure class="reducida">
+    <svg viewBox="0 0 560 190" xmlns="http://www.w3.org/2000/svg" font-family="Jost, sans-serif" role="img"
+         aria-label="Los dos flujos: el del proyecto no lleva crédito y se descuenta con el costo promedio ponderado del capital; el del inversionista lleva el crédito y el escudo fiscal de los intereses, y se descuenta con el costo del capital propio.">
+      <rect x="14" y="26" width="250" height="140" rx="10" fill="#f4f8f6" stroke="#1d7a6f"/>
+      <text x="139" y="50" text-anchor="middle" font-size="12.5" font-weight="600" fill="#125149">Flujo del proyecto</text>
+      <text x="139" y="68" text-anchor="middle" font-size="10" fill="#3c524e">¿se sostiene el negocio solo?</text>
+      <g font-size="10" fill="#2c3a37">
+        <text x="34" y="92">+ ingresos por ventas</text>
+        <text x="34" y="108">− costos de operación</text>
+        <text x="34" y="124">− impuestos sobre la utilidad</text>
+        <text x="34" y="140">− inversión  + rescate</text>
+      </g>
+      <text x="139" y="158" text-anchor="middle" font-size="10" font-weight="600" fill="#125149">se descuenta con el CPPC</text>
+
+      <rect x="296" y="26" width="250" height="140" rx="10" fill="#fbf6ee" stroke="#b06e0c"/>
+      <text x="421" y="50" text-anchor="middle" font-size="12.5" font-weight="600" fill="#7d4e08">Flujo del inversionista</text>
+      <text x="421" y="68" text-anchor="middle" font-size="10" fill="#54493a">¿le conviene a quien pone el dinero?</text>
+      <g font-size="10" fill="#3a3327">
+        <text x="316" y="92">todo lo anterior, y además:</text>
+        <text x="316" y="108">+ el crédito que entra</text>
+        <text x="316" y="124">− capital e intereses que salen</text>
+        <text x="316" y="140">+ el escudo fiscal de los intereses</text>
+      </g>
+      <text x="421" y="158" text-anchor="middle" font-size="10" font-weight="600" fill="#7d4e08">se descuenta con el costo propio</text>
+
+      <text x="280" y="100" text-anchor="middle" font-size="16" fill="#5b6b63">≠</text>
+      <text x="280" y="14" text-anchor="middle" font-size="10" fill="#5b6b63">dos preguntas distintas</text>
+    </svg>
+    <figcaption><b>Figura I.2.</b> Los dos flujos y sus dos tasas. El Bloque 5 los arma y el Bloque 6 los evalúa por separado; un proyecto puede convenir y el inversionista perder, o al revés, y la app lo dice con todas sus letras cuando pasa.</figcaption>
+  </figure>
+
+  <h3>3. O todo en pesos de hoy, o todo con inflación dentro</h3>
+  <p>Se puede trabajar a precios <b>constantes</b> —todo en pesos del año base, sin inflación— o a precios <b>corrientes</b> —cada año con la inflación encima—. Las dos formas dan el mismo VAN si se hacen bien, porque a precios constantes se descuenta con la tasa real y a corrientes con la nominal. Lo que nunca da: proyectar precios sin inflación y descontar con una tasa que sí la trae. El Bloque 2 te hace elegir una base y el resto de la app la respeta.</p>
+
+  <h3>4. Para decidir entre dos opciones, solo importa lo que cambia</h3>
+  <p>Si comparas dos dosis de fertilizante, el costo del terreno es el mismo en las dos y no decide nada. Ese es el corazón del presupuesto parcial y del análisis marginal del manual del CIMMYT que trae el Bloque 6: se consideran solo los costos que varían entre tratamientos, se descartan los dominados y se calcula cuánto devuelve cada peso adicional. La misma idea reaparece en el Bloque 9 con la TIR incremental.</p>
+
+  <h3>5. Lo que le conviene al dueño no es lo que le conviene al país</h3>
+  <p>Los precios de mercado traen impuestos, subsidios y aranceles, que no son costos para el país sino transferencias de un bolsillo a otro. La evaluación económica los quita y corrige los precios con factores de conversión. Por eso un camino rural puede no cobrar un peso y ser excelente socialmente, y un proyecto muy rentable puede serlo gracias a un subsidio. El Bloque 8 calcula los dos resultados y construye el puente que va de uno al otro.</p>
+
+  <!-- I.4 -->
+  <h2 id="si-4"><span class="num">I.4</span>Datos que acepta y qué entrega</h2>
+  <p>El programa no pide una base de datos ni un formato especial: pide números, y los acepta de la forma en que uno los tiene a la mano.</p>
+  <h4>Lo que entra</h4>
+  <table class="compacta">
+    <thead><tr><th style="width:1.5in">Forma</th><th>Cómo</th></tr></thead>
+    <tbody>
+      <tr><td><b>Escribiendo</b></td><td>Las mini-hojas de los Bloques 3, 4, 6 y 7 se comportan como una hoja de cálculo: las flechas y el Enter mueven el cursor.</td></tr>
+      <tr><td><b>Pegando</b></td><td>Copia un bloque de celdas de tu hoja de cálculo y pégalo en cualquier celda: se reparte solo sobre las filas y columnas que siguen.</td></tr>
+      <tr><td><b>Un archivo</b></td><td><code>.csv</code>, <code>.txt</code> o <code>.tsv</code>, con coma, punto y coma o tabulador; el separador se reconoce solo.</td></tr>
+      <tr><td><b>Un proyecto</b></td><td>El <code>.json</code> que la propia app guarda, que reabre el estudio completo tal como estaba.</td></tr>
+    </tbody>
+  </table>
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Los libros de cálculo se guardan como <code>.csv</code></div>
+    <p>La app no lee <code>.xlsx</code> ni <code>.ods</code>, porque no carga ninguna biblioteca ajena. Guardar la hoja como <code>.csv</code>, o copiar el bloque y pegarlo, hace lo mismo en un paso. Los números se entienden escritos como se acostumbra: <code>1,250.50</code>, <code>$1 250.50</code> y <code>(400)</code> para un negativo entre paréntesis.</p>
+  </div>
+  <h4>Lo que sale</h4>
+  <ul>
+    <li>El <b>proyecto</b> en un archivo <code>.json</code>, que es lo que permite a otra persona reabrir el estudio y rehacer cualquier cálculo.</li>
+    <li>Cada cuadro en <code>.csv</code>, para llevarlo a un documento o a otra hoja.</li>
+    <li>Las <b>figuras</b> en SVG, PNG o JPG, a 150, 300, 600 o 900 puntos por pulgada, con la resolución escrita dentro del archivo, que es lo que revisa una revista cuando pide 300&nbsp;ppp.</li>
+    <li>El <b>informe</b> completo en un solo <code>.html</code> que abre cualquier navegador y desde ahí se imprime a PDF, sin procesador de textos y sin internet.</li>
+    <li>El <b>paquete del estudio</b> en <code>.zip</code>: el informe, las figuras, los cuadros y el <code>.json</code>, todo junto.</li>
+  </ul>
+
+  <!-- I.5 -->
+  <h2 id="si-5"><span class="num">I.5</span>Qué necesitas y cómo abrirlo</h2>
+  <p>Una computadora con un navegador moderno —Chrome, Edge o Firefox actualizados— y la carpeta del programa. Nada más: ni instalación, ni cuenta, ni conexión.</p>
+  <ol class="pasos">
+    <li>Copia la carpeta de EconomicsPro donde quieras tenerla.</li>
+    <li>Haz doble clic en <code>index.html</code>. El programa abre en la portada, en español.</li>
+    <li>Si tu institución bloquea los archivos locales, o si prefieres verlo servido, haz doble clic en <code>Open EconomicsPro.bat</code> —o ejecuta <code>server.ps1</code>— y abre <code>http://localhost:9700</code>. Ese servidor corre en tu propia computadora y no sale a internet.</li>
+  </ol>
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>El trabajo se guarda solo</div>
+    <p>La app guarda el estudio en el navegador conforme lo escribes, y lo encuentra al volver a abrirla en la misma computadora. Aun así, para archivar o para compartir, descarga el <code>.json</code> del proyecto: es el único archivo que garantiza que el estudio se pueda reabrir en otra máquina.</p>
+  </div>
+
+  <!-- I.6 -->
+  <h2 id="si-6"><span class="num">I.6</span>Recorrido por la interfaz</h2>
+  <p>La pantalla es siempre la misma: una barra arriba con los diez bloques numerados y, debajo, el bloque abierto. En la barra están también el idioma —<span class="ui">ES</span> y <span class="ui">EN</span>— y el botón que cambia entre el tema claro y el oscuro. Los bloques se pueden abrir en cualquier orden, aunque cada uno usa lo que calcularon los anteriores: entrar al Bloque 6 sin haber llenado el 4 muestra la pantalla vacía y dice qué falta.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/inicio.png" alt="Portada de EconomicsPro con la barra de los diez bloques y la presentación del programa"></div>
+    <figcaption><b>Figura I.3.</b> La portada y la barra de los diez bloques, que no se mueve de ahí en todo el estudio. <span class="ui">Empezar con mi proyecto</span> lleva al Bloque 2; <span class="ui">Probar los laboratorios</span> baja a los dos simuladores de esta misma página.</figcaption>
+  </figure>
+  <p>Dentro de un bloque, el orden es siempre el mismo: primero lo que hay que decidir o escribir, luego lo que la app calculó, y al final los cuadros y las figuras que se pueden descargar. Los avisos aparecen junto a lo que los provoca, en tres tonos: los <b>errores</b> impiden seguir, las <b>advertencias</b> señalan algo raro que puede ser correcto, y las <b>notas</b> explican una decisión que la app tomó por ti.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/bloque.png" alt="Bloque 6 de EconomicsPro: los indicadores en recuadros y el dictamen redactado"></div>
+    <figcaption><b>Figura I.4.</b> Así se ve un bloque por dentro, aquí el 6 con el estudio de práctica del café. Arriba, los indicadores en recuadros; debajo, el dictamen redactado, listo para copiarse. Las cifras de esta figura son ficticias, como todo el estudio del que salen.</figcaption>
+  </figure>
+
+  <!-- I.7 -->
+  <h2 id="si-7"><span class="num">I.7</span>Los tres estudios de práctica</h2>
+  <p>El programa trae tres estudios completos, con sus series, sus presupuestos, su crédito, sus escenarios y sus factores de conversión, para recorrer los diez bloques con datos que se sostienen entre sí. Se cargan desde la portada o desde la lista de ejemplos del Bloque 2, y este manual los usa en casi todos sus ejemplos. Se eligieron porque cada uno se rompe, o se tensa, en un lugar distinto.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/practica.png" alt="Los tres estudios de práctica en la portada de EconomicsPro: nopal, café y fresa"></div>
+    <figcaption><b>Figura I.5.</b> Los tres estudios, en la portada. Cada tarjeta dice qué es el proyecto y qué conviene practicar con él; los botones lo cargan en la app, lo bajan como proyecto <code>.json</code> o descargan su serie en <code>.csv</code>.</figcaption>
+  </figure>
+  <table class="compacta">
+    <thead><tr><th style="width:1.45in">Estudio</th><th style="width:2in">Por qué está</th><th>Qué enseña</th></tr></thead>
+    <tbody>
+      <tr><td><b>Nopal verdura</b><br><span class="small">Milpa Alta</span></td><td>Proyecto pequeño y barato, que corta desde el primer año</td><td>Sirve para ver la app entera en su forma más simple. Aun así, mira la caja del primer año: hasta un proyecto excelente necesita dinero antes de la primera venta.</td></tr>
+      <tr><td><b>Café de altura</b><br><span class="small">Huatusco, con beneficio húmedo</span></td><td>Tres años sin cosecha, producto exportable y horizonte largo</td><td>Tensa la maduración, la gracia del crédito y la evaluación económica, donde las divisas que genera por fin cuentan.</td></tr>
+      <tr><td><b>Fresa en macrotúnel</b><br><span class="small">Zamora</span></td><td>Inversión grande, crédito pesado y márgenes delgados</td><td>Es el caso en que un proyecto rentable se queda sin dinero, y donde el riesgo decide.</td></tr>
+    </tbody>
+  </table>
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Son datos ficticios</div>
+    <p>Los cultivos, los lugares y los órdenes de magnitud son verosímiles y la aritmética es consistente, pero <b>ningún precio, rendimiento ni costo de estos tres estudios viene de una encuesta ni de una serie oficial</b>: están hechos para practicar, no para citarse. La única excepción es el índice de precios con que se deflacta, que sí es el índice nacional de precios al consumidor del INEGI. Para un estudio real, las series se toman del SIAP, del SNIIM o del INEGI, o del propio trabajo de campo.</p>
+  </div>
+
+  <!-- I.8 -->
+  <h2 id="si-8"><span class="num">I.8</span>Cómo se recorre un estudio</h2>
+  <p>El orden de los bloques es el orden natural del estudio, y conviene seguirlo la primera vez.</p>
+  <ol class="pasos">
+    <li><b>Fija las reglas del juego</b> en el Bloque 2: a cuántos años, en pesos de cuándo y con qué tasa. Todo lo demás cuelga de aquí, y cambiarlo al final obliga a revisar todo.</li>
+    <li><b>Arma los ingresos</b> en el Bloque 3: la serie de precios, la proyección y el programa de ventas año por año.</li>
+    <li><b>Arma los egresos</b> en el Bloque 4: qué se compra al principio, qué cuesta cada año y cuánto dinero hay que tener parado para operar.</li>
+    <li><b>Mete el crédito</b> en el Bloque 5 y mira los estados proforma. Aquí aparece el primer dictamen serio: si la caja del primer año es negativa, hay que resolverlo antes de seguir.</li>
+    <li><b>Evalúa</b> en el Bloque 6. Si el VAN es negativo, no sigas adelante: regresa a cambiar lo que esté mal supuesto, y anota qué cambiaste.</li>
+    <li><b>Ponlo a prueba</b> en el Bloque 7: qué tanto tiene que empeorar cada supuesto para que el dictamen se voltee.</li>
+    <li><b>Si el expediente lo pide</b>, haz la evaluación social en el Bloque 8 y la comparación de alternativas en el Bloque 9.</li>
+    <li><b>Entrega</b> desde el Bloque 10: el informe, las figuras y el paquete con el <code>.json</code> que permite reproducir todo.</li>
+  </ol>
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Guarda el proyecto antes de cada cambio grande</div>
+    <p>Descargar el <code>.json</code> antes de tocar un supuesto importante cuesta un segundo y deja un rastro de por dónde pasó el estudio. Un expediente que puede enseñar tres versiones y explicar por qué cambió de una a otra vale mucho más que uno que solo enseña la última.</p>
+  </div>
+
+  <!-- I.9 -->
+  <h2 id="si-9"><span class="num">I.9</span>Lo que el programa no hace</h2>
+  <p>Conviene decirlo aquí y no en la letra chica. EconomicsPro no hace estas cosas, y cuando algo se le parece, lo advierte en pantalla:</p>
+  <ul>
+    <li><b>No inventa datos.</b> No trae series de precios oficiales ni las descarga: las que incluye son ilustrativas y lo dicen. Las cifras de tu estudio las pones tú.</li>
+    <li><b>No decide por ti.</b> Los dictámenes que redacta son lecturas de los indicadores con las reglas de la literatura; la decisión, y la responsabilidad, son de quien firma el estudio.</li>
+    <li><b>No es un sistema contable.</b> Trabaja con presupuestos y proyecciones, no con la contabilidad real de una empresa ni con sus obligaciones fiscales.</li>
+    <li><b>No sustituye el estudio técnico.</b> Los rendimientos, los coeficientes técnicos y los tiempos de maduración salen de la agronomía, no de la economía.</li>
+    <li><b>No hace análisis estadístico de experimentos.</b> El análisis marginal del Bloque 6 parte de medias de tratamientos que alguien más estimó.</li>
+    <li><b>No corrige un supuesto malo.</b> Un VAN calculado con un precio optimista es un VAN optimista, con todos sus decimales bien puestos.</li>
+  </ul>
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>El decimal no es la precisión</div>
+    <p>La app entrega el VAN al peso porque así sale de la aritmética, no porque el resultado tenga esa exactitud. Un VAN de $1&nbsp;512&nbsp;493 calculado con un precio proyectado a cinco años no se conoce al peso: se conoce, con suerte, al cien de miles. Por eso el Bloque 7 no es un adorno del estudio, sino la parte que dice cuánto vale de verdad el número del Bloque 6.</p>
+  </div>
+</section>
+
+</body>
+</html>

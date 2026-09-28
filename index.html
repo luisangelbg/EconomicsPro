@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<!-- EconomicsPro — Copyright (C) 2026 Luis Ángel Barrera-Guzmán.
+     Free software under the GNU General Public License, version 3; see LICENSE. -->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-es="EconomicsPro — Evaluación económica y financiera de proyectos agroindustriales" data-en="EconomicsPro — Economic and financial appraisal of agrifood projects">EconomicsPro — Evaluación económica y financiera de proyectos agroindustriales</title>
+<meta name="description" content="NPV, IRR, break-even, sensitivity, Monte Carlo and social appraisal of agricultural, livestock and agro-industrial projects, in the browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M4 25 L11 15 L18 19 L28 6' stroke='%23145e4e' stroke-width='3.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cellipse cx='27' cy='25' rx='5' ry='3.6' fill='%23dfa524'/%3E%3Cellipse cx='27' cy='23.2' rx='5' ry='3.6' fill='%23dfa524' stroke='%23ffffff' stroke-width='1.2'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/i18n.js"></script>
+</head>
+<body class="on-home">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-row">
+      <div class="brand" id="brand" data-es-title="Inicio" data-en-title="Home"><span id="brandLogo"></span><span>Economics<span class="brand-pro">Pro</span></span>
+        <span class="brand-sub">· <span data-l="es">evaluación de proyectos agroindustriales</span><span data-l="en">appraisal of agrifood projects</span></span></div>
+      <div class="top-tools">
+        <div class="seg lang-seg" role="group" aria-label="Idioma / Language">
+          <button data-lang="es" title="Español">ES</button><button data-lang="en" title="English">EN</button>
+        </div>
+        <button class="icon-btn theme-btn" id="themeBtn" data-es-title="Cambiar a tema claro u oscuro" data-en-title="Switch between light and dark theme">
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav class="stepper" id="stepper" aria-label="Blocks"></nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ==================== BLOCK 1 · HOME ==================== -->
+<section class="step-panel active" id="panel-1">
+
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow"><span data-l="es">Economía y evaluación de proyectos agroindustriales</span><span data-l="en">Economics and appraisal of agrifood projects</span></div>
+        <h1><span data-l="es">¿<span class="accent">Conviene</span> el proyecto, y <span class="gold">cuánto aguanta</span>?</span><span data-l="en">Is the project <span class="accent">worth doing</span>, and <span class="gold">how much can it take</span>?</span></h1>
+        <p class="lead"><span data-l="es">Del estudio de mercado al dictamen: presupuestos de inversión y costos, estados financieros proforma,
+          <b>VAN</b>, <b>TIR</b>, <b>relación beneficio–costo</b>, <b>punto de equilibrio</b>, <b>análisis de sensibilidad</b>,
+          simulación de riesgo y evaluación social. Pensada para huertas, invernaderos, hatos y plantas agroindustriales
+          —no para finanzas corporativas genéricas—, sin programar y sin instalar nada.</span><span data-l="en">From the market study to the verdict: investment and cost budgets, pro-forma financial statements,
+          <b>NPV</b>, <b>IRR</b>, <b>benefit–cost ratio</b>, <b>break-even</b>, <b>sensitivity analysis</b>, risk simulation
+          and social appraisal. Written for orchards, greenhouses, herds and agro-industrial plants —not for generic
+          corporate finance—, with no programming and nothing to install.</span></p>
+        <div class="hero-cta">
+          <button class="btn btn-primary btn-lg" id="startBtn"><span data-l="es">Empezar con mi proyecto →</span><span data-l="en">Start with my project →</span></button>
+          <button class="btn btn-secondary btn-lg" id="simBtn"><span data-l="es">Probar los laboratorios</span><span data-l="en">Try the labs</span></button>
+          <button class="btn btn-ghost btn-lg" id="theoryBtn"><span data-l="es">Leer la teoría</span><span data-l="en">Read the theory</span></button>
+          <button class="btn btn-ghost btn-lg" id="citeBtn"><span data-l="es">Cómo citar</span><span data-l="en">How to cite</span></button>
+        </div>
+        <div class="badge-row">
+          <span class="badge ok"><span data-l="es">Funciona completo en tu navegador</span><span data-l="en">Runs entirely in your browser</span></span>
+          <span class="badge ok"><span data-l="es">Tus datos no salen de tu computadora</span><span data-l="en">Your data never leave your computer</span></span>
+          <span class="badge ok"><span data-l="es">Español e inglés</span><span data-l="en">Spanish and English</span></span>
+          <span class="badge ok"><span data-l="es">Cultivos anuales, perennes, pecuarios y agroindustria</span><span data-l="en">Annual crops, perennials, livestock and agro-industry</span></span>
+          <span class="badge ok"><span data-l="es">Figuras hasta 900 ppp</span><span data-l="en">Figures up to 900 dpi</span></span>
+        </div>
+      </div>
+      <div class="hero-art" id="heroArt" role="img" aria-label="Project cash flow illustration"></div>
+    </div>
+  </div>
+
+  <div class="messages" id="homeMessages"></div>
+
+  <h2 class="section-title"><span data-l="es">Cómo funciona</span><span data-l="en">How it works</span></h2>
+  <p class="section-sub"><span data-l="es">Una ruta guiada en el orden en que se formula y se evalúa un proyecto. Cada bloque explica la idea, revisa si tus
+    supuestos se sostienen y recomienda qué hacer después.</span><span data-l="en">A guided route in the order in which a project is formulated and appraised. Each block explains the idea, checks
+    whether your assumptions hold and recommends what to do next.</span></p>
+  <div class="workflow">
+    <div class="wf-step"><div class="wf-n"><span data-l="es">PASO 1</span><span data-l="en">STEP 1</span></div><div class="wf-t"><span data-l="es">Definir</span><span data-l="en">Define</span></div><div class="wf-d"><span data-l="es">unidad, horizonte y TREMA</span><span data-l="en">unit, horizon and MARR</span></div></div>
+    <div class="wf-step"><div class="wf-n"><span data-l="es">PASO 2</span><span data-l="en">STEP 2</span></div><div class="wf-t"><span data-l="es">Estimar ingresos</span><span data-l="en">Estimate revenue</span></div><div class="wf-d"><span data-l="es">precios, rendimientos, ventas</span><span data-l="en">prices, yields, sales</span></div></div>
+    <div class="wf-step"><div class="wf-n"><span data-l="es">PASO 3</span><span data-l="en">STEP 3</span></div><div class="wf-t"><span data-l="es">Presupuestar</span><span data-l="en">Budget</span></div><div class="wf-d"><span data-l="es">inversión, costos, capital de trabajo</span><span data-l="en">investment, costs, working capital</span></div></div>
+    <div class="wf-step"><div class="wf-n"><span data-l="es">PASO 4</span><span data-l="en">STEP 4</span></div><div class="wf-t"><span data-l="es">Armar los estados</span><span data-l="en">Build the statements</span></div><div class="wf-d"><span data-l="es">resultados, flujo y crédito</span><span data-l="en">income, cash flow and loan</span></div></div>
+    <div class="wf-step"><div class="wf-n"><span data-l="es">PASO 5</span><span data-l="en">STEP 5</span></div><div class="wf-t"><span data-l="es">Evaluar</span><span data-l="en">Appraise</span></div><div class="wf-d"><span data-l="es">VAN, TIR, B/C, PR, VAE</span><span data-l="en">NPV, IRR, B/C, PB, EAV</span></div></div>
+    <div class="wf-step"><div class="wf-n"><span data-l="es">PASO 6</span><span data-l="en">STEP 6</span></div><div class="wf-t"><span data-l="es">Probar el riesgo</span><span data-l="en">Test the risk</span></div><div class="wf-d"><span data-l="es">sensibilidad y simulación</span><span data-l="en">sensitivity and simulation</span></div></div>
+    <div class="wf-step"><div class="wf-n"><span data-l="es">PASO 7</span><span data-l="en">STEP 7</span></div><div class="wf-t"><span data-l="es">Publicar</span><span data-l="en">Publish</span></div><div class="wf-d"><span data-l="es">figuras, cuadros e informe</span><span data-l="en">figures, tables and report</span></div></div>
+  </div>
+
+  <!-- ---------- Interactive labs ---------- -->
+  <h2 class="section-title" id="labs"><span data-l="es">Pruébalo: dos laboratorios con proyectos reales</span><span data-l="en">Try it: two labs with real projects</span></h2>
+  <p class="section-sub"><span data-l="es">Nada aquí es una animación: cada vez que mueves un control la app arma el flujo de efectivo año por año —con los
+    años que tarda la plantación en producir, la maduración del rendimiento y el valor residual— y lo evalúa con las
+    mismas fórmulas que usará con tu proyecto.</span><span data-l="en">Nothing here is an animation: every time you move a control the app builds the cash flow year by year —with the
+    years the plantation takes to bear, the ramp of the yield and the residual value— and appraises it with the same
+    formulas it will use on your project.</span></p>
+
+  <div class="playground">
+    <div class="lab-tabs" role="tablist">
+      <button class="lab-tab on" data-lab="labProject" role="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 20h18M6 20v-7M11 20V8M16 20v-4M21 20V4"/></svg>
+        <span data-l="es">Laboratorio del proyecto</span><span data-l="en">Project lab</span></button>
+      <button class="lab-tab" data-lab="labRisk" role="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18c3 0 3-11 6-11s3 11 6 11 3-8 6-8"/><path d="M3 21h18"/></svg>
+        <span data-l="es">Laboratorio de riesgo</span><span data-l="en">Risk lab</span></button>
+    </div>
+
+    <!-- project lab -->
+    <div class="lab on" id="labProject">
+      <p class="hint" style="margin-top:0"><span data-l="es">Elige un proyecto típico de la región y muévelo. Los deslizadores cambian la escala, la inversión, el precio, el
+        rendimiento y los costos <b>en proporción</b> a los valores del proyecto elegido; el número de al lado te dice
+        siempre en qué valor absoluto quedaste.</span><span data-l="en">Pick a project typical of the region and move it. The sliders change the scale, the investment, the price, the
+        yield and the costs <b>in proportion</b> to the values of the chosen project; the figure beside each one always
+        tells you the absolute value you landed on.</span></p>
+      <div class="pg-controls">
+        <label class="inline-label"><span data-l="es">Proyecto</span><span data-l="en">Project</span>
+          <select id="epPreset"></select>
+        </label>
+        <button class="btn btn-secondary btn-sm" id="epReset"><span data-l="es">↻ Volver a los valores típicos</span><span data-l="en">↻ Back to the typical values</span></button>
+      </div>
+      <p class="lab-note" id="epNote"></p>
+
+      <div class="slider-grid">
+        <div class="slider-row"><label><span data-l="es">Escala</span><span data-l="en">Scale</span></label><input type="range" id="epScale" min="0.2" max="3" step="0.1" value="1"><span class="range-val" id="epScaleVal"></span></div>
+        <div class="slider-row"><label><span data-l="es">Inversión</span><span data-l="en">Investment</span></label><input type="range" id="epInv" min="0.5" max="2" step="0.02" value="1"><span class="range-val" id="epInvVal"></span></div>
+        <div class="slider-row"><label><span data-l="es">Precio de venta</span><span data-l="en">Selling price</span></label><input type="range" id="epPrice" min="0.4" max="1.6" step="0.01" value="1"><span class="range-val" id="epPriceVal"></span></div>
+        <div class="slider-row"><label><span data-l="es">Rendimiento</span><span data-l="en">Yield</span></label><input type="range" id="epYield" min="0.4" max="1.6" step="0.01" value="1"><span class="range-val" id="epYieldVal"></span></div>
+        <div class="slider-row"><label><span data-l="es">Costos</span><span data-l="en">Costs</span></label><input type="range" id="epCost" min="0.5" max="1.8" step="0.01" value="1"><span class="range-val" id="epCostVal"></span></div>
+        <div class="slider-row"><label><span data-l="es">TREMA</span><span data-l="en">MARR</span></label><input type="range" id="epRate" min="0" max="0.35" step="0.005" value="0.12"><span class="range-val" id="epRateVal"></span></div>
+        <div class="slider-row"><label><span data-l="es">Horizonte</span><span data-l="en">Horizon</span></label><input type="range" id="epHorizon" min="5" max="30" step="1" value="20"><span class="range-val" id="epHorizonVal"></span></div>
+      </div>
+
+      <div class="sim-readout" id="epReadout" style="margin-top:14px"></div>
+      <div class="pg-status" id="epStatus"></div>
+
+      <div class="lab-grid" style="margin-top:14px">
+        <div class="pg-pane"><div class="pg-title"><span data-l="es">Flujo de efectivo del proyecto</span><span data-l="en">Project cash flow</span></div><svg id="epFlowChart"></svg></div>
+        <div class="pg-pane"><div class="pg-title"><span data-l="es">Perfil del VAN</span><span data-l="en">NPV profile</span></div><svg id="epProfileChart"></svg></div>
+      </div>
+      <p class="hint"><span data-l="es">La línea punteada del primer panel es el acumulado <b>descontado</b>: donde cruza el cero está el periodo de
+        recuperación descontado. En el segundo panel, la curva es el VAN a cada tasa; donde corta el eje está la TIR y la
+        franja verde marca las tasas a las que el proyecto todavía conviene.</span><span data-l="en">The dashed line in the first panel is the <b>discounted</b> cumulative flow: where it crosses zero is the
+        discounted payback. In the second panel the curve is the NPV at every rate; where it cuts the axis is the IRR, and
+        the green band marks the rates at which the project is still worth doing.</span></p>
+    </div>
+
+    <!-- risk lab -->
+    <div class="lab" id="labRisk">
+      <p class="hint" style="margin-top:0"><span data-l="es">Ahora el mismo proyecto, pero el precio, el rendimiento y los costos dejan de ser un número y pasan a ser una
+        distribución. Cada corrida sortea un valor de cada variable, arma el flujo completo y calcula su VAN; con miles de
+        corridas aparece la distribución del VAN y la <b>probabilidad de perder</b>.</span><span data-l="en">Now the same project, but the price, the yield and the costs stop being a single number and become a
+        distribution. Each run draws a value of every variable, builds the whole cash flow and computes its NPV; with
+        thousands of runs the distribution of the NPV appears, and with it the <b>probability of losing money</b>.</span></p>
+      <div class="pg-controls">
+        <label class="inline-label"><span data-l="es">Distribución</span><span data-l="en">Distribution</span>
+          <select id="rkDist">
+            <option value="triangular" data-es="Triangular (mínimo, más probable, máximo)" data-en="Triangular (min, most likely, max)">Triangular (mínimo, más probable, máximo)</option>
+            <option value="pert" data-es="PERT (pondera cuatro veces el valor más probable)" data-en="PERT (weights the most likely value four times)">PERT</option>
+            <option value="normal" data-es="Normal (media y desviación)" data-en="Normal (mean and deviation)">Normal</option>
+            <option value="uniform" data-es="Uniforme (todo igual de probable)" data-en="Uniform (all equally likely)">Uniforme</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="slider-grid">
+        <div class="slider-row"><label><span data-l="es">Variación del precio</span><span data-l="en">Price variation</span></label><input type="range" id="rkPrice" min="0" max="0.6" step="0.01" value="0.25"><span class="range-val" id="rkPriceVal"></span></div>
+        <div class="slider-row"><label><span data-l="es">Variación del rendimiento</span><span data-l="en">Yield variation</span></label><input type="range" id="rkYield" min="0" max="0.6" step="0.01" value="0.2"><span class="range-val" id="rkYieldVal"></span></div>
+        <div class="slider-row"><label><span data-l="es">Variación de los costos</span><span data-l="en">Cost variation</span></label><input type="range" id="rkCost" min="0" max="0.6" step="0.01" value="0.12"><span class="range-val" id="rkCostVal"></span></div>
+        <div class="slider-row"><label><span data-l="es">Correlación precio–rendimiento</span><span data-l="en">Price–yield correlation</span></label><input type="range" id="rkCorr" min="-0.9" max="0.9" step="0.05" value="-0.3"><span class="range-val" id="rkCorrVal"></span></div>
+        <div class="slider-row"><label><span data-l="es">Simulaciones</span><span data-l="en">Runs</span></label><input type="range" id="rkN" min="200" max="6000" step="200" value="2000"><span class="range-val" id="rkNVal"></span></div>
+      </div>
+
+      <div class="sim-readout" id="rkReadout" style="margin-top:14px"></div>
+
+      <div class="lab-grid" style="margin-top:14px">
+        <div class="pg-pane"><div class="pg-title"><span data-l="es">Distribución del VAN</span><span data-l="en">Distribution of the NPV</span></div><svg id="rkHist"></svg></div>
+        <div class="pg-pane"><div class="pg-title"><span data-l="es">Tornado: qué mueve más el resultado</span><span data-l="en">Tornado: what moves the result most</span></div><svg id="rkTornado"></svg></div>
+      </div>
+      <div class="limit-table" id="rkLimits"></div>
+      <p class="hint"><span data-l="es">La correlación negativa entre precio y rendimiento es la regla en la agricultura: el año en que todos cosechan
+        mucho, el precio cae. Ponla en cero y verás cómo el riesgo del proyecto parece mayor de lo que realmente es.</span><span data-l="en">A negative correlation between price and yield is the rule in agriculture: the year everybody harvests a lot, the
+        price falls. Set it to zero and you will see the risk of the project look larger than it really is.</span></p>
+    </div>
+  </div>
+
+  <!-- ---------- Practice databases ---------- -->
+  <h2 class="section-title" id="practice"><span data-l="es">Bases de datos para practicar</span><span data-l="en">Databases to practise with</span></h2>
+  <p class="section-sub"><span data-l="es">Tres estudios completos, con su serie de precios, sus presupuestos, su crédito, sus escenarios y sus factores de conversión. Cárgalos y recorre los diez bloques con datos que se sostienen entre sí; cada caso se atora en un lugar distinto, a propósito.</span><span data-l="en">Three complete studies, with their price series, their budgets, their loan, their scenarios and their conversion factors. Load one and walk the ten blocks with data that hold together; each case strains in a different place, on purpose.</span></p>
+  <div class="feature-grid" id="practiceGrid"></div>
+  <p class="hint"><span data-l="es"><b>Los datos son ficticios, salvo el índice de precios.</b> Los cultivos, los lugares y los órdenes de magnitud son verosímiles y la aritmética es consistente, pero ningún precio, rendimiento ni costo viene de una encuesta ni de una serie oficial: están hechos para practicar, no para citarse. La excepción es el índice: ése sí es el INPC del INEGI (diciembre de cada año, segunda quincena de julio de 2018 = 100), porque deflactar con un índice inventado enseñaría un mal hábito. Para un estudio real, sustituye lo demás por tus propias cifras.</span><span data-l="en"><b>The data are fictional, except the price index.</b> The crops, the places and the orders of magnitude are plausible and the arithmetic is consistent, but no price, yield or cost comes from a survey or an official series: they are made to be practised with, not to be cited. The exception is the index: that one really is INEGI's Mexican consumer price index (December of each year, second half of July 2018 = 100), because deflating with a made-up index would teach the wrong habit. For a real study, replace everything else with your own figures.</span></p>
+
+  <!-- ---------- Blocks ---------- -->
+  <h2 class="section-title"><span data-l="es">Qué incluye</span><span data-l="en">What's inside</span></h2>
+  <p class="section-sub"><span data-l="es">Nueve bloques de trabajo después de esta portada. Haz clic en cualquiera para abrirlo.</span><span data-l="en">Nine working blocks after this home page. Click any of them to open it.</span></p>
+  <div class="feature-grid" id="featureGrid"></div>
+
+  <h2 class="section-title"><span data-l="es">Para el tipo de proyecto que evalúas</span><span data-l="en">For the kind of project you appraise</span></h2>
+  <p class="section-sub"><span data-l="es">La app conoce la diferencia entre un ciclo anual, una plantación que tarda años en producir y una planta que
+    trabaja por capacidad instalada.</span><span data-l="en">The app knows the difference between an annual cycle, a plantation that takes years to bear and a plant that works
+    by installed capacity.</span></p>
+  <div class="material-strip" id="materialStrip"></div>
+
+  <h2 class="section-title"><span data-l="es">Métodos que cubre</span><span data-l="en">Methods covered</span></h2>
+  <p class="section-sub"><span data-l="es">Filtra por familia para ver qué calcula cada bloque.</span><span data-l="en">Filter by family to see what each block computes.</span></p>
+  <div class="method-filter chips" id="methodFilter"></div>
+  <div class="method-gallery" id="methodGallery"></div>
+
+  <h2 class="section-title"><span data-l="es">Los indicadores, lado a lado</span><span data-l="en">The indicators, side by side</span></h2>
+  <p class="section-sub"><span data-l="es">Ningún indicador contesta todas las preguntas. Esta es la lectura honesta de cada uno.</span><span data-l="en">No single indicator answers every question. This is the honest reading of each one.</span></p>
+  <div class="method-compare" id="methodCompare"></div>
+
+  <h2 class="section-title"><span data-l="es">Lo que reúne</span><span data-l="en">What it brings together</span></h2>
+  <div class="bring-grid" id="bringGrid"></div>
+
+  <!-- ---------- Theory ---------- -->
+  <h2 class="section-title" id="theory"><span data-l="es">La teoría, en lenguaje claro</span><span data-l="en">The theory, in plain language</span></h2>
+  <p class="section-sub"><span data-l="es">Lo que hay que entender antes de escribir el primer número del estudio.</span><span data-l="en">What has to be understood before writing the first number of the study.</span></p>
+
+  <div class="theory-card">
+
+    <details class="acc"><summary><span data-l="es">Por qué un peso de hoy no vale lo mismo que uno de mañana</span><span data-l="en">Why a peso today is not worth the same as one tomorrow</span> <span class="acc-tag"><span data-l="es">empieza aquí</span><span data-l="en">start here</span></span></summary>
+      <div class="acc-body">
+        <div class="theory-fig" id="theoryTimeFig"><div class="cap"><span data-l="es">Los flujos de un proyecto, traídos al presente</span><span data-l="en">The flows of a project, brought to the present</span></div></div>
+        <p><span data-l="es">Un peso disponible hoy puede invertirse y valer más el año que viene; por eso un peso que llegará dentro de cinco
+          años vale menos que uno de hoy. Descontar es exactamente eso: dividir cada flujo entre <b>(1 + i)ᵗ</b>, donde
+          <i>t</i> son los periodos que faltan e <i>i</i> es la tasa a la que el dinero podría rendir en su mejor uso
+          alternativo. La suma de todos los flujos descontados, con la inversión en negativo, es el <b>valor actual neto</b>.</span><span data-l="en">A peso available today can be invested and be worth more next year; that is why a peso that will arrive in five
+          years is worth less than one today. Discounting is exactly that: dividing every flow by <b>(1 + i)ᵗ</b>, where
+          <i>t</i> is the number of periods left and <i>i</i> is the rate the money could earn in its best alternative use.
+          The sum of all the discounted flows, with the investment as a negative, is the <b>net present value</b>.</span></p>
+        <div class="formula">VAN = Σ<sub>t=0</sub><sup>n</sup> F<sub>t</sub> / (1 + i)<sup>t</sup></div>
+        <p><span data-l="es">La tasa <i>i</i> no se inventa: para el dueño del proyecto es la <b>TREMA</b>, la tasa mínima que exige, que se
+          arma con la inflación esperada y un premio al riesgo; si hay crédito, es el <b>costo de capital promedio
+          ponderado</b>. Y no se suman: con 5 % de inflación y 10 % de premio, la tasa es
+          (1.05)(1.10) − 1 = 15.5 %, no 15 %.</span><span data-l="en">The rate <i>i</i> is not invented: for the owner of the project it is the <b>MARR</b>, the minimum rate demanded,
+          built from expected inflation and a risk premium; if there is a loan, it is the <b>weighted average cost of
+          capital</b>. And they are not added up: with 5% inflation and a 10% premium, the rate is
+          (1.05)(1.10) − 1 = 15.5%, not 15%.</span></p>
+        <p class="hint"><span data-l="es">Convención de la app, y de la literatura de proyectos: el flujo del periodo <i>t</i> ocurre al final de ese
+          periodo, y el periodo 0 es el momento de la inversión.</span><span data-l="en">The convention of this app, and of the project literature: the flow of period <i>t</i> happens at the end of that
+          period, and period 0 is the moment of the investment.</span></p>
+      </div>
+    </details>
+
+    <details class="acc"><summary><span data-l="es">VAN, TIR y sus trampas</span><span data-l="en">NPV, IRR and their traps</span> <span class="acc-tag"><span data-l="es">Bloque 6</span><span data-l="en">Block 6</span></span></summary>
+      <div class="acc-body">
+        <div class="theory-fig" id="theoryIndFig"><div class="cap"><span data-l="es">El perfil del VAN: donde corta el eje está la TIR</span><span data-l="en">The NPV profile: where it cuts the axis is the IRR</span></div></div>
+        <p><span data-l="es">La <b>TIR</b> es la tasa a la que el VAN vale cero. Es cómoda porque se expresa en porcentaje y se compara con
+          cualquier tasa, pero tiene tres problemas que la app avisa cuando aparecen:</span><span data-l="en">The <b>IRR</b> is the rate at which the NPV is zero. It is convenient because it is a percentage and can be
+          compared with any rate, but it has three problems, and the app warns when they appear:</span></p>
+        <ul>
+          <li><span data-l="es"><b>Puede no existir o haber varias.</b> Si los flujos cambian de signo más de una vez —una replantación, una
+            reposición de equipo a la mitad del horizonte— hay tantas TIR como cambios de signo. La app cuenta los cambios
+            y, cuando hay más de uno, reporta la <b>TIR modificada</b>.</span><span data-l="en"><b>It may not exist, or there may be several.</b> If the flows change sign more than once —a replanting, a
+            mid-horizon equipment replacement— there are as many IRRs as sign changes. The app counts the changes and,
+            when there is more than one, reports the <b>modified IRR</b>.</span></li>
+          <li><span data-l="es"><b>Supone reinvertir a la propia TIR.</b> Una TIR de 60 % supone que cada peso que sale del proyecto se vuelve a
+            invertir al 60 %, lo que casi nunca es cierto. La TIR modificada obliga a declarar la tasa real de
+            reinversión.</span><span data-l="en"><b>It assumes reinvestment at the IRR itself.</b> An IRR of 60% assumes every peso coming out of the project is
+            reinvested at 60%, which is almost never true. The modified IRR forces the real reinvestment rate to be
+            stated.</span></li>
+          <li><span data-l="es"><b>Ignora el tamaño.</b> Una hectárea con TIR de 40 % puede dejar menos dinero que veinte hectáreas con TIR de
+            22 %. Entre proyectos excluyentes manda el VAN, o la <b>TIR incremental</b> de la diferencia.</span><span data-l="en"><b>It ignores size.</b> One hectare with a 40% IRR may leave less money than twenty hectares with a 22% IRR.
+            Between mutually exclusive projects the NPV decides, or the <b>incremental IRR</b> of the difference.</span></li>
+        </ul>
+        <p><span data-l="es">Y cuando los proyectos duran distinto —un invernadero de 10 años contra una huerta de 25— ni el VAN es
+          comparable: hay que pasarlos a <b>valor anual equivalente</b>, que reparte el VAN en anualidades iguales.</span><span data-l="en">And when the projects last for different times —a 10-year greenhouse against a 25-year orchard— not even the NPV
+          is comparable: they have to be turned into an <b>equivalent annual value</b>, which spreads the NPV into equal
+          yearly amounts.</span></p>
+      </div>
+    </details>
+
+    <details class="acc"><summary><span data-l="es">Precios constantes o corrientes: nunca se mezclan</span><span data-l="en">Constant or current prices: never mixed</span> <span class="acc-tag"><span data-l="es">el error más común</span><span data-l="en">the commonest mistake</span></span></summary>
+      <div class="acc-body">
+        <div class="theory-fig" id="theoryPriceFig"><div class="cap"><span data-l="es">La tasa nominal contiene a la inflación; la real, no</span><span data-l="en">The nominal rate contains inflation; the real one does not</span></div></div>
+        <p><span data-l="es">Un estudio puede escribirse de dos maneras, y las dos son correctas: a <b>precios constantes</b>, donde todos los
+          flujos están en pesos de hoy y se descuentan con una tasa <b>real</b>; o a <b>precios corrientes</b>, donde cada
+          año lleva la inflación incorporada y se descuenta con una tasa <b>nominal</b>. Mezclarlas —flujos de hoy
+          descontados a tasa nominal— castiga al proyecto dos veces y es el error que más se repite en las tesis.</span><span data-l="en">A study can be written in two ways, and both are correct: at <b>constant prices</b>, where every flow is in
+          today's pesos and is discounted with a <b>real</b> rate; or at <b>current prices</b>, where each year carries
+          inflation and is discounted with a <b>nominal</b> rate. Mixing them —today's flows discounted at a nominal
+          rate— penalises the project twice, and it is the commonest mistake in theses.</span></p>
+        <div class="formula">(1 + i<sub>nominal</sub>) = (1 + i<sub>real</sub>) (1 + π)</div>
+        <p><span data-l="es">La app trabaja por omisión a precios constantes, deflacta las series de precios que le des con el índice que
+          elijas, y avisa si detecta una tasa nominal junto con flujos constantes. La resta <i>i − π</i> es solo una
+          aproximación y no se usa en ningún cálculo.</span><span data-l="en">The app works at constant prices by default, deflates the price series you give it with the index you choose,
+          and warns if it detects a nominal rate next to constant flows. The subtraction <i>i − π</i> is only an
+          approximation and is never used in a calculation.</span></p>
+      </div>
+    </details>
+
+    <details class="acc"><summary><span data-l="es">La utilidad contable no es dinero</span><span data-l="en">Accounting profit is not cash</span> <span class="acc-tag"><span data-l="es">Bloques 4 y 5</span><span data-l="en">Blocks 4 and 5</span></span></summary>
+      <div class="acc-body">
+        <div class="theory-fig" id="theoryCashFig"><div class="cap"><span data-l="es">El ciclo de caja: insumos, cosecha y cobro</span><span data-l="en">The cash cycle: inputs, harvest and payment</span></div></div>
+        <p><span data-l="es">La evaluación se hace con <b>flujo de efectivo</b>, no con la utilidad del estado de resultados. Tres diferencias
+          explican casi todo:</span><span data-l="en">Appraisal is done with <b>cash flow</b>, not with the profit of the income statement. Three differences explain
+          almost everything:</span></p>
+        <ul>
+          <li><span data-l="es"><b>La depreciación no es una salida de dinero.</b> Entra al estado de resultados porque reduce el impuesto, y
+            después se suma de vuelta en el flujo. Su único efecto real sobre el proyecto es el ahorro fiscal.</span><span data-l="en"><b>Depreciation is not a cash outflow.</b> It enters the income statement because it lowers the tax, and is then
+            added back in the cash flow. Its only real effect on the project is the tax saving.</span></li>
+          <li><span data-l="es"><b>El capital de trabajo es una inversión.</b> El dinero que se adelanta para insumos, jornales y animales en pie
+            sale del bolsillo aunque no sea un gasto del año, y se recupera al final del proyecto.</span><span data-l="en"><b>Working capital is an investment.</b> The money advanced for inputs, wages and animals on the hoof leaves the
+            pocket even though it is not an expense of the year, and it comes back at the end of the project.</span></li>
+          <li><span data-l="es"><b>Los costos hundidos no cuentan y los de oportunidad sí.</b> Lo ya gastado no cambia la decisión; la tierra
+            propia, aunque no se pague renta, sí tiene un costo: lo que dejaría de ganar en su mejor uso.</span><span data-l="en"><b>Sunk costs do not count and opportunity costs do.</b> What has already been spent does not change the
+            decision; land you own, even if no rent is paid, does have a cost: what it would earn in its best use.</span></li>
+        </ul>
+        <p><span data-l="es">De ahí salen los dos flujos que la app arma siempre: el <b>flujo del proyecto</b>, que mide si la idea es buena sin
+          importar quién la pague, y el <b>flujo del inversionista</b>, que descuenta el crédito y mide lo que gana el dueño
+          con su propio dinero.</span><span data-l="en">Hence the two flows the app always builds: the <b>project flow</b>, which measures whether the idea is good no
+          matter who pays for it, and the <b>investor flow</b>, which nets out the loan and measures what the owner earns
+          with their own money.</span></p>
+      </div>
+    </details>
+
+    <details class="acc"><summary><span data-l="es">Lo que hace distinto a un proyecto agropecuario</span><span data-l="en">What makes an agricultural project different</span> <span class="acc-tag"><span data-l="es">por qué esta app</span><span data-l="en">why this app</span></span></summary>
+      <div class="acc-body">
+        <div class="theory-fig" id="theoryAgroFig"><div class="cap"><span data-l="es">Una plantación tarda años en pagar su establecimiento</span><span data-l="en">A plantation takes years to pay for its establishment</span></div></div>
+        <ul>
+          <li><span data-l="es"><b>Años de gestación.</b> Un aguacate no cosecha hasta el cuarto año y no rinde pleno hasta el octavo; el flujo
+            tiene un valle largo que ninguna plantilla de finanzas corporativas contempla.</span><span data-l="en"><b>Years to bear.</b> An avocado tree does not crop until the fourth year and does not reach full yield until the
+            eighth; the cash flow has a long trough that no corporate finance template contemplates.</span></li>
+          <li><span data-l="es"><b>El ciclo manda sobre el año.</b> El capital de trabajo entra con la siembra y vuelve con la cosecha, a veces
+            dos ciclos por año y a veces uno cada dieciocho meses.</span><span data-l="en"><b>The cycle rules over the year.</b> Working capital goes in with sowing and comes back with the harvest,
+            sometimes twice a year and sometimes once every eighteen months.</span></li>
+          <li><span data-l="es"><b>Precio y rendimiento están correlacionados, y en contra.</b> El año de la buena cosecha es el año del precio
+            bajo. Simular las dos variables como independientes exagera el riesgo.</span><span data-l="en"><b>Price and yield are correlated, and in opposite directions.</b> The year of the good harvest is the year of
+            the low price. Simulating the two as independent overstates the risk.</span></li>
+          <li><span data-l="es"><b>El clima es un riesgo con cola.</b> Una helada o una sequía no son un ±10 %: son una pérdida casi total con
+            baja probabilidad, y eso pide simulación, no solo sensibilidad.</span><span data-l="en"><b>Weather is a tail risk.</b> A frost or a drought is not a ±10%: it is an almost total loss with a low
+            probability, and that calls for simulation, not just sensitivity.</span></li>
+          <li><span data-l="es"><b>Valor residual que sí existe.</b> La tierra no se deprecia, la plantación en producción vale, y el ganado en pie
+            es inventario. El último año del horizonte casi nunca es un flujo ordinario.</span><span data-l="en"><b>A residual value that really exists.</b> Land does not depreciate, a bearing plantation is worth money and
+            standing cattle are inventory. The last year of the horizon is almost never an ordinary flow.</span></li>
+          <li><span data-l="es"><b>Horizontes distintos entre alternativas.</b> Comparar hortalizas de ciclo corto con una plantación de veinte
+            años exige valor anual equivalente, no VAN a secas.</span><span data-l="en"><b>Different horizons between alternatives.</b> Comparing short-cycle vegetables with a twenty-year plantation
+            demands the equivalent annual value, not the NPV alone.</span></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="acc"><summary><span data-l="es">Riesgo: sensibilidad, escenarios y simulación</span><span data-l="en">Risk: sensitivity, scenarios and simulation</span> <span class="acc-tag"><span data-l="es">Bloque 7</span><span data-l="en">Block 7</span></span></summary>
+      <div class="acc-body">
+        <div class="theory-fig" id="theoryRiskFig"><div class="cap"><span data-l="es">El tornado ordena las variables por lo que mueven el VAN</span><span data-l="en">The tornado ranks the variables by how much they move the NPV</span></div></div>
+        <p><span data-l="es">Los tres niveles se complementan y la app los reporta juntos:</span><span data-l="en">The three levels complement each other and the app reports them together:</span></p>
+        <ul>
+          <li><span data-l="es"><b>Sensibilidad.</b> Una variable a la vez, ±10 % o ±20 %. Ordenada en un <b>tornado</b>, dice dónde vale la pena
+            gastar en información: si el precio manda, conviene pagar un buen estudio de mercado.</span><span data-l="en"><b>Sensitivity.</b> One variable at a time, ±10% or ±20%. Ranked in a <b>tornado</b>, it says where it is worth
+            spending on information: if price dominates, a good market study is worth paying for.</span></li>
+          <li><span data-l="es"><b>Valores límite.</b> En lugar de preguntar qué pasa si el precio baja 10 %, se pregunta <i>cuánto</i> puede
+            bajar antes de que el VAN llegue a cero. Es la forma que Gittinger recomienda porque se discute con el
+            productor: «¿has visto alguna vez el precio 38 % abajo?».</span><span data-l="en"><b>Switching values.</b> Instead of asking what happens if the price falls 10%, ask <i>how far</i> it can fall
+            before the NPV reaches zero. It is the form Gittinger recommends because it can be discussed with the farmer:
+            "have you ever seen the price 38% down?".</span></li>
+          <li><span data-l="es"><b>Simulación de Monte Carlo.</b> Todas las variables a la vez, cada una con su distribución y su correlación.
+            Da la distribución completa del VAN y la probabilidad de perder, que es lo que un banco o un comité de
+            inversión realmente pregunta.</span><span data-l="en"><b>Monte Carlo simulation.</b> All the variables at once, each with its distribution and its correlation. It
+            gives the whole distribution of the NPV and the probability of a loss, which is what a bank or an investment
+            committee actually asks.</span></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="acc"><summary><span data-l="es">Evaluación financiera, económica y social</span><span data-l="en">Financial, economic and social appraisal</span> <span class="acc-tag"><span data-l="es">Bloque 8</span><span data-l="en">Block 8</span></span></summary>
+      <div class="acc-body">
+        <div class="theory-fig" id="theorySocialFig"><div class="cap"><span data-l="es">Del precio de mercado al precio cuenta</span><span data-l="en">From the market price to the accounting price</span></div></div>
+        <p><span data-l="es">El mismo proyecto se ve distinto según quién lo mire. La <b>evaluación financiera</b> usa los precios que el
+          productor paga y cobra, con sus impuestos y sus subsidios. La <b>evaluación económica</b> pregunta qué gana el
+          país: los impuestos y los subsidios son <b>transferencias</b> —cambian de bolsillo pero no crean ni destruyen
+          recursos— y se eliminan, y los precios distorsionados se sustituyen por <b>precios cuenta</b> mediante factores
+          de conversión. La <b>evaluación social</b> añade quién recibe los beneficios, ponderando a los grupos de menor
+          ingreso.</span><span data-l="en">The same project looks different depending on who is looking. <b>Financial appraisal</b> uses the prices the
+          producer pays and receives, with their taxes and subsidies. <b>Economic appraisal</b> asks what the country
+          gains: taxes and subsidies are <b>transfers</b> —they change pocket but neither create nor destroy resources—
+          and are removed, and distorted prices are replaced by <b>accounting prices</b> through conversion factors.
+          <b>Social appraisal</b> adds who receives the benefits, weighting the lower-income groups.</span></p>
+        <p class="hint"><span data-l="es">Un proyecto puede ser rentable para el productor gracias a un subsidio y no serlo para el país; y al revés, un
+          camino rural puede no cobrar un peso y ser excelente socialmente. Los dos resultados se reportan juntos.</span><span data-l="en">A project can be profitable for the farmer thanks to a subsidy and not for the country; and the other way round,
+          a rural road may not charge a peso and still be excellent socially. Both results are reported together.</span></p>
+      </div>
+    </details>
+
+    <details class="acc"><summary><span data-l="es">Qué pregunta responde cada bloque</span><span data-l="en">Which question each block answers</span> <span class="acc-tag"><span data-l="es">guía de decisión</span><span data-l="en">decision guide</span></span></summary>
+      <div class="acc-body">
+        <div class="theory-fig" id="theoryDocFig"><div class="cap"><span data-l="es">El estudio terminado, con sus cuadros y figuras</span><span data-l="en">The finished study, with its tables and figures</span></div></div>
+        <div class="table-scroll" data-l="es">
+          <table class="mini-table">
+            <tr><th>Tu pregunta</th><th>El análisis</th><th class="c">Bloque</th></tr>
+            <tr><td>¿Qué tasa debo exigirle al proyecto?</td><td>TREMA, costo de capital ponderado, CAPM</td><td class="c">2</td></tr>
+            <tr><td>¿A qué precio puedo vender y cuánto?</td><td>Series deflactadas, tendencia, elasticidad, programa de ventas</td><td class="c">3</td></tr>
+            <tr><td>¿Cuánto cuesta poner el proyecto en marcha?</td><td>Inversión fija y diferida, depreciación, capital de trabajo</td><td class="c">4</td></tr>
+            <tr><td>¿Cómo pago el crédito y cómo queda el estado de resultados?</td><td>Tabla de amortización, estados proforma, razones</td><td class="c">5</td></tr>
+            <tr><td>¿Cuánto tengo que vender para no perder?</td><td>Punto de equilibrio en volumen, precio y rendimiento</td><td class="c">5</td></tr>
+            <tr><td>¿Conviene o no conviene?</td><td>VAN, TIR, TIRM, B/C, periodo de recuperación</td><td class="c">6</td></tr>
+            <tr><td>¿Cuál de los dos proyectos elijo si duran distinto?</td><td>Valor anual equivalente, TIR incremental</td><td class="c">6, 9</td></tr>
+            <tr><td>¿Vale la pena cambiar de tecnología?</td><td>Presupuesto parcial, dominancia y tasa de retorno marginal</td><td class="c">6</td></tr>
+            <tr><td>¿Cuánto aguanta antes de dejar de convenir?</td><td>Valores límite, tornado, escenarios</td><td class="c">7</td></tr>
+            <tr><td>¿Qué probabilidad hay de perder dinero?</td><td>Simulación de Monte Carlo con correlaciones</td><td class="c">7</td></tr>
+            <tr><td>¿Le conviene al país, no solo al dueño?</td><td>Precios cuenta, VAN económico, empleo y divisas</td><td class="c">8</td></tr>
+            <tr><td>¿Cuándo renuevo la huerta o cambio el tractor?</td><td>Costo anual equivalente, vida óptima, Faustmann</td><td class="c">9</td></tr>
+            <tr><td>¿Cómo entrego el estudio?</td><td>Informe con metodología, cuadros, figuras y memoria de cálculo</td><td class="c">10</td></tr>
+          </table>
+        </div>
+        <div class="table-scroll" data-l="en">
+          <table class="mini-table">
+            <tr><th>Your question</th><th>The analysis</th><th class="c">Block</th></tr>
+            <tr><td>What rate should I demand from the project?</td><td>MARR, weighted average cost of capital, CAPM</td><td class="c">2</td></tr>
+            <tr><td>At what price can I sell, and how much?</td><td>Deflated series, trend, elasticity, sales programme</td><td class="c">3</td></tr>
+            <tr><td>What does it cost to set the project up?</td><td>Fixed and pre-operating investment, depreciation, working capital</td><td class="c">4</td></tr>
+            <tr><td>How do I repay the loan and what does the income statement look like?</td><td>Loan schedule, pro-forma statements, ratios</td><td class="c">5</td></tr>
+            <tr><td>How much do I have to sell not to lose?</td><td>Break-even in volume, price and yield</td><td class="c">5</td></tr>
+            <tr><td>Is it worth doing or not?</td><td>NPV, IRR, MIRR, B/C, payback period</td><td class="c">6</td></tr>
+            <tr><td>Which of two projects do I choose if they last differently?</td><td>Equivalent annual value, incremental IRR</td><td class="c">6, 9</td></tr>
+            <tr><td>Is it worth changing technology?</td><td>Partial budget, dominance and marginal rate of return</td><td class="c">6</td></tr>
+            <tr><td>How far can it fall before it stops being worth doing?</td><td>Switching values, tornado, scenarios</td><td class="c">7</td></tr>
+            <tr><td>What is the probability of losing money?</td><td>Monte Carlo simulation with correlations</td><td class="c">7</td></tr>
+            <tr><td>Is it good for the country, not only for the owner?</td><td>Accounting prices, economic NPV, employment and foreign exchange</td><td class="c">8</td></tr>
+            <tr><td>When do I renew the orchard or change the tractor?</td><td>Equivalent annual cost, optimal life, Faustmann</td><td class="c">9</td></tr>
+            <tr><td>How do I hand in the study?</td><td>Report with methodology, tables, figures and calculation record</td><td class="c">10</td></tr>
+          </table>
+        </div>
+      </div>
+    </details>
+
+  </div>
+
+  <!-- ---------- Cite ---------- -->
+  <h2 class="section-title" id="cite"><span data-l="es">Cómo citar</span><span data-l="en">How to cite</span></h2>
+  <p class="section-sub"><span data-l="es">Si EconomicsPro te ayudó en una tesis o un proyecto, cita el programa y las obras originales de los métodos que
+    implementa; el informe del Bloque 10 los nombra por autor y año.</span><span data-l="en">If EconomicsPro helped with a thesis or a project, please cite the software and the original works of the methods
+    it implements; the report of Block 10 names them by author and year.</span></p>
+  <div class="cite-box">
+    <div class="cite-ref" id="citeText"><span data-l="es">Barrera-Guzmán, L.Á. (2026). EconomicsPro: plataforma en el navegador para la evaluación económica y financiera de proyectos agroindustriales (versión <span class="app-v"></span>) [software].</span><span data-l="en">Barrera-Guzmán, L.Á. (2026). EconomicsPro: a browser-based platform for the economic and financial appraisal of agrifood projects (Version <span class="app-v"></span>) [Computer software].</span></div>
+    <button class="btn btn-secondary btn-sm" id="copyCite" data-es="Copiar la cita" data-en="Copy the citation">Copiar la cita</button>
+    <span class="hint" style="margin-left:8px"><span data-l="es">El DOI se añadirá al archivar la versión 1.0.</span><span data-l="en">The DOI will be added when version 1.0 is archived.</span></span>
+  </div>
+
+  <h2 class="section-title"><span data-l="es">Referencias detrás de los cálculos</span><span data-l="en">References behind the calculations</span></h2>
+  <p class="section-sub"><span data-l="es">Cada fórmula de la app viene de una obra publicada, y se vuelve a nombrar en el lugar donde se usa.</span><span data-l="en">Every formula in this app comes from a published work, and is named again where it is used.</span></p>
+  <div class="ref-tools chips" id="refFilter"></div>
+  <ol class="ref-list" id="refList"></ol>
+
+  <p class="footer-note"><span data-l="es">EconomicsPro · versión <span class="app-v"></span> · hecha para estudiantes, tesistas y formuladores de proyectos del sector
+    agroalimentario.</span><span data-l="en">EconomicsPro · version <span class="app-v"></span> · made for students, thesis writers and project formulators of the agrifood
+    sector.</span></p>
+
+</section>
+
+<!-- ==================== BLOCKS 2–10 (built in later stages) ==================== -->
+<section class="step-panel" id="panel-2">
+  <div class="panel-title"><div class="pt-num">2</div>
+    <div><h2><span data-l="es">El proyecto y sus supuestos</span><span data-l="en">The project and its assumptions</span></h2>
+      <p><span data-l="es">Qué se evalúa, durante cuántos años, en qué moneda, a qué tasa y con qué reglas fiscales. Todo lo que decidas aquí lo leen los ocho bloques siguientes, y el informe final lo cita tal cual.</span><span data-l="en">What is being appraised, over how many years, in what money, at what rate and under which tax rules. Everything you decide here is read by the eight blocks that follow, and the final report quotes it as it stands.</span></p></div>
+  </div>
+
+  <!-- ---------- 1 · identification ---------- -->
+  <div class="card">
+    <h2><span data-l="es">1 · Identificación del proyecto</span><span data-l="en">1 · Identifying the project</span></h2>
+    <p class="hint"><span data-l="es">Los datos que encabezan el estudio y el nombre de la unidad con la que vas a trabajar: hectárea, cabeza, metro cuadrado, línea de proceso, beneficiario.</span><span data-l="en">The data that head the study and the name of the unit you will work with: hectare, head, square metre, processing line, beneficiary.</span></p>
+    <div class="form-grid">
+      <div class="field wide"><label data-es="Nombre del proyecto" data-en="Name of the project">Nombre del proyecto</label>
+        <input type="text" id="b2Name" data-es-ph="Establecimiento de huerta de aguacate Hass" data-en-ph="Establishment of a Hass avocado orchard">
+        <span class="field-help"><span data-l="es">Aparecerá en el informe y en el nombre del archivo.</span><span data-l="en">It appears in the report and in the file name.</span></span></div>
+      <div class="field"><label data-es="Responsable" data-en="In charge">Responsable</label>
+        <input type="text" id="b2Owner" data-es-ph="Nombre del productor o de la empresa" data-en-ph="Name of the farmer or the firm"></div>
+      <div class="field"><label data-es="Localización" data-en="Location">Localización</label>
+        <input type="text" id="b2Location" data-es-ph="Municipio y estado" data-en-ph="Municipality and state"></div>
+    </div>
+
+    <h4><span data-l="es">Tipo de proyecto</span><span data-l="en">Kind of project</span></h4>
+    <p class="hint"><span data-l="es">Elegir el tipo ajusta de una vez el horizonte, los años que tarda en producir y el valor residual que se suelen usar; después puedes cambiar cada número.</span><span data-l="en">Choosing the kind sets the horizon, the years it takes to produce and the residual value usually applied; you can change each figure afterwards.</span></p>
+    <div class="design-tiles" id="b2Kinds"></div>
+
+    <div class="form-grid" style="margin-top:16px">
+      <div class="field"><label data-es="Nombre de la unidad" data-en="Name of the unit">Nombre de la unidad</label>
+        <input type="text" id="b2Unit" data-es-ph="ha" data-en-ph="ha">
+        <span class="field-help"><span data-l="es">Todos los presupuestos se escribirán «por» esta unidad.</span><span data-l="en">Every budget will be written "per" this unit.</span></span></div>
+      <div class="field"><label data-es="Escala del proyecto" data-en="Scale of the project">Escala del proyecto</label>
+        <input type="number" id="b2Scale" min="0" step="0.5">
+        <span class="field-help"><span data-l="es">Cuántas unidades tiene el proyecto completo.</span><span data-l="en">How many units the whole project has.</span></span></div>
+    </div>
+  </div>
+
+  <!-- ---------- 2 · horizon ---------- -->
+  <div class="card">
+    <h2><span data-l="es">2 · Horizonte de evaluación</span><span data-l="en">2 · Appraisal horizon</span></h2>
+    <p class="hint"><span data-l="es">El horizonte no es un número redondo: tiene que alcanzar a que el proyecto produzca, y rara vez conviene pasar de la vida útil del activo principal. En perennes se acostumbra la vida productiva de la plantación; en agroindustria, la vida útil de la maquinaria.</span><span data-l="en">The horizon is not a round number: it has to reach the point where the project produces, and it rarely pays to go beyond the life of the main asset. For perennials it is usually the productive life of the plantation; in agro-industry, the life of the machinery.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Horizonte (años)" data-en="Horizon (years)">Horizonte (años)</label>
+        <input type="number" id="b2Horizon" min="1" max="60" step="1"></div>
+      <div class="field"><label data-es="Año base" data-en="Base year">Año base</label>
+        <input type="number" id="b2BaseYear" min="1990" max="2100" step="1">
+        <span class="field-help"><span data-l="es">Año 0 del proyecto y de los precios constantes.</span><span data-l="en">Year 0 of the project and of the constant prices.</span></span></div>
+      <div class="field"><label data-es="Años antes de la primera producción" data-en="Years before the first production">Años antes de la primera producción</label>
+        <input type="number" id="b2Gestation" min="0" max="30" step="1">
+        <span class="field-help"><span data-l="es">0 si vende desde el primer año.</span><span data-l="en">0 if it sells from the first year.</span></span></div>
+      <div class="field"><label data-es="Años hasta la plena producción" data-en="Years to full production">Años hasta la plena producción</label>
+        <input type="number" id="b2Ramp" min="1" max="20" step="1"></div>
+      <div class="field"><label data-es="Valor residual (% de la inversión)" data-en="Residual value (% of the investment)">Valor residual (% de la inversión)</label>
+        <input type="number" id="b2Salvage" min="0" max="100" step="1">
+        <span class="field-help"><span data-l="es">Lo que valen tierra, obra y equipo al terminar el horizonte.</span><span data-l="en">What land, works and equipment are worth when the horizon ends.</span></span></div>
+    </div>
+    <div class="pg-pane" style="margin-top:8px"><div class="pg-title"><span data-l="es">Lo que cubre el horizonte</span><span data-l="en">What the horizon covers</span></div><svg id="b2Timeline"></svg></div>
+  </div>
+
+  <!-- ---------- 3 · money and prices ---------- -->
+  <div class="card">
+    <h2><span data-l="es">3 · Moneda y precios</span><span data-l="en">3 · Currency and prices</span></h2>
+    <p class="hint"><span data-l="es">Esta es la decisión que más estudios echa a perder. Elige una de las dos formas y la app se encarga de que la tasa de descuento corresponda.</span><span data-l="en">This is the decision that ruins most studies. Choose one of the two ways and the app makes sure the discount rate matches.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Moneda" data-en="Currency">Moneda</label>
+        <select id="b2Currency"></select></div>
+      <div class="field"><label data-es="Los flujos se escriben a" data-en="The flows are written at">Los flujos se escriben a</label>
+        <div class="seg" id="b2Basis" role="group">
+          <button data-basis="constant" data-es="Precios constantes" data-en="Constant prices">Precios constantes</button><button data-basis="current" data-es="Precios corrientes" data-en="Current prices">Precios corrientes</button>
+        </div>
+        <span class="field-help"><span data-l="es">Constantes: todo en dinero de hoy. Corrientes: cada año con su inflación.</span><span data-l="en">Constant: everything in today's money. Current: each year with its inflation.</span></span></div>
+      <div class="field"><label data-es="Inflación esperada (% anual)" data-en="Expected inflation (% a year)">Inflación esperada (% anual)</label>
+        <input type="number" id="b2Inflation" min="-5" max="100" step="0.1"></div>
+      <div class="field"><label class="checkbox-label"><input type="checkbox" id="b2Foreign"> <span data-l="es">El proyecto compra o vende en otra moneda</span><span data-l="en">The project buys or sells in another currency</span></label></div>
+      <div class="field" id="b2ExchangeField"><label data-es="Tipo de cambio" data-en="Exchange rate">Tipo de cambio</label>
+        <input type="number" id="b2Exchange" min="0" step="0.01">
+        <span class="field-help"><span data-l="es">Unidades de la moneda del proyecto por dólar.</span><span data-l="en">Units of the project's currency per dollar.</span></span></div>
+    </div>
+    <div class="callout tip"><b><span data-l="es">La regla</span><span data-l="en">The rule</span></b>
+      <span data-l="es">Flujos constantes con tasa real, o flujos corrientes con tasa nominal. Mezclarlos —flujos de hoy descontados a tasa nominal— castiga al proyecto dos veces y es el error más común en las tesis. La app aplica la conversión de Fisher, nunca la resta aproximada.</span><span data-l="en">Constant flows with a real rate, or current flows with a nominal rate. Mixing them —today's flows discounted at a nominal rate— penalises the project twice and is the commonest mistake in theses. The app applies Fisher's conversion, never the approximate subtraction.</span></div>
+  </div>
+
+  <!-- ---------- 4 · discount rate ---------- -->
+  <div class="card">
+    <h2><span data-l="es">4 · Tasa de descuento</span><span data-l="en">4 · Discount rate</span></h2>
+    <p class="hint"><span data-l="es">La tasa es el precio que le pones al tiempo y a tu riesgo. Ármala de la forma que puedas defender ante el jurado o ante el banco; la app guarda cómo la obtuviste y lo escribe en el informe.</span><span data-l="en">The rate is the price you put on time and on your risk. Build it in the way you can defend before the committee or the bank; the app records how you obtained it and writes it in the report.</span></p>
+    <div class="seg" id="b2RateTabs" role="group" style="margin-bottom:12px">
+      <button data-mode="marr" data-es="TREMA" data-en="MARR">TREMA</button><button data-mode="wacc" data-es="CPPC (con crédito)" data-en="WACC (with a loan)">CPPC</button><button data-mode="capm" data-es="CAPM" data-en="CAPM">CAPM</button><button data-mode="manual" data-es="La escribo yo" data-en="I type it">La escribo yo</button>
+    </div>
+
+    <div class="b2-rate-panel" data-mode="marr">
+      <p class="hint"><span data-l="es">La tasa mínima aceptable de rendimiento: lo que exiges por encima de mantener el poder de compra. El premio se combina con la inflación, no se suma.</span><span data-l="en">The minimum acceptable rate of return: what you demand above keeping your purchasing power. The premium is combined with inflation, not added to it.</span></p>
+      <div class="formula">TREMA = (1 + π)(1 + premio) − 1</div>
+      <div class="form-grid">
+        <div class="field"><label data-es="Premio al riesgo real (%)" data-en="Real risk premium (%)">Premio al riesgo real (%)</label>
+          <input type="number" id="b2Premium" min="0" max="80" step="0.5">
+          <span class="field-help"><span data-l="es">Agricultura de temporal 10–15 %; riego y perennes 8–12 %; agroindustria 12–18 %.</span><span data-l="en">Rain-fed farming 10–15%; irrigation and perennials 8–12%; agro-industry 12–18%.</span></span></div>
+      </div>
+    </div>
+
+    <div class="b2-rate-panel" data-mode="wacc">
+      <p class="hint"><span data-l="es">Cuando una parte del proyecto se financia con crédito, la tasa es el promedio de lo que cuesta cada peso, y el interés se deduce del impuesto.</span><span data-l="en">When part of the project is financed with a loan, the rate is the average of what each peso costs, and the interest is deducted from the tax.</span></p>
+      <div class="formula">CPPC = (E/V)·k<sub>e</sub> + (D/V)·k<sub>d</sub>·(1 − t)</div>
+      <div class="form-grid">
+        <div class="field"><label data-es="Capital propio (%)" data-en="Equity (%)">Capital propio (%)</label><input type="number" id="b2Equity" min="0" max="100" step="1"></div>
+        <div class="field"><label data-es="Deuda (%)" data-en="Debt (%)">Deuda (%)</label><input type="number" id="b2Debt" min="0" max="100" step="1"></div>
+        <div class="field"><label data-es="Costo del capital propio (%)" data-en="Cost of equity (%)">Costo del capital propio (%)</label><input type="number" id="b2Ke" min="0" max="80" step="0.5"></div>
+        <div class="field"><label data-es="Tasa del crédito (%)" data-en="Loan rate (%)">Tasa del crédito (%)</label><input type="number" id="b2Kd" min="0" max="80" step="0.5">
+          <span class="field-help"><span data-l="es">La misma que usará la tabla de amortización del Bloque 5.</span><span data-l="en">The same the loan schedule of Block 5 will use.</span></span></div>
+      </div>
+    </div>
+
+    <div class="b2-rate-panel" data-mode="capm">
+      <p class="hint"><span data-l="es">El costo del capital propio a partir del mercado: una tasa libre de riesgo, el riesgo sistemático del giro y el riesgo del país. Si además hay deuda, la app lo combina en el CPPC.</span><span data-l="en">The cost of equity from the market: a risk-free rate, the systematic risk of the activity and the country's risk. If there is also debt, the app combines it into the WACC.</span></p>
+      <div class="formula">k<sub>e</sub> = r<sub>f</sub> + β · (prima de mercado) + riesgo país</div>
+      <div class="form-grid">
+        <div class="field"><label data-es="Tasa libre de riesgo (%)" data-en="Risk-free rate (%)">Tasa libre de riesgo (%)</label><input type="number" id="b2Rf" min="0" max="40" step="0.25"></div>
+        <div class="field"><label data-es="Beta del giro" data-en="Beta of the activity">Beta del giro</label><input type="number" id="b2Beta" min="0" max="4" step="0.05"></div>
+        <div class="field"><label data-es="Prima de mercado (%)" data-en="Market premium (%)">Prima de mercado (%)</label><input type="number" id="b2Mrp" min="0" max="30" step="0.25"></div>
+        <div class="field"><label data-es="Riesgo país (%)" data-en="Country risk (%)">Riesgo país (%)</label><input type="number" id="b2Country" min="0" max="30" step="0.25"></div>
+      </div>
+      <p class="hint"><span data-l="es">Con deuda mayor que cero se usan también los porcentajes y la tasa del crédito de la pestaña anterior.</span><span data-l="en">With debt above zero, the shares and the loan rate of the previous tab are used as well.</span></p>
+    </div>
+
+    <div class="b2-rate-panel" data-mode="manual">
+      <p class="hint"><span data-l="es">Cuando la institución te fija la tasa (un programa de apoyo, una convocatoria, el comité de una financiera), escríbela y di si es real o nominal.</span><span data-l="en">When the institution sets the rate for you (a support programme, a call, a lender's committee), type it and say whether it is real or nominal.</span></p>
+      <div class="form-grid">
+        <div class="field"><label data-es="Tasa (%)" data-en="Rate (%)">Tasa (%)</label><input type="number" id="b2Manual" min="-10" max="100" step="0.25"></div>
+        <div class="field"><label data-es="Esa tasa es" data-en="That rate is">Esa tasa es</label>
+          <div class="seg" id="b2ManualBasis" role="group"><button data-real="1" data-es="Real" data-en="Real">Real</button><button data-real="0" data-es="Nominal" data-en="Nominal">Nominal</button></div></div>
+      </div>
+    </div>
+
+    <div class="results-summary" id="b2RateTiles"></div>
+    <div class="callout" id="b2RateSentence"></div>
+
+    <div class="lab-grid" style="margin-top:6px">
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">De dónde sale la tasa</span><span data-l="en">Where the rate comes from</span></div><svg id="b2RateChart"></svg></div>
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">Lo que la tasa le hace al futuro</span><span data-l="en">What the rate does to the future</span></div><svg id="b2DiscountChart"></svg></div>
+    </div>
+
+    <details class="acc"><summary><span data-l="es">Cómo se elige el premio al riesgo sin inventarlo</span><span data-l="en">How to choose the risk premium without inventing it</span> <span class="acc-tag"><span data-l="es">para la tesis</span><span data-l="en">for the thesis</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Tres caminos, todos defendibles, y el informe acepta cualquiera de ellos:</span><span data-l="en">Three routes, all defensible, and the report accepts any of them:</span></p>
+        <ul>
+          <li><span data-l="es"><b>El costo de oportunidad real del productor.</b> Lo que ganaría con el mismo dinero en su mejor alternativa: otro cultivo, un instrumento de ahorro, pagar una deuda. Es el argumento más sólido en una tesis de campo.</span><span data-l="en"><b>The farmer's real opportunity cost.</b> What the same money would earn in its best alternative: another crop, a savings instrument, paying off a debt. It is the strongest argument in a field thesis.</span></li>
+          <li><span data-l="es"><b>El costo del crédito disponible.</b> Si el proyecto se hará con crédito, la tasa del crédito más un margen por el riesgo propio es un piso razonable.</span><span data-l="en"><b>The cost of the available credit.</b> If the project will be done with a loan, the loan rate plus a margin for its own risk is a reasonable floor.</span></li>
+          <li><span data-l="es"><b>El mercado, con el CAPM.</b> Útil cuando el proyecto es empresarial y hay referencias del giro; obliga a declarar la beta y el riesgo país, que el jurado puede discutir.</span><span data-l="en"><b>The market, with the CAPM.</b> Useful when the project is a business and there are references for the activity; it forces beta and country risk to be stated, which the committee can discuss.</span></li>
+        </ul>
+        <p><span data-l="es">Sea cual sea, la tasa se declara y se somete al análisis de sensibilidad del Bloque 7: si el proyecto solo conviene con una tasa muy baja, eso también es un resultado.</span><span data-l="en">Whichever it is, the rate is declared and put through the sensitivity analysis of Block 7: if the project is only worth doing at a very low rate, that is a result too.</span></p>
+      </div>
+    </details>
+  </div>
+
+  <!-- ---------- 5 · taxes ---------- -->
+  <div class="card">
+    <h2><span data-l="es">5 · Régimen fiscal</span><span data-l="en">5 · Tax regime</span></h2>
+    <p class="hint"><span data-l="es">El impuesto se calcula en el estado de resultados del Bloque 5 y entra al flujo de efectivo como una salida más. El sector primario tiene una exención que cambia el resultado de muchos proyectos pequeños.</span><span data-l="en">Tax is worked out in the income statement of Block 5 and enters the cash flow as one more outflow. The primary sector has an exemption that changes the result of many small projects.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Impuesto sobre la renta (%)" data-en="Income tax (%)">Impuesto sobre la renta (%)</label><input type="number" id="b2Isr" min="0" max="60" step="1"></div>
+      <div class="field"><label class="checkbox-label"><input type="checkbox" id="b2PTU"> <span data-l="es">Reparte utilidades a los trabajadores (10 %)</span><span data-l="en">Shares profits with the workers (10%)</span></label></div>
+      <div class="field"><label data-es="Régimen del sector primario" data-en="Primary sector regime">Régimen del sector primario</label>
+        <select id="b2Regime">
+          <option value="none" data-es="No aplica" data-en="Does not apply">No aplica</option>
+          <option value="fisica" data-es="Persona física (40 UMA exentas al año)" data-en="Individual (40 UMA exempt a year)">Persona física</option>
+          <option value="moral" data-es="Persona moral (20 UMA por socio, hasta 200)" data-en="Company (20 UMA per member, up to 200)">Persona moral</option>
+        </select></div>
+      <div class="field" id="b2MembersField"><label data-es="Número de socios" data-en="Number of members">Número de socios</label><input type="number" id="b2Members" min="1" max="200" step="1"></div>
+      <div class="field" id="b2UmaField"><label data-es="UMA diaria" data-en="Daily UMA">UMA diaria</label><input type="number" id="b2Uma" min="0" step="0.01">
+        <span class="field-help"><span data-l="es">Cambia cada febrero; actualízala con el valor vigente.</span><span data-l="en">It changes every February; update it with the value in force.</span></span></div>
+      <div class="field"><label data-es="IVA (%)" data-en="VAT (%)">IVA (%)</label><input type="number" id="b2Vat" min="0" max="30" step="1"></div>
+      <div class="field"><label class="checkbox-label"><input type="checkbox" id="b2VatCred"> <span data-l="es">El IVA es acreditable</span><span data-l="en">VAT is creditable</span></label>
+        <span class="field-help"><span data-l="es">Si no lo es, se suma al costo de la inversión y de los insumos.</span><span data-l="en">If it is not, it is added to the cost of the investment and of the inputs.</span></span></div>
+      <div class="field"><label data-es="Tasa social de descuento (%)" data-en="Social discount rate (%)">Tasa social de descuento (%)</label><input type="number" id="b2SocialRate" min="0" max="30" step="0.5">
+        <span class="field-help"><span data-l="es">Para la evaluación económica del Bloque 8.</span><span data-l="en">For the economic appraisal of Block 8.</span></span></div>
+    </div>
+  </div>
+
+  <!-- ---------- 6 · summary ---------- -->
+  <div class="card">
+    <h2><span data-l="es">6 · Ficha del proyecto</span><span data-l="en">6 · Project sheet</span></h2>
+    <div class="messages" id="b2Messages"></div>
+    <div class="table-scroll" id="b2Summary"></div>
+    <div class="form-grid" style="margin-top:12px">
+      <div class="field wide"><label data-es="Notas y supuestos adicionales" data-en="Notes and further assumptions">Notas y supuestos adicionales</label>
+        <textarea id="b2Notes" rows="3" data-es-ph="Lo que quieras dejar asentado sobre el origen de los datos o los criterios usados." data-en-ph="Anything you want on record about where the data came from or the criteria used."></textarea></div>
+    </div>
+    <div class="btn-row">
+      <label class="inline-label"><span data-l="es">Ejemplos</span><span data-l="en">Examples</span><select id="b2Example"></select></label>
+      <button class="btn btn-secondary btn-sm" id="b2Save"><span data-l="es">Guardar el proyecto (.json)</span><span data-l="en">Save the project (.json)</span></button>
+      <button class="btn btn-secondary btn-sm" id="b2Open"><span data-l="es">Abrir un proyecto</span><span data-l="en">Open a project</span></button>
+      <input type="file" id="b2File" accept=".json,application/json" style="display:none">
+      <button class="btn btn-ghost btn-sm" id="b2Reset"><span data-l="es">Empezar de cero</span><span data-l="en">Start from scratch</span></button>
+      <span class="hint" id="b2SavedAt" style="margin:0"></span>
+    </div>
+  </div>
+
+  <div class="next-bar">
+    <button class="btn btn-primary" id="b2Next"><span data-l="es">Continuar al Bloque 3 →</span><span data-l="en">Continue to Block 3 →</span></button>
+  </div>
+</section>
+<section class="step-panel" id="panel-3">
+  <div class="panel-title"><div class="pt-num">3</div>
+    <div><h2><span data-l="es">Mercado, precios e ingresos</span><span data-l="en">Market, prices and revenue</span></h2>
+      <p><span data-l="es">De la serie de precios al programa de ventas: qué vas a producir cada año, a qué precio lo vas a vender y cuánto ingreso deja. Es la mitad optimista del estudio, así que aquí es donde más hay que cuidarse.</span><span data-l="en">From the price series to the sales programme: what you will produce each year, at what price you will sell it and how much revenue that leaves. It is the optimistic half of the study, so this is where care matters most.</span></p></div>
+  </div>
+
+  <div class="chip-row" id="b3Context"></div>
+
+  <!-- ---------- 1 · the historical series ---------- -->
+  <div class="card">
+    <h2><span data-l="es">1 · La serie histórica</span><span data-l="en">1 · The historical series</span></h2>
+    <p class="hint"><span data-l="es">Escribe los años de precio y rendimiento que consigas, o pégalos directamente de Excel: el pegado reparte el bloque sobre la tabla. El índice de precios sirve para deflactar y comparar años; si no lo pones, la serie se queda en valores nominales y la app lo avisa.</span><span data-l="en">Type the years of price and yield you can get, or paste them straight from Excel: the paste spreads the block over the table. The price index is used to deflate and compare years; without it the series stays at nominal values and the app says so.</span></p>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-secondary btn-sm" id="b3Example"><span data-l="es">Cargar una serie de ejemplo</span><span data-l="en">Load an example series</span></button>
+      <button class="btn btn-secondary btn-sm" id="b3Import"><span data-l="es">Importar un archivo (.csv o texto)</span><span data-l="en">Import a file (.csv or text)</span></button>
+      <input type="file" id="b3File" accept=".csv,.txt,.tsv" style="display:none">
+      <button class="btn btn-ghost btn-sm" id="b3AddRows"><span data-l="es">+ 5 años</span><span data-l="en">+ 5 years</span></button>
+      <button class="btn btn-ghost btn-sm" id="b3ClearSeries"><span data-l="es">Vaciar la tabla</span><span data-l="en">Empty the table</span></button>
+      <label class="inline-label"><input type="checkbox" id="b3Deflate"> <span data-l="es">Deflactar con el índice</span><span data-l="en">Deflate with the index</span></label>
+    </div>
+    <div class="grid-host" id="b3Series"></div>
+    <p class="hint"><span data-l="es">El orden de las columnas es el mismo al importar un archivo: año, precio, rendimiento, índice. Si el archivo trae encabezados, se detectan solos.</span><span data-l="en">The order of the columns is the same when importing a file: year, price, yield, index. If the file has headers, they are detected by themselves.</span></p>
+    <div class="results-summary" id="b3Stats"></div>
+    <p class="hint" id="b3DeflateNote"></p>
+  </div>
+
+  <!-- ---------- 2 · the forecast ---------- -->
+  <div class="card">
+    <h2><span data-l="es">2 · Proyección del precio y del rendimiento</span><span data-l="en">2 · Forecasting the price and the yield</span></h2>
+    <p class="hint"><span data-l="es">Ninguna proyección es neutral: elegir «tendencia» cuando la pendiente no es significativa es inventar crecimiento, y elegir «promedio» cuando el precio lleva diez años subiendo es tirar información. La app te dice cuál de los dos casos tienes.</span><span data-l="en">No forecast is neutral: choosing "trend" when the slope is not significant invents growth, and choosing "average" when the price has been rising for ten years throws information away. The app tells you which of the two cases you have.</span></p>
+    <div class="two-col">
+      <div>
+        <h4><span data-l="es">Precio</span><span data-l="en">Price</span></h4>
+        <div class="form-grid">
+          <div class="field"><label data-es="Método" data-en="Method">Método</label>
+            <select id="b3PriceMethod">
+              <option value="mean" data-es="Promedio de los últimos años" data-en="Average of the last years">Promedio de los últimos años</option>
+              <option value="trend" data-es="Tendencia de mínimos cuadrados" data-en="Least squares trend">Tendencia</option>
+              <option value="cagr" data-es="Crecimiento compuesto" data-en="Compound growth">Crecimiento compuesto</option>
+              <option value="last" data-es="Último valor observado" data-en="Last value observed">Último valor</option>
+              <option value="fixed" data-es="Valor que yo indico" data-en="A value I give">Valor que yo indico</option>
+            </select></div>
+          <div class="field" id="b3PriceLastNField"><label data-es="Cuántos años promedia" data-en="How many years to average">Cuántos años promedia</label>
+            <input type="number" id="b3PriceLastN" min="1" max="30" step="1"></div>
+          <div class="field" id="b3PriceGrowthField"><label data-es="Crecimiento real anual (%)" data-en="Real annual growth (%)">Crecimiento real anual (%)</label>
+            <input type="number" id="b3PriceGrowth" min="-20" max="30" step="0.1"></div>
+          <div class="field" id="b3PriceFixedField"><label data-es="Precio" data-en="Price">Precio</label>
+            <input type="text" id="b3PriceFixed" inputmode="decimal"></div>
+        </div>
+        <div class="pg-pane"><div class="pg-title"><span data-l="es">Precio: historia y proyección</span><span data-l="en">Price: history and forecast</span></div><svg id="b3PriceChart"></svg></div>
+      </div>
+      <div>
+        <h4><span data-l="es">Rendimiento</span><span data-l="en">Yield</span></h4>
+        <div class="form-grid">
+          <div class="field"><label data-es="Método" data-en="Method">Método</label>
+            <select id="b3YieldMethod">
+              <option value="mean" data-es="Promedio de los últimos años" data-en="Average of the last years">Promedio de los últimos años</option>
+              <option value="trend" data-es="Tendencia de mínimos cuadrados" data-en="Least squares trend">Tendencia</option>
+              <option value="cagr" data-es="Crecimiento compuesto" data-en="Compound growth">Crecimiento compuesto</option>
+              <option value="last" data-es="Último valor observado" data-en="Last value observed">Último valor</option>
+              <option value="fixed" data-es="Valor que yo indico" data-en="A value I give">Valor que yo indico</option>
+            </select></div>
+          <div class="field" id="b3YieldLastNField"><label data-es="Cuántos años promedia" data-en="How many years to average">Cuántos años promedia</label>
+            <input type="number" id="b3YieldLastN" min="1" max="30" step="1"></div>
+          <div class="field" id="b3YieldGrowthField"><label data-es="Crecimiento anual (%)" data-en="Annual growth (%)">Crecimiento anual (%)</label>
+            <input type="number" id="b3YieldGrowth" min="-20" max="30" step="0.1"></div>
+          <div class="field" id="b3YieldFixedField"><label data-es="Rendimiento" data-en="Yield">Rendimiento</label>
+            <input type="text" id="b3YieldFixed" inputmode="decimal"></div>
+        </div>
+        <div class="pg-pane"><div class="pg-title"><span data-l="es">Rendimiento: historia y proyección</span><span data-l="en">Yield: history and forecast</span></div><svg id="b3YieldChart"></svg></div>
+      </div>
+    </div>
+    <div class="callout tip"><b><span data-l="es">La banda no es adorno</span><span data-l="en">The band is not decoration</span></b>
+      <span data-l="es">La franja alrededor de la proyección es una desviación estándar: con la tendencia se ensancha conforme te alejas de los datos, que es exactamente lo que ocurre con la confianza de un pronóstico. Esa misma amplitud es la que el Bloque 7 convierte en riesgo.</span><span data-l="en">The band around the forecast is one standard deviation: with the trend it widens as you move away from the data, which is exactly what happens to the confidence of a forecast. That same width is what Block 7 turns into risk.</span></div>
+  </div>
+
+  <!-- ---------- 3 · the market ---------- -->
+  <div class="card">
+    <h2><span data-l="es">3 · El mercado en el que entra el proyecto</span><span data-l="en">3 · The market the project enters</span></h2>
+    <p class="hint"><span data-l="es">Opcional para un proyecto pequeño, indispensable para uno que quiera financiamiento público: cuánta demanda hay, cuánta oferta la cubre y qué tajada se llevaría tu proyecto.</span><span data-l="en">Optional for a small project, essential for one seeking public funding: how much demand there is, how much supply covers it and what slice your project would take.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Demanda actual (volumen al año)" data-en="Current demand (volume a year)">Demanda actual</label><input type="text" id="b3Demand" inputmode="decimal"></div>
+      <div class="field"><label data-es="Crecimiento de la demanda (%)" data-en="Growth of demand (%)">Crecimiento de la demanda (%)</label><input type="number" id="b3DemandGrowth" min="-20" max="50" step="0.1"></div>
+      <div class="field"><label data-es="Oferta actual" data-en="Current supply">Oferta actual</label><input type="text" id="b3Supply" inputmode="decimal"></div>
+      <div class="field"><label data-es="Crecimiento de la oferta (%)" data-en="Growth of supply (%)">Crecimiento de la oferta (%)</label><input type="number" id="b3SupplyGrowth" min="-20" max="50" step="0.1"></div>
+      <div class="field"><label data-es="Elasticidad precio de la demanda" data-en="Price elasticity of demand">Elasticidad precio de la demanda</label><input type="text" id="b3Elasticity" inputmode="decimal">
+        <span class="field-help"><span data-l="es">Negativa. Alimentos básicos −0.2 a −0.5; frutas y hortalizas −0.5 a −1.</span><span data-l="en">Negative. Staple foods −0.2 to −0.5; fruit and vegetables −0.5 to −1.</span></span></div>
+    </div>
+    <div class="results-summary" id="b3MarketTiles"></div>
+    <div class="pg-pane"><div class="pg-title"><span data-l="es">Demanda, oferta y el hueco que llena el proyecto</span><span data-l="en">Demand, supply and the gap the project fills</span></div><svg id="b3MarketChart"></svg></div>
+  </div>
+
+  <!-- ---------- 4 · the sales programme ---------- -->
+  <div class="card">
+    <h2><span data-l="es">4 · Programa de producción y ventas</span><span data-l="en">4 · Production and sales programme</span></h2>
+    <p class="hint"><span data-l="es">La producción sale del rendimiento proyectado, la escala y la curva de maduración del Bloque 2. De ahí se descuenta lo que se pierde, se reparte entre canales con su premio o su castigo, y se suman los subproductos.</span><span data-l="en">Production comes from the projected yield, the scale and the ramp of Block 2. What is lost is taken off it, the rest is shared between channels with their premium or discount, and the by-products are added.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Merma y descarte (%)" data-en="Losses and rejects (%)">Merma y descarte (%)</label><input type="number" id="b3Loss" min="0" max="90" step="0.5"></div>
+      <div class="field"><label data-es="Del resto, se vende (%)" data-en="Of the rest, sold (%)">Del resto, se vende (%)</label><input type="number" id="b3Sold" min="0" max="100" step="1">
+        <span class="field-help"><span data-l="es">Baja de 100 % si parte se autoconsume o se guarda como semilla.</span><span data-l="en">Below 100% if part is consumed at home or kept as seed.</span></span></div>
+      <div class="field"><label data-es="Otros ingresos al año" data-en="Other income a year">Otros ingresos al año</label><input type="text" id="b3Other" inputmode="decimal">
+        <span class="field-help"><span data-l="es">Apoyos, renta de equipo, servicios.</span><span data-l="en">Support payments, equipment hire, services.</span></span></div>
+    </div>
+
+    <h4><span data-l="es">Canales de venta</span><span data-l="en">Sales channels</span></h4>
+    <p class="hint"><span data-l="es">El factor del precio es 1 si se paga el precio de referencia, 0.85 si el coyote castiga 15 %, 1.2 si la exportación paga 20 % más.</span><span data-l="en">The price factor is 1 if the reference price is paid, 0.85 if the middleman discounts 15%, 1.2 if export pays 20% more.</span></p>
+    <div class="grid-host narrow" id="b3Channels"></div>
+
+    <h4><span data-l="es">Subproductos</span><span data-l="en">By-products</span></h4>
+    <p class="hint"><span data-l="es">Esquilmos, rastrojo, suero, estiércol, leña de poda: cantidad por unidad producida y su precio.</span><span data-l="en">Crop residues, straw, whey, manure, pruning wood: amount per unit produced and its price.</span></p>
+    <div class="grid-host narrow" id="b3Byproducts"></div>
+
+    <div class="table-scroll" id="b3Programme" style="margin-top:16px"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-sm" id="b3ExportCSV"><span data-l="es">Descargar el programa (.csv)</span><span data-l="en">Download the programme (.csv)</span></button>
+    </div>
+    <div class="pg-pane" style="margin-top:12px"><div class="pg-title"><span data-l="es">Ingreso y producción año por año</span><span data-l="en">Revenue and production year by year</span></div><svg id="b3ProgChart"></svg></div>
+  </div>
+
+  <!-- ---------- 5 · messages ---------- -->
+  <div class="card">
+    <h2><span data-l="es">5 · Revisión</span><span data-l="en">5 · Review</span></h2>
+    <div class="messages" id="b3Messages"></div>
+    <details class="acc"><summary><span data-l="es">Por qué una serie de precios se deflacta antes de mirarla</span><span data-l="en">Why a price series is deflated before looking at it</span> <span class="acc-tag"><span data-l="es">para la tesis</span><span data-l="en">for the thesis</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">El precio del maíz pasó de 3,450 a 5,620 pesos por tonelada entre 2016 y 2025: un 63 % más. Pero los precios de todo lo demás subieron 57 % en el mismo periodo, así que el maíz apenas ganó 4 % en términos reales. Una tendencia ajustada sobre los valores nominales habría proyectado un crecimiento que no existe, y con ese error el proyecto parece rentable en el papel.</span><span data-l="en">The price of maize went from 3,450 to 5,620 pesos a tonne between 2016 and 2025: 63% more. But the prices of everything else rose 57% over the same period, so maize gained barely 4% in real terms. A trend fitted on nominal values would have projected growth that does not exist, and with that error the project looks profitable on paper.</span></p>
+        <div class="formula">precio real<sub>t</sub> = precio nominal<sub>t</sub> × (índice del año base / índice<sub>t</sub>)</div>
+        <p><span data-l="es">Por eso la app deflacta antes de describir la serie, de ajustar la tendencia y de proyectar; y por eso, si evalúas a precios corrientes, vuelve a inflar la proyección año por año con la inflación que declaraste en el Bloque 2.</span><span data-l="en">That is why the app deflates before describing the series, fitting the trend and forecasting; and that is why, if you appraise at current prices, it inflates the forecast again year by year with the inflation you declared in Block 2.</span></p>
+      </div>
+    </details>
+    <details class="acc"><summary><span data-l="es">Cuándo el precio deja de ser un dato</span><span data-l="en">When the price stops being given</span> <span class="acc-tag"><span data-l="es">participación de mercado</span><span data-l="en">market share</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Un productor pequeño vende al precio que hay: no lo mueve. Pero un proyecto que va a poner en el mercado una parte importante de lo que ahí se consume sí lo mueve, y suponer que venderá todo al precio actual es el error clásico de los estudios de agroindustria regional.</span><span data-l="en">A small farmer sells at the price there is: they do not move it. But a project that will put a significant share of what is consumed on the market does move it, and assuming it will sell everything at today's price is the classic mistake of regional agro-industry studies.</span></p>
+        <p><span data-l="es">Con la elasticidad precio de la demanda se estima cuánto caería el precio al agregar ese volumen: si la elasticidad es −0.5 y el proyecto agrega 10 % del mercado, el precio cae alrededor de 20 %. La app lo calcula y lo avisa en cuanto la participación pasa del 20 %.</span><span data-l="en">With the price elasticity of demand you can estimate how far the price would fall when that volume is added: if the elasticity is −0.5 and the project adds 10% of the market, the price falls by about 20%. The app works it out and warns as soon as the share goes above 20%.</span></p>
+      </div>
+    </details>
+  </div>
+
+  <div class="next-bar">
+    <button class="btn btn-primary" id="b3Next"><span data-l="es">Continuar al Bloque 4 →</span><span data-l="en">Continue to Block 4 →</span></button>
+  </div>
+</section>
+<section class="step-panel" id="panel-4">
+  <div class="panel-title"><div class="pt-num">4</div>
+    <div><h2><span data-l="es">Inversión, costos y capital de trabajo</span><span data-l="en">Investment, costs and working capital</span></h2>
+      <p><span data-l="es">Todo lo que el proyecto tiene que pagar: lo que se compra una vez, lo que se gasta cada año y el dinero que hay que adelantar para que el ciclo camine. Aquí también se decide qué se deprecia y qué se repone.</span><span data-l="en">Everything the project has to pay for: what is bought once, what is spent every year and the money that has to be advanced so the cycle can run. This is also where what depreciates and what gets replaced is decided.</span></p></div>
+  </div>
+
+  <div class="chip-row" id="b4Context"></div>
+
+  <!-- ---------- 1 · fixed investment ---------- -->
+  <div class="card">
+    <h2><span data-l="es">1 · Inversión fija</span><span data-l="en">1 · Fixed investment</span></h2>
+    <p class="hint"><span data-l="es">Una fila por concepto. La <b>cantidad</b> por el <b>costo unitario</b> da el monto; el <b>año</b> dice cuándo se paga (0 es antes de arrancar); la <b>vida útil</b> y el <b>rescate</b> gobiernan la depreciación, y si marcas <b>reponer</b>, la app vuelve a comprar el activo cada vez que se acaba su vida, mientras quede horizonte para usarlo.</span><span data-l="en">One row per item. The <b>quantity</b> times the <b>unit cost</b> gives the amount; the <b>year</b> says when it is paid (0 is before starting); the <b>life</b> and the <b>salvage</b> govern depreciation, and if you mark <b>replace</b>, the app buys the asset again every time its life ends, as long as there is horizon left to use it.</span></p>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-secondary btn-sm" id="b4Example"><span data-l="es">Cargar un presupuesto de ejemplo</span><span data-l="en">Load an example budget</span></button>
+      <button class="btn btn-ghost btn-sm" id="b4Add_investments"><span data-l="es">+ 3 filas</span><span data-l="en">+ 3 rows</span></button>
+    </div>
+    <div class="grid-host" id="b4Investments"></div>
+    <p class="hint"><span data-l="es">Tipos que reconoce (escríbelos como quieras, en español o en inglés):</span><span data-l="en">Kinds it recognises (type them however you like, in Spanish or English):</span> <span id="b4KindHelp"></span>. <span data-l="es"><b>El terreno no se deprecia</b> y se recupera completo al final.</span><span data-l="en"><b>Land does not depreciate</b> and comes back whole at the end.</span></p>
+  </div>
+
+  <!-- ---------- 2 · deferred ---------- -->
+  <div class="card">
+    <h2><span data-l="es">2 · Inversión diferida</span><span data-l="en">2 · Pre-operating investment</span></h2>
+    <p class="hint"><span data-l="es">Lo que se paga antes de producir y no es un activo que se desgaste: estudios, permisos, constitución de la sociedad, capacitación, pruebas y puesta en marcha. No se deprecia: se amortiza en unos cuantos años.</span><span data-l="en">What is paid before producing and is not an asset that wears out: studies, permits, setting up the company, training, trials and start-up. It is not depreciated: it is amortised over a few years.</span></p>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-ghost btn-sm" id="b4Add_deferred"><span data-l="es">+ 3 filas</span><span data-l="en">+ 3 rows</span></button>
+      <label class="inline-label"><span data-l="es">Años de amortización</span><span data-l="en">Years of amortisation</span>
+        <input type="number" id="b4DeferredLife" min="1" max="20" step="1" style="width:80px"></label>
+    </div>
+    <div class="grid-host narrow" id="b4Deferred"></div>
+  </div>
+
+  <!-- ---------- 3 · cost budgets ---------- -->
+  <div class="card">
+    <h2><span data-l="es">3 · Presupuestos de costos</span><span data-l="en">3 · Cost budgets</span></h2>
+    <p class="hint"><span data-l="es">La <b>base</b> de cada partida decide cómo crece: <b>por unidad</b> se multiplica por la escala (jornales por hectárea), <b>por tonelada</b> sigue a la producción del Bloque 3 (cosecha, flete, comisión) y <b>total al año</b> entra completa sin importar cuánto se produzca.</span><span data-l="en">The <b>basis</b> of each item decides how it grows: <b>per unit</b> is multiplied by the scale (wages per hectare), <b>per tonne</b> follows the production of Block 3 (harvest, freight, commission) and <b>lump sum a year</b> enters whole no matter how much is produced.</span></p>
+
+    <h4><span data-l="es">Mientras el proyecto todavía no produce</span><span data-l="en">While the project is not yet producing</span></h4>
+    <p class="hint"><span data-l="es">Se aplica durante los años de gestación que declaraste en el Bloque 2. Déjalo vacío si el proyecto produce desde el primer año.</span><span data-l="en">It applies during the years to bear declared in Block 2. Leave it empty if the project produces from the first year.</span></p>
+    <div class="btn-row" style="margin-top:0"><button class="btn btn-ghost btn-sm" id="b4Add_establishment"><span data-l="es">+ 3 filas</span><span data-l="en">+ 3 rows</span></button></div>
+    <div class="grid-host" id="b4Establishment"></div>
+
+    <h4 style="margin-top:22px"><span data-l="es">Cuando ya produce</span><span data-l="en">Once it produces</span></h4>
+    <div class="btn-row" style="margin-top:0"><button class="btn btn-ghost btn-sm" id="b4Add_operating"><span data-l="es">+ 3 filas</span><span data-l="en">+ 3 rows</span></button></div>
+    <div class="grid-host" id="b4Operating"></div>
+
+    <h4 style="margin-top:22px"><span data-l="es">Costos fijos del año</span><span data-l="en">Annual fixed costs</span></h4>
+    <p class="hint"><span data-l="es">Los que se pagan produzca lo que produzca: administración, contador, seguros, vigilancia, renta.</span><span data-l="en">The ones paid whatever is produced: administration, accountant, insurance, security, rent.</span></p>
+    <div class="btn-row" style="margin-top:0"><button class="btn btn-ghost btn-sm" id="b4Add_fixed"><span data-l="es">+ 3 filas</span><span data-l="en">+ 3 rows</span></button></div>
+    <div class="grid-host narrow" id="b4Fixed"></div>
+
+    <div class="pg-pane" style="margin-top:16px"><div class="pg-title"><span data-l="es">A dónde se va el costo de un año a plena producción</span><span data-l="en">Where the cost of a year at full production goes</span></div><svg id="b4GroupChart"></svg></div>
+  </div>
+
+  <!-- ---------- 4 · working capital ---------- -->
+  <div class="card">
+    <h2><span data-l="es">4 · Capital de trabajo</span><span data-l="en">4 · Working capital</span></h2>
+    <p class="hint"><span data-l="es">No es un costo: es dinero que se adelanta y que vuelve. Se invierte el año <b>anterior</b> al que se necesita, crece cuando crece la producción y se recupera completo en el último año del horizonte.</span><span data-l="en">It is not a cost: it is money advanced that comes back. It is invested the year <b>before</b> it is needed, it grows when production grows, and it comes back whole in the last year of the horizon.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Cómo se estima" data-en="How it is estimated">Cómo se estima</label>
+        <select id="b4WcMethod">
+          <option value="cycle" data-es="Por el ciclo de caja (días)" data-en="By the cash cycle (days)">Por el ciclo de caja</option>
+          <option value="months" data-es="Meses de costo de operación" data-en="Months of operating cost">Meses de costo</option>
+          <option value="pct" data-es="Porcentaje del costo anual" data-en="Percentage of the annual cost">Porcentaje del costo</option>
+        </select></div>
+      <div class="field" id="b4MonthsField"><label data-es="Meses" data-en="Months">Meses</label><input type="number" id="b4WcMonths" min="0" max="24" step="0.5"></div>
+      <div class="field" id="b4PctField"><label data-es="Porcentaje (%)" data-en="Percentage (%)">Porcentaje (%)</label><input type="number" id="b4WcPct" min="0" max="200" step="1"></div>
+    </div>
+    <div class="form-grid" id="b4CycleFields">
+      <div class="field"><label data-es="Días de inventario" data-en="Days of inventory">Días de inventario</label><input type="number" id="b4DaysInv" min="0" max="730" step="1">
+        <span class="field-help"><span data-l="es">Del gasto a la cosecha o a la venta.</span><span data-l="en">From spending to harvest or sale.</span></span></div>
+      <div class="field"><label data-es="Días de cobranza" data-en="Days of collection">Días de cobranza</label><input type="number" id="b4DaysRec" min="0" max="365" step="1">
+        <span class="field-help"><span data-l="es">Lo que tarda el comprador en pagarte.</span><span data-l="en">How long the buyer takes to pay you.</span></span></div>
+      <div class="field"><label data-es="Días de crédito de proveedores" data-en="Days of supplier credit">Días de crédito de proveedores</label><input type="number" id="b4DaysPay" min="0" max="365" step="1">
+        <span class="field-help"><span data-l="es">Lo que tú tardas en pagarles: financian parte del ciclo.</span><span data-l="en">How long you take to pay them: they finance part of the cycle.</span></span></div>
+    </div>
+    <div class="callout tip"><b><span data-l="es">Por qué un proyecto rentable se queda sin dinero</span><span data-l="en">Why a profitable project runs out of money</span></b>
+      <span data-l="es">Entre que se paga el fertilizante y que el comprador liquida la cosecha pueden pasar ocho meses. Ese hueco lo tiene que financiar alguien, y si el estudio no lo cuenta como inversión, el proyecto se queda sin caja justo cuando más produce. El ciclo de caja son los días de inventario más los de cobranza, menos los que te financia el proveedor.</span><span data-l="en">Eight months can pass between paying for the fertiliser and the buyer settling the harvest. Somebody has to finance that gap, and if the study does not count it as investment, the project runs out of cash exactly when it produces most. The cash cycle is the days of inventory plus the days of collection, less the days the supplier finances for you.</span></div>
+  </div>
+
+  <!-- ---------- 5 · results ---------- -->
+  <div class="card">
+    <h2><span data-l="es">5 · Lo que resulta</span><span data-l="en">5 · What comes out</span></h2>
+    <div class="results-summary" id="b4Tiles"></div>
+    <div class="lab-grid" style="margin-top:12px">
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">Estructura de la inversión</span><span data-l="en">Structure of the investment</span></div><svg id="b4StructChart"></svg></div>
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">Cuándo hay que poner el dinero</span><span data-l="en">When the money has to be there</span></div><svg id="b4ScheduleChart"></svg></div>
+    </div>
+    <div class="pg-pane" style="margin-top:12px"><div class="pg-title"><span data-l="es">Costo de cada año y costo por tonelada</span><span data-l="en">Cost of each year and cost per tonne</span></div><svg id="b4CostChart"></svg></div>
+
+    <h3><span data-l="es">Calendario de inversiones y costos</span><span data-l="en">Calendar of investments and costs</span></h3>
+    <div class="table-scroll" id="b4Schedule"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-sm" id="b4ExportCSV"><span data-l="es">Descargar el calendario (.csv)</span><span data-l="en">Download the calendar (.csv)</span></button>
+    </div>
+
+    <h3><span data-l="es">Depreciación y valor de rescate</span><span data-l="en">Depreciation and salvage value</span></h3>
+    <p class="hint"><span data-l="es">Cada compra se deprecia por separado, incluidas las reposiciones. Lo que no alcanzó a depreciarse, más el terreno y el capital de trabajo, es lo que el proyecto todavía vale cuando termina el horizonte.</span><span data-l="en">Every purchase is depreciated on its own, replacements included. What was not depreciated, plus the land and the working capital, is what the project is still worth when the horizon ends.</span></p>
+    <div class="table-scroll" id="b4Depreciation"></div>
+  </div>
+
+  <!-- ---------- 6 · review ---------- -->
+  <div class="card">
+    <h2><span data-l="es">6 · Revisión</span><span data-l="en">6 · Review</span></h2>
+    <div class="messages" id="b4Messages"></div>
+    <details class="acc"><summary><span data-l="es">La depreciación no es dinero, pero sí cambia el resultado</span><span data-l="en">Depreciation is not money, but it does change the result</span> <span class="acc-tag"><span data-l="es">para la tesis</span><span data-l="en">for the thesis</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">La depreciación no sale de la caja: es el reparto contable del costo de un activo a lo largo de su vida. En el flujo de efectivo no aparece como salida, pero sí entra al estado de resultados del Bloque 5, porque <b>reduce el impuesto</b>. Ese ahorro fiscal sí es dinero, y es el único efecto real de la depreciación sobre el proyecto.</span><span data-l="en">Depreciation does not leave the bank: it is the accounting spread of the cost of an asset over its life. It does not appear as an outflow in the cash flow, but it does enter the income statement of Block 5, because it <b>lowers the tax</b>. That tax saving is real money, and it is the only real effect of depreciation on the project.</span></p>
+        <p><span data-l="es">Por eso la app la calcula aquí, activo por activo, y la entrega por separado: el Bloque 5 la resta para calcular el impuesto y la vuelve a sumar para obtener el flujo.</span><span data-l="en">That is why the app works it out here, asset by asset, and hands it over separately: Block 5 subtracts it to work out the tax and adds it back to obtain the cash flow.</span></p>
+      </div>
+    </details>
+    <details class="acc"><summary><span data-l="es">Reponer o no reponer: el horizonte y la vida de los activos</span><span data-l="en">To replace or not: the horizon and the life of the assets</span> <span class="acc-tag"><span data-l="es">decisión</span><span data-l="en">decision</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Si el horizonte es de veinte años y el equipo de riego dura quince, el proyecto necesita comprarlo otra vez en el año 15; si no lo haces, estás suponiendo que la huerta produce sin riego durante cinco años. La app arma esas reposiciones sola, cada una con su propia depreciación, y te avisa cuando un activo se queda corto y no está marcado para reposición.</span><span data-l="en">If the horizon is twenty years and the irrigation equipment lasts fifteen, the project has to buy it again in year 15; if you do not, you are assuming the orchard produces without irrigation for five years. The app builds those replacements by itself, each with its own depreciation, and warns you when an asset falls short and is not marked for replacement.</span></p>
+        <p><span data-l="es">La app no compra un activo en el último año del horizonte: sería una compra que nadie alcanza a usar y que solo sirve para inflar el valor de rescate.</span><span data-l="en">The app does not buy an asset in the last year of the horizon: that would be a purchase nobody gets to use, good only for inflating the salvage value.</span></p>
+      </div>
+    </details>
+  </div>
+
+  <div class="next-bar">
+    <button class="btn btn-primary" id="b4Next"><span data-l="es">Continuar al Bloque 5 →</span><span data-l="en">Continue to Block 5 →</span></button>
+  </div>
+</section>
+<section class="step-panel" id="panel-5">
+  <div class="panel-title"><div class="pt-num">5</div>
+    <div><h2><span data-l="es">Financiamiento y estados proforma</span><span data-l="en">Financing and pro-forma statements</span></h2>
+      <p><span data-l="es">Aquí se juntan los ingresos del Bloque 3 con la inversión y los costos del Bloque 4. Sale el estado de resultados, los dos flujos de efectivo —el del proyecto y el del inversionista—, el balance y el punto de equilibrio. Lo único que se captura en este bloque es el crédito.</span><span data-l="en">Here the revenue of Block 3 meets the investment and the costs of Block 4. Out come the income statement, the two cash flows —that of the project and that of the investor—, the balance sheet and the break-even point. The only thing entered in this block is the loan.</span></p></div>
+  </div>
+
+  <!-- ---------- 1 · financing ---------- -->
+  <div class="card">
+    <h2><span data-l="es">1 · Financiamiento</span><span data-l="en">1 · Financing</span></h2>
+    <p class="hint"><span data-l="es">Dos créditos, como se financia de verdad un proyecto rural: uno <b>refaccionario</b>, a varios años, para la inversión fija y diferida, y uno de <b>avío</b>, que se dispone cada ciclo para el capital de trabajo y se paga con la cosecha. Lo que no cubra el crédito lo aporta el dueño.</span><span data-l="en">Two loans, the way a rural project is really financed: a <b>long-term</b> one, over several years, for the fixed and pre-operating investment, and a <b>seasonal</b> one, drawn every cycle for the working capital and repaid with the harvest. Whatever the loan does not cover, the owner puts in.</span></p>
+    <h4><span data-l="es">Crédito refaccionario</span><span data-l="en">Long-term loan</span></h4>
+    <div class="form-grid">
+      <div class="field"><label data-es="Porcentaje de la inversión financiado (%)" data-en="Share of the investment financed (%)">Porcentaje financiado (%)</label><input type="number" id="b5LtShare" min="0" max="100" step="5"></div>
+      <div class="field"><label data-es="Tasa anual (%)" data-en="Annual rate (%)">Tasa anual (%)</label><input type="number" id="b5LtRate" min="0" max="80" step="0.5"></div>
+      <div class="field"><label data-es="Plazo (años)" data-en="Term (years)">Plazo (años)</label><input type="number" id="b5LtYears" min="1" max="30" step="1"></div>
+      <div class="field"><label data-es="Periodo de gracia (años)" data-en="Grace period (years)">Periodo de gracia (años)</label><input type="number" id="b5LtGrace" min="0" max="15" step="1">
+        <span class="field-help"><span data-l="es">En perennes, al menos los años que tarda en producir.</span><span data-l="en">In perennials, at least the years it takes to bear.</span></span></div>
+      <div class="field"><label data-es="Durante la gracia" data-en="During the grace period">Durante la gracia</label>
+        <select id="b5LtGraceType">
+          <option value="interest" data-es="Se pagan los intereses" data-en="Interest is paid">Se pagan los intereses</option>
+          <option value="capitalised" data-es="Los intereses se capitalizan" data-en="Interest is capitalised">Los intereses se capitalizan</option>
+          <option value="none" data-es="No se paga nada (interés condonado)" data-en="Nothing is paid (interest forgiven)">No se paga nada</option>
+        </select></div>
+      <div class="field"><label data-es="Forma de pago" data-en="Repayment pattern">Forma de pago</label>
+        <select id="b5LtType">
+          <option value="level" data-es="Pagos iguales" data-en="Level instalments">Pagos iguales</option>
+          <option value="capital" data-es="Capital constante" data-en="Constant principal">Capital constante</option>
+          <option value="bullet" data-es="Todo el capital al final" data-en="All the principal at the end">Todo al final</option>
+        </select></div>
+      <div class="field"><label data-es="Comisión de apertura (%)" data-en="Opening fee (%)">Comisión de apertura (%)</label><input type="number" id="b5Fee" min="0" max="10" step="0.25">
+        <span class="field-help"><span data-l="es">Se capitaliza con la inversión diferida y se amortiza.</span><span data-l="en">It is capitalised with the pre-operating investment and amortised.</span></span></div>
+    </div>
+    <h4><span data-l="es">Crédito de avío</span><span data-l="en">Seasonal loan</span></h4>
+    <div class="form-grid">
+      <div class="field"><label data-es="Porcentaje del capital de trabajo (%)" data-en="Share of the working capital (%)">Porcentaje del capital de trabajo (%)</label><input type="number" id="b5SeasonalShare" min="0" max="100" step="5"></div>
+      <div class="field"><label data-es="Tasa anual (%)" data-en="Annual rate (%)">Tasa anual (%)</label><input type="number" id="b5SeasonalRate" min="0" max="80" step="0.5"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost btn-sm" id="b5NoLoan"><span data-l="es">Evaluar sin crédito</span><span data-l="en">Appraise with no loan</span></button>
+    </div>
+  </div>
+
+  <!-- ---------- 2 · results ---------- -->
+  <div class="card">
+    <h2><span data-l="es">2 · Lo que resulta</span><span data-l="en">2 · What comes out</span></h2>
+    <div class="results-summary" id="b5Tiles"></div>
+    <div class="lab-grid" style="margin-top:12px">
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">Estado de resultados</span><span data-l="en">Income statement</span></div><svg id="b5IncomeChart"></svg></div>
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">Flujos de efectivo y saldo de caja</span><span data-l="en">Cash flows and cash balance</span></div><svg id="b5FlowChart"></svg></div>
+    </div>
+    <div class="callout tip"><b><span data-l="es">Dos flujos, no uno</span><span data-l="en">Two flows, not one</span></b>
+      <span data-l="es">El <b>flujo del proyecto</b> dice si la idea es buena sin importar quién la pague: no lleva crédito ni intereses, y su impuesto se calcula como si no hubiera deuda. El <b>flujo del inversionista</b> dice cuánto gana el dueño con su propio dinero: recibe el crédito, lo paga y su impuesto ya trae el escudo de los intereses. El Bloque 6 descuenta cada uno con su tasa; mezclarlos cuenta dos veces el beneficio del crédito.</span><span data-l="en">The <b>project flow</b> says whether the idea is good no matter who pays for it: no loan, no interest, and its tax computed as if there were no debt. The <b>investor flow</b> says what the owner earns with their own money: it receives the loan, repays it, and its tax already carries the shield of the interest. Block 6 discounts each with its own rate; mixing them counts the benefit of the loan twice.</span></div>
+  </div>
+
+  <!-- ---------- 3 · statements ---------- -->
+  <div class="card">
+    <h2><span data-l="es">3 · Estado de resultados</span><span data-l="en">3 · Income statement</span></h2>
+    <p class="hint"><span data-l="es">Los años con pérdida van marcados: esas pérdidas se amortizan contra las utilidades de los años siguientes, como permite la ley, y por eso el impuesto de un proyecto perenne no empieza a pagarse en cuanto hay utilidad.</span><span data-l="en">The years with a loss are marked: those losses are carried forward against the profits of later years, as the law allows, which is why the tax of a perennial project does not start being paid as soon as there is a profit.</span></p>
+    <div class="table-scroll" id="b5Income"></div>
+
+    <h3><span data-l="es">Flujos de efectivo</span><span data-l="en">Cash flows</span></h3>
+    <div class="table-scroll" id="b5Flows"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-sm" id="b5ExportCSV"><span data-l="es">Descargar los estados (.csv)</span><span data-l="en">Download the statements (.csv)</span></button>
+    </div>
+
+    <h3><span data-l="es">Tabla de amortización del crédito</span><span data-l="en">Loan schedule</span></h3>
+    <div class="table-scroll" id="b5Loan"></div>
+
+    <h3><span data-l="es">Balance general</span><span data-l="en">Balance sheet</span></h3>
+    <p class="hint"><span data-l="es">Se presenta antes de liquidar el proyecto, así que el valor de rescate no aparece aquí: está en el flujo. La última columna comprueba la identidad contable año por año; si alguna vez no sale ✓, es un error del programa y conviene reportarlo.</span><span data-l="en">It is drawn before the project is wound up, so the salvage value is not here: it is in the cash flow. The last column checks the accounting identity year by year; if it ever fails to show ✓, that is a bug in the program and it is worth reporting.</span></p>
+    <div class="table-scroll" id="b5Balance"></div>
+  </div>
+
+  <!-- ---------- 4 · break-even ---------- -->
+  <div class="card">
+    <h2><span data-l="es">4 · Punto de equilibrio</span><span data-l="en">4 · Break-even point</span></h2>
+    <p class="hint"><span data-l="es">Solo es verdaderamente variable lo que sigue al volumen vendido: la cosecha, el flete, la comisión. Las labores por hectárea, la administración, la depreciación y los intereses hay que pagarlos produzca lo que produzca, así que entran como costos fijos aunque el presupuesto los llame variables.</span><span data-l="en">Only what follows the volume sold is truly variable: harvesting, freight, commission. The work per hectare, the administration, the depreciation and the interest have to be paid whatever is produced, so they enter as fixed costs even if the budget calls them variable.</span></p>
+    <div class="btn-row" style="margin-top:0">
+      <label class="inline-label"><span data-l="es">Año</span><span data-l="en">Year</span><select id="b5BeYear"></select></label>
+    </div>
+    <div class="pg-pane" style="margin-top:10px"><div class="pg-title"><span data-l="es">Ingreso, costo y punto de equilibrio</span><span data-l="en">Revenue, cost and break-even</span></div><svg id="b5BeChart"></svg></div>
+    <p class="hint" id="b5BeNote"></p>
+  </div>
+
+  <!-- ---------- 5 · debt and ratios ---------- -->
+  <div class="card">
+    <h2><span data-l="es">5 · La deuda y las razones financieras</span><span data-l="en">5 · The debt and the financial ratios</span></h2>
+    <p class="hint"><span data-l="es">La cobertura del servicio de la deuda es la razón que mira un banco: cuántas veces alcanza el flujo del año para pagar capital e intereses. Por debajo de 1.2 casi nadie presta sin reestructurar el plazo o pedir una gracia.</span><span data-l="en">The debt service coverage is the ratio a bank looks at: how many times the cash flow of the year covers principal and interest. Below 1.2 almost nobody lends without a longer term or a grace period.</span></p>
+    <div class="pg-pane"><div class="pg-title"><span data-l="es">Servicio de la deuda contra el flujo disponible</span><span data-l="en">Debt service against the cash available</span></div><svg id="b5DebtChart"></svg></div>
+    <div class="table-scroll" id="b5Ratios" style="margin-top:12px"></div>
+  </div>
+
+  <!-- ---------- 6 · review ---------- -->
+  <div class="card">
+    <h2><span data-l="es">6 · Revisión</span><span data-l="en">6 · Review</span></h2>
+    <div class="messages" id="b5Messages"></div>
+    <details class="acc"><summary><span data-l="es">Un proyecto rentable que se queda sin dinero</span><span data-l="en">A profitable project that runs out of money</span> <span class="acc-tag"><span data-l="es">para la tesis</span><span data-l="en">for the thesis</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">La utilidad no es la caja. Un proyecto puede tener utilidad neta positiva todos los años y aun así quedarse sin dinero, porque la utilidad no paga el capital del crédito, ni las reposiciones de equipo, ni el aumento del capital de trabajo cuando la producción crece. Esas tres salidas no aparecen en el estado de resultados, pero sí en el flujo.</span><span data-l="en">Profit is not cash. A project can show a positive net profit every year and still run out of money, because profit does not pay the principal of the loan, nor the replacement of equipment, nor the increase in working capital when production grows. Those three outflows do not appear in the income statement, but they do in the cash flow.</span></p>
+        <p><span data-l="es">Por eso la app lleva el <b>saldo de caja acumulado</b>: si en algún año cae por debajo de cero, te avisa y te dice en cuál. La solución nunca es maquillar el flujo, sino pedir más crédito, aportar más capital, alargar el plazo o mover la inversión de año.</span><span data-l="en">That is why the app keeps the <b>accumulated cash balance</b>: if it falls below zero in any year, it warns you and says which one. The answer is never to dress up the flow, but to ask for more credit, put in more equity, lengthen the term or move the investment to another year.</span></p>
+      </div>
+    </details>
+    <details class="acc"><summary><span data-l="es">Por qué el crédito hace que el proyecto se vea mejor (y cuándo es una ilusión)</span><span data-l="en">Why a loan makes the project look better (and when that is an illusion)</span> <span class="acc-tag"><span data-l="es">apalancamiento</span><span data-l="en">leverage</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">El crédito hace dos cosas: reduce lo que el dueño pone —así que el mismo dinero ganado se reparte entre menos capital propio— y deduce sus intereses del impuesto. Por eso el rendimiento del capital sube cuando hay deuda, siempre que el proyecto rinda más que la tasa del crédito.</span><span data-l="en">A loan does two things: it reduces what the owner puts in —so the same money earned is spread over less equity— and it deducts its interest from the tax. That is why the return on equity rises with debt, as long as the project earns more than the loan rate.</span></p>
+        <p><span data-l="es">Si rinde menos, el apalancamiento trabaja al revés y multiplica la pérdida. Y la ilusión clásica es descontar el flujo del inversionista —que ya se benefició del crédito— con el costo de capital promedio ponderado, que también incluye el crédito: eso cuenta el beneficio dos veces. El Bloque 6 usa cada flujo con su tasa.</span><span data-l="en">If it earns less, leverage works in reverse and multiplies the loss. And the classic illusion is to discount the investor flow —which has already benefited from the loan— at the weighted average cost of capital, which also includes the loan: that counts the benefit twice. Block 6 uses each flow with its own rate.</span></p>
+      </div>
+    </details>
+  </div>
+
+  <div class="next-bar">
+    <button class="btn btn-primary" id="b5Next"><span data-l="es">Continuar al Bloque 6 →</span><span data-l="en">Continue to Block 6 →</span></button>
+  </div>
+</section>
+<section class="step-panel" id="panel-6">
+  <div class="panel-title"><div class="pt-num">6</div>
+    <div><h2><span data-l="es">Evaluación financiera</span><span data-l="en">Financial appraisal</span></h2>
+      <p><span data-l="es">Los dos flujos del Bloque 5, descontados. Aquí sale el dictamen: VAN, TIR, relación beneficio–costo, periodo de recuperación y valor anual equivalente, con el perfil del VAN y la descomposición de dónde sale cada peso. Al final, el análisis marginal para comparar tecnologías.</span><span data-l="en">The two cash flows of Block 5, discounted. This is where the verdict comes out: NPV, IRR, benefit–cost ratio, payback and equivalent annual value, with the NPV profile and the breakdown of where every peso comes from. At the end, the marginal analysis for comparing technologies.</span></p></div>
+  </div>
+
+  <div class="chip-row" id="b6Context"></div>
+
+  <!-- ---------- 1 · the verdict ---------- -->
+  <div class="card">
+    <h2><span data-l="es">1 · El dictamen</span><span data-l="en">1 · The verdict</span></h2>
+    <div class="results-summary" id="b6Tiles"></div>
+    <div class="callout" id="b6Verdict"></div>
+    <div class="form-grid">
+      <div class="field"><label data-es="Tasa para el flujo del proyecto (%)" data-en="Rate for the project flow (%)">Tasa para el flujo del proyecto (%)</label>
+        <input type="number" id="b6RateProject" min="0" max="100" step="0.25" data-es-ph="la del Bloque 2" data-en-ph="the one from Block 2"></div>
+      <div class="field"><label data-es="Tasa para el flujo del inversionista (%)" data-en="Rate for the investor flow (%)">Tasa para el flujo del inversionista (%)</label>
+        <input type="number" id="b6RateEquity" min="0" max="100" step="0.25" data-es-ph="el costo del capital propio" data-en-ph="the cost of equity"></div>
+      <div class="field"><label class="keep-case">&nbsp;</label>
+        <button class="btn btn-ghost btn-sm" id="b6ResetRates"><span data-l="es">Volver a las tasas del Bloque 2</span><span data-l="en">Back to the rates of Block 2</span></button></div>
+    </div>
+    <p class="hint" id="b6AutoNote"></p>
+    <div class="callout tip"><b><span data-l="es">Cada flujo con su tasa</span><span data-l="en">Each flow with its own rate</span></b>
+      <span data-l="es">El flujo del proyecto se descuenta al costo de todo el capital —el CPPC, o la TREMA cuando no hay deuda—; el del inversionista, al costo del dinero del dueño, que es más caro porque cobra al final. Descontar el flujo del inversionista con el CPPC, que ya incluye el crédito, cuenta dos veces el beneficio de la deuda.</span><span data-l="en">The project flow is discounted at the cost of all the capital —the WACC, or the MARR when there is no debt—; the investor flow, at the cost of the owner's money, which is dearer because they are paid last. Discounting the investor flow at the WACC, which already contains the loan, counts the benefit of the debt twice.</span></div>
+  </div>
+
+  <!-- ---------- 2 · indicators ---------- -->
+  <div class="card">
+    <h2><span data-l="es">2 · Los indicadores, lado a lado</span><span data-l="en">2 · The indicators, side by side</span></h2>
+    <div class="table-scroll" id="b6Table"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-sm" id="b6ExportCSV"><span data-l="es">Descargar los indicadores (.csv)</span><span data-l="en">Download the indicators (.csv)</span></button>
+    </div>
+    <div class="lab-grid" style="margin-top:14px">
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">Perfil del VAN</span><span data-l="en">NPV profile</span></div><svg id="b6ProfileChart"></svg></div>
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">De dónde sale el VAN</span><span data-l="en">Where the NPV comes from</span></div><svg id="b6WaterfallChart"></svg></div>
+    </div>
+    <p class="hint"><span data-l="es">Las cinco barras de la derecha suman exactamente el VAN: valor presente de los ingresos, menos el de los costos, el de los impuestos y el de la inversión, más el del valor de rescate. Si alguna vez no cuadrara, sería un error del programa.</span><span data-l="en">The five bars on the right add up to exactly the NPV: present value of the revenue, less that of the costs, the taxes and the investment, plus that of the salvage value. If they ever failed to add up, it would be a bug.</span></p>
+    <div class="pg-pane" style="margin-top:12px"><div class="pg-title"><span data-l="es">Recuperación de la inversión</span><span data-l="en">Recovery of the investment</span></div><svg id="b6PaybackChart"></svg></div>
+  </div>
+
+  <!-- ---------- 3 · marginal analysis ---------- -->
+  <div class="card">
+    <h2><span data-l="es">3 · Presupuestos parciales y análisis marginal</span><span data-l="en">3 · Partial budgets and marginal analysis</span></h2>
+    <p class="hint"><span data-l="es">Esto ya no evalúa el proyecto: compara <b>tecnologías</b>. Es el método de Perrin, Winkelmann, Moscardi y Anderson para el CIMMYT (1976), el que se pide en una tesis agronómica cuando hay tratamientos y hay que recomendar uno.</span><span data-l="en">This no longer appraises the project: it compares <b>technologies</b>. It is the method of Perrin, Winkelmann, Moscardi and Anderson for CIMMYT (1976), the one asked for in an agronomy thesis when there are treatments and one has to be recommended.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Precio de campo" data-en="Field price">Precio de campo</label><input type="text" id="b6FieldPrice" inputmode="decimal" data-es-ph="el del Bloque 3" data-en-ph="the one from Block 3">
+        <span class="field-help"><span data-l="es">Lo que el productor recibe en la parcela, ya descontados fletes y comisiones.</span><span data-l="en">What the farmer receives at the field, net of freight and commissions.</span></span></div>
+      <div class="field"><label data-es="Ajuste del rendimiento (%)" data-en="Yield adjustment (%)">Ajuste del rendimiento (%)</label><input type="number" id="b6Adjust" min="0" max="50" step="5">
+        <span class="field-help"><span data-l="es">Una parcela experimental rinde más que la del productor; se suele bajar 10 %.</span><span data-l="en">An experimental plot yields more than a farmer's field; 10% is the usual cut.</span></span></div>
+      <div class="field"><label data-es="Tasa mínima de retorno (%)" data-en="Minimum rate of return (%)">Tasa mínima de retorno (%)</label><input type="number" id="b6MinRate" min="0" max="500" step="10">
+        <span class="field-help"><span data-l="es">Lo que el productor exige por cada peso extra; suele pedirse 100 %.</span><span data-l="en">What the farmer demands for each extra peso; 100% is the usual figure.</span></span></div>
+    </div>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-secondary btn-sm" id="b6MarginalExample"><span data-l="es">Cargar un ejemplo</span><span data-l="en">Load an example</span></button>
+      <button class="btn btn-ghost btn-sm" id="b6AddTreat"><span data-l="es">+ 3 tratamientos</span><span data-l="en">+ 3 treatments</span></button>
+    </div>
+    <div class="grid-host" id="b6Treatments"></div>
+    <p class="hint"><span data-l="es">En «costos que varían» entra <b>solo</b> lo que cambia entre tratamientos: el fertilizante que sí se aplicó, el herbicida, los jornales de más. Lo que se hace igual en todos —la siembra, la renta de la tierra— no entra, porque no cambia la comparación.</span><span data-l="en">Under "costs that vary" goes <b>only</b> what changes between treatments: the fertiliser actually applied, the herbicide, the extra labour. What is done the same in all of them —sowing, land rent— does not enter, because it does not change the comparison.</span></p>
+    <div class="table-scroll" id="b6Marginal" style="margin-top:12px"></div>
+    <p class="hint" id="b6MarginalNote"></p>
+    <div class="pg-pane" style="margin-top:12px"><div class="pg-title"><span data-l="es">Curva de beneficios netos</span><span data-l="en">Net benefit curve</span></div><svg id="b6MarginalChart"></svg></div>
+  </div>
+
+  <!-- ---------- 4 · review ---------- -->
+  <div class="card">
+    <h2><span data-l="es">4 · Revisión</span><span data-l="en">4 · Review</span></h2>
+    <div class="messages" id="b6Messages"></div>
+    <details class="acc"><summary><span data-l="es">Qué hacer cuando la TIR y el VAN se contradicen</span><span data-l="en">What to do when the IRR and the NPV disagree</span> <span class="acc-tag"><span data-l="es">para la tesis</span><span data-l="en">for the thesis</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Entre dos proyectos que se excluyen, la TIR puede preferir uno y el VAN el otro. Casi siempre es porque tienen tamaños o duraciones distintas: la TIR es un porcentaje y no sabe cuántos pesos hay detrás. En ese caso manda el VAN, o se calcula la <b>TIR incremental</b> sobre la diferencia de los dos flujos, que es lo que hace el Bloque 9.</span><span data-l="en">Between two mutually exclusive projects, the IRR may prefer one and the NPV the other. Almost always it is because they differ in size or in length: the IRR is a percentage and does not know how many pesos are behind it. In that case the NPV decides, or the <b>incremental IRR</b> is computed on the difference of the two flows, which is what Block 9 does.</span></p>
+        <p><span data-l="es">Y cuando los flujos cambian de signo más de una vez —una replantación, una reposición grande a la mitad del horizonte— hay varias TIR y ninguna significa nada por sí sola. La app las cuenta y te lo dice; ahí se usa la <b>TIR modificada</b>, que declara a qué tasa se reinvierte.</span><span data-l="en">And when the flows change sign more than once —a replanting, a large replacement mid-horizon— there are several IRRs and none of them means anything on its own. The app counts them and tells you; there the <b>modified IRR</b> is used, which states the rate at which the money is reinvested.</span></p>
+      </div>
+    </details>
+    <details class="acc"><summary><span data-l="es">Dominancia y tasa de retorno marginal, en una línea</span><span data-l="en">Dominance and the marginal rate of return, in one line</span> <span class="acc-tag">CIMMYT 1976</span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Un tratamiento está <b>dominado</b> cuando cuesta más que otro y deja menos: se descarta sin discutir tasas, porque nadie gastaría más para ganar menos. Entre los que quedan, la <b>tasa de retorno marginal</b> compara cada escalón con el anterior: cuánto beneficio neto adicional por cada peso adicional de costo.</span><span data-l="en">A treatment is <b>dominated</b> when it costs more than another and returns less: it is discarded without discussing rates, because nobody would spend more to earn less. Among those left, the <b>marginal rate of return</b> compares each step with the previous one: how much extra net benefit for each extra peso of cost.</span></p>
+        <div class="formula">TRM = (beneficio neto₂ − beneficio neto₁) / (costos que varían₂ − costos que varían₁)</div>
+        <p><span data-l="es">Se recomienda el tratamiento más caro que todavía devuelva la tasa mínima en cada escalón. Una TRM de 100 % significa que por cada peso invertido de más, el productor recupera ese peso y gana otro; por debajo de eso, en agricultura de temporal, casi nadie cambia de tecnología.</span><span data-l="en">The recommendation is the dearest treatment that still returns the minimum rate at every step. A marginal rate of 100% means that for every extra peso spent, the farmer gets that peso back and earns another; below that, in rain-fed farming, almost nobody changes technology.</span></p>
+      </div>
+    </details>
+  </div>
+
+  <div class="next-bar">
+    <button class="btn btn-primary" id="b6Next"><span data-l="es">Continuar al Bloque 7 →</span><span data-l="en">Continue to Block 7 →</span></button>
+  </div>
+</section>
+<section class="step-panel" id="panel-7">
+  <div class="panel-title"><div class="pt-num">7</div>
+    <div><h2><span data-l="es">Riesgo e incertidumbre</span><span data-l="en">Risk and uncertainty</span></h2>
+      <p><span data-l="es">Hasta aquí cada número del estudio era uno solo: un precio, un rendimiento, un costo. Este bloque pregunta qué pasa cuando no lo son, en los tres niveles que pide un proyecto: sensibilidad, escenarios y simulación. Todo se calcula sobre el <b>flujo del proyecto</b>, sin financiamiento: el riesgo es de la idea, el crédito se decide aparte.</span><span data-l="en">So far every number in the study was a single one: one price, one yield, one cost. This block asks what happens when they are not, at the three levels a project has to report: sensitivity, scenarios and simulation. Everything is computed on the <b>flow of the project</b>, with no financing: the risk belongs to the idea, the loan is decided separately.</span></p></div>
+  </div>
+
+  <div class="results-summary" id="b7Tiles"></div>
+
+  <!-- ---------- 1 · one variable at a time ---------- -->
+  <div class="card">
+    <h2><span data-l="es">1 · Una variable a la vez</span><span data-l="en">1 · One variable at a time</span></h2>
+    <p class="hint"><span data-l="es">Cada línea mueve una sola variable y deja las demás quietas. Donde una línea cruza el cero, esa variable por sí sola acaba con el proyecto; mientras más parada esté la línea, más delicada es.</span><span data-l="en">Each line moves one variable and leaves the others still. Where a line crosses zero, that variable on its own kills the project; the steeper the line, the more delicate it is.</span></p>
+    <div class="pg-pane"><div class="pg-title"><span data-l="es">Sensibilidad: VAN contra el cambio de cada variable</span><span data-l="en">Sensitivity: NPV against the change in each variable</span></div><svg id="b7SpiderChart"></svg></div>
+    <div class="btn-row">
+      <label class="inline-label"><span data-l="es">Amplitud del tornado (%)</span><span data-l="en">Tornado swing (%)</span>
+        <input type="number" id="b7Delta" min="1" max="50" step="1" style="width:80px"></label>
+    </div>
+    <div class="pg-pane"><div class="pg-title"><span data-l="es">Tornado: qué mueve más el resultado</span><span data-l="en">Tornado: what moves the result most</span></div><svg id="b7TornadoChart"></svg></div>
+
+    <h3><span data-l="es">Valores límite</span><span data-l="en">Switching values</span></h3>
+    <p class="hint"><span data-l="es">En lugar de preguntar qué pasa si el precio baja 10 %, esto pregunta <b>cuánto</b> puede bajar antes de que el VAN llegue a cero. Es la forma que recomienda Gittinger porque se puede discutir con el productor, no con una tabla.</span><span data-l="en">Instead of asking what happens if the price falls 10%, this asks <b>how far</b> it can fall before the NPV reaches zero. It is the form Gittinger recommends because it can be argued with the farmer, not with a table.</span></p>
+    <div class="table-scroll" id="b7Switching"></div>
+  </div>
+
+  <!-- ---------- 2 · two variables ---------- -->
+  <div class="card">
+    <h2><span data-l="es">2 · Dos variables a la vez</span><span data-l="en">2 · Two variables at once</span></h2>
+    <p class="hint"><span data-l="es">El cuadro que se imprime en una tesis: el VAN para cada combinación de dos variables. Lo verde conviene, lo rojo no, y la frontera entre ambos es lo que hay que poder defender.</span><span data-l="en">The table a thesis prints: the NPV for each combination of two variables. Green is worth doing, red is not, and the border between them is what has to be defensible.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Variable horizontal" data-en="Horizontal variable">Variable horizontal</label>
+        <select id="b7VarA">
+          <option value="price" data-es="Precio de venta" data-en="Selling price">Precio</option>
+          <option value="yield" data-es="Rendimiento" data-en="Yield">Rendimiento</option>
+          <option value="cost" data-es="Costos de operación" data-en="Operating costs">Costos</option>
+          <option value="invest" data-es="Inversión" data-en="Investment">Inversión</option>
+          <option value="rate" data-es="Tasa de descuento" data-en="Discount rate">Tasa</option>
+        </select></div>
+      <div class="field"><label data-es="Variable vertical" data-en="Vertical variable">Variable vertical</label>
+        <select id="b7VarB">
+          <option value="yield" data-es="Rendimiento" data-en="Yield">Rendimiento</option>
+          <option value="price" data-es="Precio de venta" data-en="Selling price">Precio</option>
+          <option value="cost" data-es="Costos de operación" data-en="Operating costs">Costos</option>
+          <option value="invest" data-es="Inversión" data-en="Investment">Inversión</option>
+          <option value="rate" data-es="Tasa de descuento" data-en="Discount rate">Tasa</option>
+        </select></div>
+    </div>
+    <div class="pg-pane"><div class="pg-title"><span data-l="es">VAN según dos variables</span><span data-l="en">NPV under two variables</span></div><svg id="b7HeatChart"></svg></div>
+  </div>
+
+  <!-- ---------- 3 · scenarios ---------- -->
+  <div class="card">
+    <h2><span data-l="es">3 · Escenarios</span><span data-l="en">3 · Scenarios</span></h2>
+    <p class="hint"><span data-l="es">Tres estados del mundo con los cambios que los definen y la probabilidad que estés dispuesto a declarar. Los porcentajes son cambios sobre el caso base: −20 en precio significa un precio 20 % más bajo.</span><span data-l="en">Three states of the world with the changes that define them and the probability you are willing to state. The percentages are changes from the base case: −20 in price means a price 20% lower.</span></p>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-secondary btn-sm" id="b7ScenarioExample"><span data-l="es">Cargar escenarios de ejemplo</span><span data-l="en">Load example scenarios</span></button>
+    </div>
+    <div class="grid-host" id="b7ScenarioGrid"></div>
+    <div class="table-scroll" id="b7Scenarios" style="margin-top:12px"></div>
+  </div>
+
+  <!-- ---------- 4 · simulation ---------- -->
+  <div class="card">
+    <h2><span data-l="es">4 · Simulación de Monte Carlo</span><span data-l="en">4 · Monte Carlo simulation</span></h2>
+    <p class="hint"><span data-l="es">Todas las variables a la vez, cada una con su distribución. Cada corrida sortea un valor de cada una, arma el flujo completo del proyecto y calcula su VAN; con miles de corridas aparece la distribución del resultado y la probabilidad de perder, que es lo que pregunta un banco o un comité.</span><span data-l="en">All the variables at once, each with its distribution. Each run draws a value of every one, builds the whole project flow and computes its NPV; with thousands of runs the distribution of the result appears, and with it the probability of a loss, which is what a bank or a committee asks.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Distribución" data-en="Distribution">Distribución</label>
+        <select id="b7Dist">
+          <option value="triangular" data-es="Triangular (mínimo, más probable, máximo)" data-en="Triangular (min, most likely, max)">Triangular</option>
+          <option value="pert" data-es="PERT (pondera el valor más probable)" data-en="PERT (weights the most likely value)">PERT</option>
+          <option value="normal" data-es="Normal (media y desviación)" data-en="Normal (mean and deviation)">Normal</option>
+          <option value="uniform" data-es="Uniforme" data-en="Uniform">Uniforme</option>
+        </select></div>
+      <div class="field"><label data-es="Variación del precio (%)" data-en="Price variation (%)">Variación del precio (%)</label><input type="number" id="b7SimPrice" min="0" max="80" step="1"></div>
+      <div class="field"><label data-es="Variación del rendimiento (%)" data-en="Yield variation (%)">Variación del rendimiento (%)</label><input type="number" id="b7SimYield" min="0" max="80" step="1"></div>
+      <div class="field"><label data-es="Variación de los costos (%)" data-en="Cost variation (%)">Variación de los costos (%)</label><input type="number" id="b7SimCost" min="0" max="80" step="1"></div>
+      <div class="field"><label data-es="Variación de la inversión (%)" data-en="Investment variation (%)">Variación de la inversión (%)</label><input type="number" id="b7SimInvest" min="0" max="80" step="1"></div>
+      <div class="field"><label data-es="Correlación precio–rendimiento" data-en="Price–yield correlation">Correlación precio–rendimiento</label><input type="number" id="b7Corr" min="-0.9" max="0.9" step="0.05">
+        <span class="field-help"><span data-l="es">Negativa en agricultura: el año de la buena cosecha es el del precio bajo.</span><span data-l="en">Negative in farming: the year of the good harvest is the year of the low price.</span></span></div>
+      <div class="field"><label data-es="Número de corridas" data-en="Number of runs">Número de corridas</label><input type="number" id="b7Runs" min="200" max="20000" step="200"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-sm" id="b7Simulate"><span data-l="es">Simular</span><span data-l="en">Simulate</span></button>
+      <button class="btn btn-secondary btn-sm" id="b7ExportCSV"><span data-l="es">Descargar el análisis (.csv)</span><span data-l="en">Download the analysis (.csv)</span></button>
+    </div>
+    <div class="table-scroll" id="b7SimSummary" style="margin-top:12px"></div>
+    <div class="lab-grid" style="margin-top:12px">
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">Distribución del VAN</span><span data-l="en">Distribution of the NPV</span></div><svg id="b7HistChart"></svg></div>
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">Qué explica la variación</span><span data-l="en">What explains the spread</span></div><svg id="b7DriverChart"></svg></div>
+    </div>
+    <p class="hint"><span data-l="es">La segunda figura correlaciona lo que se sorteó en cada corrida con el VAN que salió: la variable de arriba es donde vale la pena gastar en información antes de decidir.</span><span data-l="en">The second figure correlates what was drawn in each run with the NPV that came out: the variable at the top is where it pays to spend on information before deciding.</span></p>
+  </div>
+
+  <!-- ---------- 5 · deciding in stages ---------- -->
+  <div class="card">
+    <h2><span data-l="es">5 · Decidir por etapas</span><span data-l="en">5 · Deciding in stages</span></h2>
+    <p class="hint"><span data-l="es">No siempre hay que decidir hoy. Esperar un año cuesta un año de descuento, pero permite no invertir si el escenario resulta malo. El árbol usa tus escenarios pesimista y optimista.</span><span data-l="en">The decision does not always have to be taken today. Waiting a year costs a year of discounting, but it allows you not to invest if the state turns out badly. The tree uses your pessimistic and optimistic scenarios.</span></p>
+    <div class="btn-row" style="margin-top:0">
+      <label class="inline-label"><span data-l="es">Probabilidad del escenario bueno (%)</span><span data-l="en">Probability of the good state (%)</span>
+        <input type="number" id="b7TreeProb" min="0" max="100" step="5" style="width:90px"></label>
+    </div>
+    <div class="pg-pane"><div class="pg-title"><span data-l="es">Invertir ahora o esperar</span><span data-l="en">Invest now or wait</span></div><svg id="b7TreeChart"></svg></div>
+    <p class="hint" id="b7TreeNote"></p>
+  </div>
+
+  <!-- ---------- 6 · review ---------- -->
+  <div class="card">
+    <h2><span data-l="es">6 · Revisión</span><span data-l="en">6 · Review</span></h2>
+    <div class="messages" id="b7Messages"></div>
+    <details class="acc"><summary><span data-l="es">Por qué un valor límite convence más que un porcentaje</span><span data-l="en">Why a switching value convinces more than a percentage</span> <span class="acc-tag"><span data-l="es">para la tesis</span><span data-l="en">for the thesis</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">«Si el precio baja 10 %, el VAN baja a tanto» no le dice nada a nadie: ¿y si baja 11 %? El valor límite invierte la pregunta y entrega un número con el que se puede discutir: «el precio puede caer hasta 18,400 pesos por tonelada; por debajo de eso el proyecto deja de convenir». Entonces se va uno a la serie histórica del Bloque 3 y se pregunta cuántas veces en diez años el precio estuvo ahí. Eso es un argumento; el porcentaje solo era una tabla.</span><span data-l="en">"If the price falls 10%, the NPV falls to this much" tells nobody anything: what if it falls 11%? The switching value turns the question round and gives a figure that can be argued with: "the price can fall as low as 18,400 pesos a tonne; below that the project stops being worth doing". Then you go back to the historical series of Block 3 and ask how many times in ten years the price was there. That is an argument; the percentage was only a table.</span></p>
+      </div>
+    </details>
+    <details class="acc"><summary><span data-l="es">La correlación entre precio y rendimiento no es un detalle</span><span data-l="en">The correlation between price and yield is not a detail</span> <span class="acc-tag"><span data-l="es">simulación</span><span data-l="en">simulation</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Si se simulan precio y rendimiento como independientes, aparecen corridas con muy buena cosecha <i>y</i> muy buen precio, y otras con mala cosecha <i>y</i> mal precio. Las primeras son improbables y las segundas también: en un mercado regional, el año en que todos cosechan mucho el precio se cae, y el año de la sequía el precio sube. Ignorarlo <b>ensancha</b> artificialmente la distribución del VAN y hace ver al proyecto más riesgoso de lo que es.</span><span data-l="en">If price and yield are simulated as independent, runs appear with a very good harvest <i>and</i> a very good price, and others with a bad harvest <i>and</i> a bad price. Both are unlikely: in a regional market, the year everybody harvests a lot the price falls, and the year of the drought the price rises. Ignoring it artificially <b>widens</b> the distribution of the NPV and makes the project look riskier than it is.</span></p>
+        <p><span data-l="es">La app impone esa correlación sobre los rangos de las variables (método de Iman y Conover), de modo que cada variable conserva su distribución y solo cambia cómo se emparejan. Pon la correlación en cero y verás cómo se ensancha el histograma.</span><span data-l="en">The app imposes that correlation on the ranks of the variables (Iman and Conover's method), so each variable keeps its own distribution and only the pairing changes. Set the correlation to zero and watch the histogram widen.</span></p>
+      </div>
+    </details>
+  </div>
+
+  <div class="next-bar">
+    <button class="btn btn-primary" id="b7Next"><span data-l="es">Continuar al Bloque 8 →</span><span data-l="en">Continue to Block 8 →</span></button>
+  </div>
+</section>
+<section class="step-panel" id="panel-8">
+  <div class="panel-title"><div class="pt-num">8</div>
+    <div><h2><span data-l="es">Evaluación económica y social</span><span data-l="en">Economic and social appraisal</span></h2>
+      <p><span data-l="es">El mismo proyecto, visto por el país en lugar de por su dueño. Cambian dos cosas y solo dos: las <b>transferencias</b> desaparecen (los impuestos y los subsidios cambian de bolsillo, no crean recursos) y los <b>precios se corrigen</b> por lo que las cosas realmente valen. Todo se descuenta a la tasa social.</span><span data-l="en">The same project, seen by the country instead of by its owner. Two things change, and only two: <b>transfers</b> disappear (taxes and subsidies change pocket, they do not create resources) and <b>prices are corrected</b> for what things are really worth. Everything is discounted at the social rate.</span></p></div>
+  </div>
+
+  <div class="results-summary" id="b8Tiles"></div>
+  <div class="callout" id="b8Verdict"></div>
+
+  <!-- ---------- 1 · conversion factors ---------- -->
+  <div class="card">
+    <h2><span data-l="es">1 · Factores de conversión</span><span data-l="en">1 · Conversion factors</span></h2>
+    <p class="hint"><span data-l="es">Cada factor dice cuánto vale para el país un peso de ese rubro. Un factor de 0.90 significa que de cada peso de precio de mercado, 90 centavos son recursos reales y el resto son impuestos o distorsiones. Mayor que 1 significa que el mercado subvalúa ese recurso.</span><span data-l="en">Each factor says how much a peso of that item is worth to the country. A factor of 0.90 means that of every peso of market price, 90 cents are real resources and the rest are taxes or distortions. Above 1 means the market undervalues that resource.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Factor estándar de conversión" data-en="Standard conversion factor">Factor estándar de conversión</label>
+        <input type="number" id="b8Standard" min="0.3" max="1.5" step="0.01">
+        <span class="field-help"><span data-l="es">Para lo no comerciable; en México suele tomarse entre 0.85 y 0.95.</span><span data-l="en">For non-traded goods; in Mexico it is usually taken between 0.85 and 0.95.</span></span></div>
+      <div class="field"><label data-es="Producto del proyecto" data-en="Product of the project">Producto del proyecto</label>
+        <input type="number" id="b8Product" min="0.3" max="2" step="0.01">
+        <span class="field-help"><span data-l="es">1 si el precio de mercado ya refleja su valor; mayor si es exportable y el tipo de cambio está sobrevaluado.</span><span data-l="en">1 if the market price already reflects its value; higher if it is exportable and the exchange rate is overvalued.</span></span></div>
+      <div class="field"><label data-es="Mano de obra" data-en="Labour">Mano de obra</label>
+        <input type="number" id="b8Labour" min="0.1" max="1.5" step="0.05">
+        <span class="field-help"><span data-l="es">Con desempleo estacional, el costo social del jornal es menor que el salario: 0.5 a 0.8.</span><span data-l="en">With seasonal unemployment, the social cost of a day's work is below the wage: 0.5 to 0.8.</span></span></div>
+      <div class="field"><label data-es="Insumos" data-en="Inputs">Insumos</label><input type="number" id="b8Inputs" min="0.3" max="2" step="0.01"></div>
+      <div class="field"><label data-es="Maquinaria y energía" data-en="Machinery and energy">Maquinaria y energía</label><input type="number" id="b8Machinery" min="0.3" max="2" step="0.01"></div>
+      <div class="field"><label data-es="Servicios y fletes" data-en="Services and freight">Servicios y fletes</label><input type="number" id="b8Services" min="0.3" max="2" step="0.01"></div>
+      <div class="field"><label data-es="Administración" data-en="Administration">Administración</label><input type="number" id="b8Admin" min="0.3" max="2" step="0.01"></div>
+      <div class="field"><label data-es="Otros" data-en="Other">Otros</label><input type="number" id="b8Other" min="0.3" max="2" step="0.01"></div>
+      <div class="field"><label data-es="Inversión (vacío = ponderado)" data-en="Investment (empty = weighted)">Inversión</label>
+        <input type="number" id="b8Investment" min="0.3" max="2" step="0.01" data-es-ph="se calcula solo" data-en-ph="computed by itself"></div>
+      <div class="field"><label data-es="Factor de la divisa" data-en="Foreign exchange factor">Factor de la divisa</label>
+        <input type="number" id="b8Exchange" min="0.8" max="2" step="0.01">
+        <span class="field-help"><span data-l="es">Cuánto vale realmente un dólar para el país frente al tipo de cambio oficial.</span><span data-l="en">How much a dollar is really worth to the country against the official exchange rate.</span></span></div>
+    </div>
+    <p class="hint" id="b8FactorNote"></p>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-ghost btn-sm" id="b8Reset"><span data-l="es">Volver a los factores por omisión</span><span data-l="en">Back to the default factors</span></button>
+    </div>
+  </div>
+
+  <!-- ---------- 2 · social data ---------- -->
+  <div class="card">
+    <h2><span data-l="es">2 · Datos para los indicadores sociales</span><span data-l="en">2 · Data for the social indicators</span></h2>
+    <div class="form-grid">
+      <div class="field"><label data-es="Jornal pagado" data-en="Daily wage paid">Jornal pagado</label><input type="text" id="b8Wage" inputmode="decimal">
+        <span class="field-help"><span data-l="es">Sirve para convertir el costo de mano de obra en jornales.</span><span data-l="en">Used to turn the labour cost into labour days.</span></span></div>
+      <div class="field"><label data-es="Jornales por empleo permanente" data-en="Labour days per permanent job">Jornales por empleo permanente</label><input type="number" id="b8DaysPerJob" min="100" max="365" step="5"></div>
+      <div class="field"><label data-es="Del ingreso, se exporta (%)" data-en="Of the revenue, exported (%)">Del ingreso, se exporta (%)</label><input type="number" id="b8ExportShare" min="0" max="100" step="5"></div>
+      <div class="field"><label data-es="De los costos, es importado (%)" data-en="Of the costs, imported (%)">De los costos, es importado (%)</label><input type="number" id="b8ImportShare" min="0" max="100" step="5"></div>
+      <div class="field"><label data-es="Subsidio o apoyo recibido al año" data-en="Subsidy or support received a year">Subsidio recibido al año</label><input type="text" id="b8Subsidy" inputmode="decimal">
+        <span class="field-help"><span data-l="es">Si lo incluiste en los ingresos del Bloque 3, aquí se resta: es una transferencia.</span><span data-l="en">If you included it in the revenue of Block 3, it is taken out here: it is a transfer.</span></span></div>
+      <div class="field"><label data-es="Beneficiarios del proyecto" data-en="Beneficiaries of the project">Beneficiarios del proyecto</label><input type="number" id="b8Beneficiaries" min="0" step="1">
+        <span class="field-help"><span data-l="es">Familias o personas atendidas, para el costo por beneficiario.</span><span data-l="en">Families or people reached, for the cost per beneficiary.</span></span></div>
+    </div>
+  </div>
+
+  <!-- ---------- 3 · from private to economic ---------- -->
+  <div class="card">
+    <h2><span data-l="es">3 · Del resultado privado al económico</span><span data-l="en">3 · From the private result to the economic one</span></h2>
+    <p class="hint"><span data-l="es">Las piezas suman exactamente: se parte del VAN privado descontado a la tasa social, se le devuelven las transferencias y se corrigen los precios. Si alguna vez no cerrara, sería un error del programa.</span><span data-l="en">The pieces add up exactly: it starts from the private NPV discounted at the social rate, gives back the transfers and corrects the prices. If it ever failed to close, it would be a bug.</span></p>
+    <div class="pg-pane"><div class="pg-title"><span data-l="es">Del VAN privado al VAN económico</span><span data-l="en">From the private NPV to the economic NPV</span></div><svg id="b8BridgeChart"></svg></div>
+    <div class="table-scroll" id="b8Bridge" style="margin-top:12px"></div>
+    <div class="pg-pane" style="margin-top:12px"><div class="pg-title"><span data-l="es">Los dos perfiles</span><span data-l="en">The two profiles</span></div><svg id="b8ProfileChart"></svg></div>
+  </div>
+
+  <!-- ---------- 4 · the economic flow ---------- -->
+  <div class="card">
+    <h2><span data-l="es">4 · Flujo económico</span><span data-l="en">4 · Economic flow</span></h2>
+    <div class="table-scroll" id="b8Rows"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-sm" id="b8ExportCSV"><span data-l="es">Descargar la evaluación social (.csv)</span><span data-l="en">Download the social appraisal (.csv)</span></button>
+    </div>
+  </div>
+
+  <!-- ---------- 5 · social indicators ---------- -->
+  <div class="card">
+    <h2><span data-l="es">5 · Empleo, divisas y reparto del valor agregado</span><span data-l="en">5 · Employment, foreign exchange and how the value added is shared</span></h2>
+    <div class="table-scroll" id="b8Indicators"></div>
+    <div class="lab-grid" style="margin-top:12px">
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">Empleo generado</span><span data-l="en">Employment created</span></div><svg id="b8JobsChart"></svg></div>
+      <div class="pg-pane"><div class="pg-title"><span data-l="es">A quién le queda el valor agregado</span><span data-l="en">Who keeps the value added</span></div><svg id="b8ValueChart"></svg></div>
+    </div>
+    <p class="hint"><span data-l="es">El valor agregado es lo que el proyecto crea de nuevo: su producción menos lo que compró a otros. Se reparte entre quienes trabajaron, el gobierno, quien prestó y el dueño. Es la forma más clara de mostrar a quién le sirve el proyecto.</span><span data-l="en">Value added is what the project newly creates: its output less what it bought from others. It is shared between those who worked, the government, whoever lent the money and the owner. It is the clearest way of showing who the project is good for.</span></p>
+  </div>
+
+  <!-- ---------- 6 · review ---------- -->
+  <div class="card">
+    <h2><span data-l="es">6 · Revisión</span><span data-l="en">6 · Review</span></h2>
+    <div class="messages" id="b8Messages"></div>
+    <details class="acc"><summary><span data-l="es">Por qué el jornal no vale lo que se paga</span><span data-l="en">Why a day's work is not worth what is paid for it</span> <span class="acc-tag"><span data-l="es">para la tesis</span><span data-l="en">for the thesis</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Cuando un proyecto contrata a alguien que de otro modo estaría sin trabajo, el país no pierde nada de lo que esa persona habría producido en otra parte: el costo social de ese jornal es menor que el salario que se le paga. Por eso, en regiones con desempleo estacional, el factor de la mano de obra se pone entre 0.5 y 0.8, y por eso los proyectos intensivos en trabajo se ven mejor en la evaluación económica que en la privada.</span><span data-l="en">When a project hires somebody who would otherwise be out of work, the country loses nothing of what that person would have produced elsewhere: the social cost of that day's work is below the wage paid. That is why, in regions with seasonal unemployment, the labour factor is set between 0.5 and 0.8, and why labour-intensive projects look better in the economic appraisal than in the private one.</span></p>
+        <p><span data-l="es">El argumento contrario también vale: si el proyecto contrata en plena cosecha, cuando no hay quien trabaje, ese jornal sí cuesta lo que se paga —o más—, y el factor debe acercarse a 1.</span><span data-l="en">The opposite argument holds too: if the project hires at the peak of the harvest, when nobody is available, that day's work does cost what is paid for it —or more—, and the factor should be close to 1.</span></p>
+      </div>
+    </details>
+    <details class="acc"><summary><span data-l="es">Un proyecto rentable que el país no debería apoyar (y al revés)</span><span data-l="en">A profitable project the country should not support (and the other way round)</span> <span class="acc-tag"><span data-l="es">la pregunta de fondo</span><span data-l="en">the real question</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Un proyecto puede tener un VAN privado excelente porque recibe un subsidio, no paga impuestos o compra insumos por debajo de su costo. Quitadas esas transferencias, el VAN económico puede ser negativo: el proyecto le está transfiriendo riqueza a su dueño, no creándola para el país. Ese es el caso que un comité de inversión pública debe rechazar, por rentable que se vea en el papel.</span><span data-l="en">A project can have an excellent private NPV because it receives a subsidy, pays no tax or buys inputs below their cost. With those transfers removed, the economic NPV can be negative: the project is transferring wealth to its owner, not creating it for the country. That is the case a public investment committee should reject, however profitable it looks on paper.</span></p>
+        <p><span data-l="es">Y al contrario: un camino rural, una obra de captación de agua o un proyecto que emplea mucha mano de obra desocupada puede tener VAN privado negativo y VAN económico claramente positivo. Ese es exactamente el argumento de un apoyo público, y escribirlo con números es lo que distingue una solicitud bien hecha.</span><span data-l="en">And the other way round: a rural road, a water catchment or a project that employs a lot of idle labour can have a negative private NPV and a clearly positive economic one. That is exactly the argument for public support, and writing it with numbers is what makes a well-made application.</span></p>
+      </div>
+    </details>
+  </div>
+
+  <div class="next-bar">
+    <button class="btn btn-primary" id="b8Next"><span data-l="es">Continuar al Bloque 9 →</span><span data-l="en">Continue to Block 9 →</span></button>
+  </div>
+</section>
+<section class="step-panel" id="panel-9">
+  <div class="panel-title"><div class="pt-num">9</div>
+    <div><h2><span data-l="es">Comparación y decisiones</span><span data-l="en">Comparison and decisions</span></h2>
+      <p><span data-l="es">El Bloque 6 dice si el proyecto vale la pena. Aquí se contestan las preguntas que vienen después: <b>cuál de dos</b> cuando no se pueden hacer las dos, <b>cuáles</b> cuando el dinero no alcanza para todas, <b>cuándo</b> cambiar el equipo y <b>cuándo</b> cortar la plantación. Cada una tiene su trampa, y en las cuatro la respuesta ingenua suele estar equivocada.</span><span data-l="en">Block 6 says whether the project is worth doing. Here are the questions that come after: <b>which of two</b> when both cannot be done, <b>which ones</b> when the money does not stretch to all of them, <b>when</b> to change the machine and <b>when</b> to cut the plantation. Each has a trap of its own, and in all four the naive answer is usually the wrong one.</span></p></div>
+  </div>
+
+  <div class="chip-row" id="b9Context" style="margin-bottom:12px"></div>
+
+  <!-- ---------- 1 · the alternatives ---------- -->
+  <div class="card">
+    <h2><span data-l="es">1 · Las alternativas</span><span data-l="en">1 · The alternatives</span></h2>
+    <p class="hint"><span data-l="es">El proyecto de los bloques anteriores entra solo, con su flujo verdadero. Abajo escribe las alternativas contra las que lo quieres pesar: bastan la inversión, el flujo neto de un año, cuántos años dura y lo que quedaría al final. Si el flujo crece con los años, ponle un porcentaje de crecimiento.</span><span data-l="en">The project of the previous blocks comes in by itself, with its real flow. Below, type the alternatives you want to weigh it against: the investment, one year of net flow, how many years it lasts and what would be left at the end are enough. If the flow grows over the years, give it a growth per cent.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Tasa de comparación (%)" data-en="Comparison rate (%)">Tasa de comparación (%)</label>
+        <input type="number" id="b9Rate" min="0" max="100" step="0.5" data-es-ph="la del Bloque 6" data-en-ph="the one of Block 6">
+        <span class="field-help"><span data-l="es">Vacío: se usa la tasa con la que se evaluó el proyecto.</span><span data-l="en">Empty: the rate the project was appraised with is used.</span></span></div>
+      <div class="field"><label data-es="Presupuesto disponible" data-en="Budget available">Presupuesto disponible</label>
+        <input type="text" id="b9Budget" inputmode="decimal" data-es-ph="para el racionamiento" data-en-ph="for the rationing">
+        <span class="field-help"><span data-l="es">Solo si las alternativas son independientes y el dinero no alcanza para todas.</span><span data-l="en">Only if the alternatives are independent and the money does not stretch to all of them.</span></span></div>
+    </div>
+    <div class="grid-host" id="b9AltGrid"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost btn-sm" id="b9AddAlt"><span data-l="es">Agregar renglones</span><span data-l="en">Add rows</span></button>
+      <button class="btn btn-ghost btn-sm" id="b9Example"><span data-l="es">Cargar un ejemplo</span><span data-l="en">Load an example</span></button>
+    </div>
+    <div class="table-scroll" id="b9Alternatives" style="margin-top:12px"></div>
+  </div>
+
+  <!-- ---------- 2 · which of the two ---------- -->
+  <div class="card">
+    <h2><span data-l="es">2 · Cuál de las dos: la TIR incremental</span><span data-l="en">2 · Which of the two: the incremental IRR</span></h2>
+    <p class="hint"><span data-l="es">Entre alternativas que se excluyen, la TIR puede preferir una y el VAN la otra, porque la TIR es un porcentaje y no sabe cuántos pesos hay detrás. Lo que decide es qué rinde el dinero <b>adicional</b> de la alternativa más cara: esa es la TIR incremental, y el punto donde las dos curvas se cruzan es la intersección de Fisher.</span><span data-l="en">Between mutually exclusive alternatives, the IRR may prefer one and the NPV the other, because the IRR is a per cent and does not know how many pesos are behind it. What settles it is what the <b>extra</b> money of the dearer alternative returns: that is the incremental IRR, and the point where the two curves cross is Fisher's intersection.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Primera" data-en="First">Primera</label><select id="b9CompareA"></select></div>
+      <div class="field"><label data-es="Segunda" data-en="Second">Segunda</label><select id="b9CompareB"></select></div>
+    </div>
+    <div class="callout" id="b9Comparison" style="margin-top:12px"></div>
+    <div class="pg-pane" style="margin-top:12px"><div class="pg-title"><span data-l="es">Los perfiles del VAN y el cruce de Fisher</span><span data-l="en">The NPV profiles and Fisher's crossing</span></div><svg id="b9CompareChart"></svg></div>
+  </div>
+
+  <!-- ---------- 3 · capital rationing ---------- -->
+  <div class="card">
+    <h2><span data-l="es">3 · Cuando el dinero no alcanza para todas</span><span data-l="en">3 · When the money does not stretch to all of them</span></h2>
+    <p class="hint"><span data-l="es">Con proyectos independientes y un presupuesto fijo, la regla usual es ordenarlos por índice de rentabilidad y tomarlos mientras el dinero dure. Es una buena regla de dedo, pero no siempre da el mejor paquete, porque un proyecto no se puede partir a la mitad. La app prueba todas las combinaciones que caben y te dice cuánto VAN deja fuera la regla.</span><span data-l="en">With independent projects and a fixed budget, the usual rule is to rank them by profitability index and take them while the money lasts. It is a good rule of thumb, but it does not always give the best package, because a project cannot be cut in half. The app tries every combination that fits and tells you how much NPV the rule leaves out.</span></p>
+    <div class="table-scroll" id="b9Rationing"></div>
+    <div class="pg-pane" style="margin-top:12px"><div class="pg-title"><span data-l="es">Qué cabe en el presupuesto</span><span data-l="en">What fits in the budget</span></div><svg id="b9RationingChart"></svg></div>
+  </div>
+
+  <!-- ---------- 4 · replacement ---------- -->
+  <div class="card">
+    <h2><span data-l="es">4 · Cuándo cambiar el tractor</span><span data-l="en">4 · When to change the tractor</span></h2>
+    <p class="hint"><span data-l="es">Un equipo no se cambia cuando se descompone, sino cuando su costo anual equivalente empieza a subir. Al principio baja, porque la inversión se reparte entre más años; después sube, porque las reparaciones crecen más rápido de lo que la inversión se diluye. El año en que toca fondo es la <b>vida económica</b>, y casi siempre es antes de lo que uno cree.</span><span data-l="en">A machine is not replaced when it breaks down, but when its equivalent annual cost starts to rise. At first it falls, because the investment is spread over more years; then it rises, because repairs grow faster than the investment thins out. The year it bottoms out is the <b>economic life</b>, and it is nearly always earlier than one thinks.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Precio del equipo" data-en="Price of the machine">Precio del equipo</label><input type="text" id="b9MachineCost" inputmode="decimal"></div>
+      <div class="field"><label data-es="Pierde valor al año (%)" data-en="Loses value a year (%)">Pierde valor al año (%)</label><input type="number" id="b9MachineDecline" min="0" max="60" step="1"></div>
+      <div class="field"><label data-es="Valor mínimo de reventa (% del precio)" data-en="Lowest resale value (% of the price)">Valor mínimo de reventa (%)</label><input type="number" id="b9MachineFloor" min="0" max="60" step="1"></div>
+      <div class="field"><label data-es="Costo de operar el primer año" data-en="Cost of running it the first year">Costo de operar el primer año</label><input type="text" id="b9MachineRunning" inputmode="decimal">
+        <span class="field-help"><span data-l="es">Combustible, mantenimiento y reparaciones.</span><span data-l="en">Fuel, maintenance and repairs.</span></span></div>
+      <div class="field"><label data-es="Ese costo sube al año (%)" data-en="That cost rises a year (%)">Ese costo sube al año (%)</label><input type="number" id="b9MachineRise" min="0" max="60" step="1"></div>
+      <div class="field"><label data-es="Vida máxima a explorar (años)" data-en="Longest life to explore (years)">Vida máxima a explorar (años)</label><input type="number" id="b9MachineMax" min="2" max="40" step="1"></div>
+    </div>
+    <div class="pg-pane" style="margin-top:12px"><div class="pg-title"><span data-l="es">El costo anual equivalente y su mínimo</span><span data-l="en">The equivalent annual cost and its minimum</span></div><svg id="b9ReplacementChart"></svg></div>
+    <div class="table-scroll" id="b9Replacement" style="margin-top:12px"></div>
+  </div>
+
+  <!-- ---------- 5 · rotation ---------- -->
+  <div class="card">
+    <h2><span data-l="es">5 · Cuándo cortar la plantación</span><span data-l="en">5 · When to cut the plantation</span></h2>
+    <p class="hint"><span data-l="es">Esperar un año más agrega crecimiento, pero retrasa todas las rotaciones que vienen después. Si la tierra se vuelve a plantar —una plantación forestal, un huerto que se renueva, un cultivo perenne— lo que manda no es el VAN de una cosecha sino el <b>valor de la tierra</b> de Faustmann, que supone que el ciclo se repite para siempre. Casi siempre acorta el turno.</span><span data-l="en">Waiting one more year adds growth, but delays every rotation that comes after. If the land is replanted —a timber stand, an orchard that is renewed, a perennial crop— what rules is not the NPV of one harvest but Faustmann's <b>land expectation value</b>, which assumes the cycle repeats for ever. It nearly always shortens the rotation.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Costo de establecer (una vez)" data-en="Cost of establishing (once)">Costo de establecer</label><input type="text" id="b9Establish" inputmode="decimal"></div>
+      <div class="field"><label data-es="Mantenimiento al año" data-en="Upkeep a year">Mantenimiento al año</label><input type="text" id="b9Annual" inputmode="decimal"></div>
+    </div>
+    <div class="grid-host" id="b9RotationGrid"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost btn-sm" id="b9AddRot"><span data-l="es">Agregar renglones</span><span data-l="en">Add rows</span></button>
+    </div>
+    <div class="pg-pane" style="margin-top:12px"><div class="pg-title"><span data-l="es">Una rotación contra la tierra para siempre</span><span data-l="en">One rotation against the land for ever</span></div><svg id="b9RotationChart"></svg></div>
+    <div class="table-scroll" id="b9Rotation" style="margin-top:12px"></div>
+  </div>
+
+  <!-- ---------- 6 · buy or lease ---------- -->
+  <div class="card">
+    <h2><span data-l="es">6 · Comprar o rentar</span><span data-l="en">6 · Buy or rent</span></h2>
+    <p class="hint"><span data-l="es">Las dos formas de tener la máquina se convierten en lo que cuestan al año, después de impuestos: comprar deduce la depreciación y recupera el valor de reventa; rentar deduce la renta completa. Se comparan a la misma tasa y con la misma vida.</span><span data-l="en">Both ways of having the machine are turned into what they cost a year, after tax: buying deducts the depreciation and recovers the resale value; renting deducts the whole payment. They are compared at the same rate and over the same life.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Precio de compra" data-en="Purchase price">Precio de compra</label><input type="text" id="b9LeaseCost" inputmode="decimal"></div>
+      <div class="field"><label data-es="Años que se usaría" data-en="Years it would be used">Años que se usaría</label><input type="number" id="b9LeaseLife" min="1" max="30" step="1"></div>
+      <div class="field"><label data-es="Valor de reventa al final" data-en="Resale value at the end">Valor de reventa al final</label><input type="text" id="b9LeaseSalvage" inputmode="decimal"></div>
+      <div class="field"><label data-es="Mantenimiento al año si se compra" data-en="Maintenance a year if bought">Mantenimiento al año si se compra</label><input type="text" id="b9LeaseMaintenance" inputmode="decimal"></div>
+      <div class="field"><label data-es="Renta al año" data-en="Rent a year">Renta al año</label><input type="text" id="b9LeasePayment" inputmode="decimal"></div>
+      <div class="field"><label data-es="Lo que se sigue pagando aparte al rentar" data-en="What is still paid separately when renting">Lo que se paga aparte al rentar</label><input type="text" id="b9LeaseIncluded" inputmode="decimal">
+        <span class="field-help"><span data-l="es">Cero si la renta ya incluye el mantenimiento.</span><span data-l="en">Zero if the rent already includes maintenance.</span></span></div>
+    </div>
+    <div class="table-scroll" id="b9Lease" style="margin-top:12px"></div>
+  </div>
+
+  <!-- ---------- 7 · review ---------- -->
+  <div class="card">
+    <h2><span data-l="es">7 · Revisión</span><span data-l="en">7 · Review</span></h2>
+    <div class="messages" id="b9Messages"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-sm" id="b9ExportCSV"><span data-l="es">Descargar las decisiones (.csv)</span><span data-l="en">Download the decisions (.csv)</span></button>
+    </div>
+    <details class="acc"><summary><span data-l="es">Por qué la TIR se equivoca al escoger entre dos proyectos</span><span data-l="en">Why the IRR gets it wrong when choosing between two projects</span> <span class="acc-tag"><span data-l="es">para la tesis</span><span data-l="en">for the thesis</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Una bomba de mano que cuesta 10 mil y devuelve 4 mil al año tiene una TIR altísima; un sistema de riego que cuesta 2 millones y devuelve 500 mil al año tiene una TIR menor, pero deja muchísimo más dinero. Si solo se puede hacer uno, el criterio correcto es el VAN, porque lo que se quiere maximizar son pesos, no porcentajes.</span><span data-l="en">A hand pump costing ten thousand and returning four thousand a year has a very high IRR; an irrigation system costing two million and returning five hundred thousand a year has a lower IRR, but leaves far more money. If only one can be done, the right criterion is the NPV, because what is to be maximised is pesos, not per cents.</span></p>
+        <p><span data-l="es">La TIR incremental reconcilia las dos lecturas: pregunta qué rinde el dinero adicional que exige la alternativa más cara. Si ese rendimiento supera tu tasa, el dinero de más está bien invertido y conviene la alternativa grande. Es el mismo criterio del VAN, dicho en porcentaje, y es lo que un jurado de tesis espera ver cuando las alternativas tienen tamaños distintos.</span><span data-l="en">The incremental IRR reconciles both readings: it asks what the extra money the dearer alternative demands returns. If that return beats your rate, the extra money is well invested and the larger alternative wins. It is the same NPV criterion said as a per cent, and it is what a thesis committee expects to see when the alternatives are of different sizes.</span></p>
+      </div>
+    </details>
+    <details class="acc"><summary><span data-l="es">Horizontes distintos: por qué el VAN no basta</span><span data-l="en">Different horizons: why the NPV is not enough</span> <span class="acc-tag"><span data-l="es">error frecuente</span><span data-l="en">common mistake</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Un huerto de veinte años y un invernadero de diez no se comparan por su VAN: el primero tiene el doble de tiempo para acumularlo. El valor anual equivalente reparte cada VAN entre los años que dura, como si el proyecto se repitiera al terminar. Eso es justo lo que hace un productor con su tierra, y por eso es el criterio correcto aquí.</span><span data-l="en">An orchard of twenty years and a greenhouse of ten are not compared by their NPV: the first has twice as long to build it up. The equivalent annual value spreads each NPV over the years it lasts, as if the project were repeated when it ends. That is exactly what a grower does with their land, and that is why it is the right criterion here.</span></p>
+        <p><span data-l="es">La otra salida clásica —comparar sobre el mínimo común múltiplo de las vidas— da la misma respuesta y llena la tabla de repeticiones. El valor anual equivalente la dice en un solo número.</span><span data-l="en">The other classic way out —comparing over the least common multiple of the lives— gives the same answer and fills the table with repetitions. The equivalent annual value says it in a single number.</span></p>
+      </div>
+    </details>
+  </div>
+
+  <div class="next-bar">
+    <button class="btn btn-primary" id="b9Next"><span data-l="es">Continuar al Bloque 10 →</span><span data-l="en">Continue to Block 10 →</span></button>
+  </div>
+</section>
+
+<section class="step-panel" id="panel-10">
+  <div class="panel-title"><div class="pt-num">10</div>
+    <div><h2><span data-l="es">Figuras e informe</span><span data-l="en">Figures and report</span></h2>
+      <p><span data-l="es">Aquí no se calcula nada nuevo: lo que hicieron los nueve bloques anteriores se convierte en archivos que otra persona puede leer. Una figura a la resolución que pide una revista, un informe que abre cualquier navegador y desde ahí se imprime a PDF, y un paquete .zip con el estudio entero, incluido el archivo que lo reproduce.</span><span data-l="en">Nothing new is computed here: what the nine previous blocks did becomes files somebody else can read. A figure at the resolution a journal asks for, a report that opens in any browser and prints to PDF from there, and a .zip package with the whole study inside, including the file that reproduces it.</span></p></div>
+  </div>
+
+  <div class="messages" id="b10Messages"></div>
+
+  <!-- ---------- 1 · figure studio ---------- -->
+  <div class="card">
+    <h2><span data-l="es">1 · Estudio de figuras</span><span data-l="en">1 · Figure studio</span></h2>
+    <p class="hint"><span data-l="es">Cada figura sale tal como la dibujó su bloque, con los colores ya incrustados para que el archivo no dependa de la app. Ponle el título con el que aparecerá en la tesis y, si hace falta, una nota al pie con la fuente de los datos.</span><span data-l="en">Each figure comes out exactly as its block drew it, with the colours baked in so that the file does not depend on the app. Give it the title it will carry in the thesis and, if needed, a footnote with the source of the data.</span></p>
+    <p class="hint" id="b10FigCount"></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Figura" data-en="Figure">Figura</label><select id="b10Figure"></select></div>
+      <div class="field"><label data-es="Título" data-en="Title">Título</label><input type="text" id="b10Title" data-auto="1"></div>
+      <div class="field"><label data-es="Nota al pie" data-en="Footnote">Nota al pie</label><input type="text" id="b10Note" data-es-ph="fuente de los datos, supuestos…" data-en-ph="source of the data, assumptions…"></div>
+      <div class="field"><label data-es="Colores" data-en="Colours">Colores</label>
+        <select id="b10Theme"><option value="light" data-es="Claros (para imprimir)" data-en="Light (for printing)">Claros (para imprimir)</option><option value="dark" data-es="Oscuros (para presentar)" data-en="Dark (for a slide)">Oscuros (para presentar)</option></select></div>
+      <div class="field"><label data-es="Fondo" data-en="Background">Fondo</label>
+        <select id="b10Background"><option value="card" data-es="Sólido" data-en="Solid">Sólido</option><option value="soft" data-es="Suave" data-en="Soft">Suave</option><option value="none" data-es="Transparente" data-en="Transparent">Transparente</option></select></div>
+      <div class="field"><label data-es="Formato" data-en="Format">Formato</label>
+        <select id="b10Format"><option value="png">PNG</option><option value="svg">SVG</option><option value="jpg">JPG</option></select></div>
+      <div class="field"><label data-es="Resolución" data-en="Resolution">Resolución</label>
+        <select id="b10Dpi">
+          <option value="150" data-es="150 dpi · pantalla" data-en="150 dpi · screen">150 dpi</option>
+          <option value="300" selected data-es="300 dpi · impresión" data-en="300 dpi · print">300 dpi</option>
+          <option value="600" data-es="600 dpi · publicación" data-en="600 dpi · publication">600 dpi</option>
+          <option value="900" data-es="900 dpi · máxima" data-en="900 dpi · maximum">900 dpi</option>
+        </select></div>
+    </div>
+    <div class="pg-pane" style="margin-top:6px"><div class="pg-title"><span data-l="es">Así saldrá el archivo</span><span data-l="en">This is how the file will come out</span></div><div id="b10Preview"></div></div>
+    <p class="hint" id="b10SizeNote"></p>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-sm" id="b10Download"><span data-l="es">Descargar esta figura</span><span data-l="en">Download this figure</span></button>
+      <button class="btn btn-secondary btn-sm" id="b10AllFigures"><span data-l="es">Descargar todas (.zip)</span><span data-l="en">Download all of them (.zip)</span></button>
+      <button class="btn btn-ghost btn-sm" id="b10Refresh"><span data-l="es">Volver a leer las figuras</span><span data-l="en">Read the figures again</span></button>
+    </div>
+  </div>
+
+  <!-- ---------- 2 · the report ---------- -->
+  <div class="card">
+    <h2><span data-l="es">2 · El informe</span><span data-l="en">2 · The report</span></h2>
+    <p class="hint"><span data-l="es">Un solo archivo .html con todo el estudio: portada, resumen con el dictamen, los supuestos, el mercado, la inversión y los costos, los estados proforma, la evaluación financiera, el riesgo, la evaluación social, las decisiones, la metodología redactada y las referencias. No necesita Word: se abre en el navegador y desde ahí se imprime a PDF con el tamaño de página que quieras.</span><span data-l="en">One .html file with the whole study: cover, summary with the verdict, the assumptions, the market, the investment and the costs, the pro-forma statements, the financial appraisal, the risk, the social appraisal, the decisions, the methodology written out and the references. It needs no Word: it opens in the browser and prints to PDF from there, at whatever page size you want.</span></p>
+    <div class="form-grid">
+      <div class="field"><label data-es="Quién firma el estudio" data-en="Who signs the study">Quién firma el estudio</label><input type="text" id="b10Author" data-es-ph="nombre del autor" data-en-ph="author's name"></div>
+      <div class="field"><label data-es="Institución o programa" data-en="Institution or programme">Institución o programa</label><input type="text" id="b10Institution" data-es-ph="opcional" data-en-ph="optional"></div>
+    </div>
+    <div class="chip-row">
+      <label class="chip-check"><input type="checkbox" id="b10WithFigures" checked><span data-l="es">con las figuras</span><span data-l="en">with the figures</span></label>
+      <label class="chip-check"><input type="checkbox" id="b10WithMethods" checked><span data-l="es">con la metodología</span><span data-l="en">with the methodology</span></label>
+      <label class="chip-check"><input type="checkbox" id="b10WithRecord" checked><span data-l="es">con la memoria de cálculo</span><span data-l="en">with the calculation record</span></label>
+      <label class="chip-check"><input type="checkbox" id="b10WithRefs" checked><span data-l="es">con las referencias</span><span data-l="en">with the references</span></label>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-sm" id="b10Print"><span data-l="es">Abrir e imprimir a PDF</span><span data-l="en">Open and print to PDF</span></button>
+      <button class="btn btn-secondary btn-sm" id="b10Open"><span data-l="es">Ver el informe</span><span data-l="en">See the report</span></button>
+      <button class="btn btn-ghost btn-sm" id="b10Html"><span data-l="es">Descargar el informe (.html)</span><span data-l="en">Download the report (.html)</span></button>
+    </div>
+  </div>
+
+  <!-- ---------- 3 · the package ---------- -->
+  <div class="card">
+    <h2><span data-l="es">3 · El paquete del estudio</span><span data-l="en">3 · The package of the study</span></h2>
+    <p class="hint"><span data-l="es">Un .zip con el informe, cada figura en PNG a 300 dpi, las tablas en .csv para abrirlas en una hoja de cálculo y el archivo .json del proyecto, que es el que permite volver a abrir el estudio en la app y rehacer cualquier cálculo. Eso último es lo que distingue un anexo reproducible de una carpeta de imágenes.</span><span data-l="en">A .zip with the report, every figure as a PNG at 300 dpi, the tables as .csv to open in a spreadsheet and the project's .json file, which is what lets the study be opened again in the app and any calculation redone. That last part is what makes the difference between a reproducible appendix and a folder of pictures.</span></p>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="b10Package"><span data-l="es">Descargar el estudio completo (.zip)</span><span data-l="en">Download the whole study (.zip)</span></button>
+    </div>
+  </div>
+
+  <!-- ---------- 4 · final review ---------- -->
+  <div class="card">
+    <h2><span data-l="es">4 · Revisión final</span><span data-l="en">4 · Final review</span></h2>
+    <p class="hint"><span data-l="es">Lo que el estudio dice de sí mismo antes de entregarse: qué bloques tienen datos y cuántos avisos quedan pendientes en cada uno.</span><span data-l="en">What the study says about itself before being handed in: which blocks have data and how many warnings are still pending in each.</span></p>
+    <div class="table-scroll" id="b10Review"></div>
+    <details class="acc"><summary><span data-l="es">Qué revisa un jurado o un comité antes que nada</span><span data-l="en">What a committee looks at before anything else</span> <span class="acc-tag"><span data-l="es">para la tesis</span><span data-l="en">for the thesis</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Tres cosas, casi siempre en este orden: que la tasa de descuento esté justificada y sea coherente con la base de precios (real con precios constantes, nominal con corrientes); que la inversión y los costos vengan de cotizaciones o de fuentes citadas y no de números redondos; y que el flujo del proyecto no incluya el financiamiento, porque mezclar las dos cosas infla la rentabilidad del proyecto con el escudo fiscal de la deuda.</span><span data-l="en">Three things, nearly always in this order: that the discount rate is justified and consistent with the price basis (real with constant prices, nominal with current ones); that the investment and the costs come from quotations or cited sources and not from round numbers; and that the project flow does not include the financing, because mixing the two inflates the project's profitability with the tax shield of the debt.</span></p>
+        <p><span data-l="es">Después viene el análisis de sensibilidad. Un estudio que solo reporta el VAN y la TIR se lee como una promesa; uno que dice cuánto puede caer el precio antes de que el proyecto deje de convenir se lee como un análisis. Por eso el informe incluye los valores límite antes que la simulación: son la parte que un jurado siempre pregunta.</span><span data-l="en">Then comes the sensitivity analysis. A study that only reports the NPV and the IRR reads like a promise; one that says how far the price can fall before the project stops being worthwhile reads like an analysis. That is why the report puts the switching values before the simulation: they are the part a committee always asks about.</span></p>
+      </div>
+    </details>
+    <details class="acc"><summary><span data-l="es">Por qué el informe es un .html y no un .docx</span><span data-l="en">Why the report is an .html and not a .docx</span> <span class="acc-tag"><span data-l="es">sobre la herramienta</span><span data-l="en">about the tool</span></span></summary>
+      <div class="acc-body">
+        <p><span data-l="es">Porque un .html se abre en cualquier computadora sin instalar nada, conserva las figuras vectoriales sin pixelarlas y se imprime a PDF desde el propio navegador con el resultado exacto que ves. Si necesitas editarlo, cualquier procesador de textos abre un .html y lo convierte a documento; y si solo necesitas entregarlo, el PDF impreso desde el navegador ya trae la paginación correcta.</span><span data-l="en">Because an .html opens on any computer without installing anything, keeps the figures vectorial without pixelating them, and prints to PDF from the browser itself with exactly the result you see. If you need to edit it, any word processor opens an .html and turns it into a document; and if you only need to hand it in, the PDF printed from the browser already carries the right pagination.</span></p>
+      </div>
+    </details>
+  </div>
+
+  <div class="next-bar">
+    <button class="btn btn-ghost" onclick="goStep(1)"><span data-l="es">← Volver al inicio</span><span data-l="en">← Back to the home page</span></button>
+  </div>
+</section>
+
+</main>
+
+<script src="js/core.js"></script>
+<script src="js/finance.js"></script>
+<script src="js/stats.js"></script>
+<script src="js/art.js"></script>
+<script src="js/plotkit.js"></script>
+<script src="js/playground.js"></script>
+<script src="js/project.js"></script>
+<script src="js/plots2.js"></script>
+<script src="js/block2.js"></script>
+<script src="js/import.js"></script>
+<script src="js/exdata3.js"></script>
+<script src="js/market.js"></script>
+<script src="js/plots3.js"></script>
+<script src="js/block3.js"></script>
+<script src="js/budget.js"></script>
+<script src="js/exdata4.js"></script>
+<script src="js/plots4.js"></script>
+<script src="js/block4.js"></script>
+<script src="js/finstate.js"></script>
+<script src="js/plots5.js"></script>
+<script src="js/block5.js"></script>
+<script src="js/appraisal.js"></script>
+<script src="js/plots6.js"></script>
+<script src="js/block6.js"></script>
+<script src="js/risk.js"></script>
+<script src="js/plots7.js"></script>
+<script src="js/block7.js"></script>
+<script src="js/social.js"></script>
+<script src="js/plots8.js"></script>
+<script src="js/block8.js"></script>
+<script src="js/decide.js"></script>
+<script src="js/plots9.js"></script>
+<script src="js/block9.js"></script>
+<script src="js/zip.js"></script>
+<script src="js/figure.js"></script>
+<script src="js/report.js"></script>
+<script src="js/block10.js"></script>
+<script src="js/practice.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EconomicsPro · Manual de usuario · Capítulo 7</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../interior.css">
+<script src="../paginar.js"></script>
+<style>
+  .formula { font-family: var(--mono); font-size: 9pt; background: var(--marino-suave); border-radius: 5px; padding: 0.07in 0.12in; margin: 0.08in 0; }
+</style>
+</head>
+<body>
+
+<section class="capitulo" id="cap-b7" data-pestana="B7" data-orden="7" style="--acento: var(--b7)">
+  <div class="cap-apertura">
+    <div class="cap-num">7</div>
+    <div class="cap-etiqueta">Bloque 7 · Riesgo e incertidumbre</div>
+    <h1>Riesgo e incertidumbre</h1>
+    <div class="cap-regla"></div>
+    <p class="cap-resumen">El Bloque 6 entregó un número. Este bloque pregunta qué tan firme es. Mueve una variable a la vez, luego dos, luego todas juntas con sus distribuciones; calcula cuánto puede caer cada supuesto antes de que el VAN llegue a cero, arma escenarios con su probabilidad y termina preguntando si conviene decidir hoy o esperar un año a saber más.</p>
+    <ul class="cap-contenido">
+      <li><b>7.1</b>Qué hace este bloque y qué no</li>
+      <li><b>7.2</b>Una variable a la vez: la araña y el tornado</li>
+      <li><b>7.3</b>Los valores límite</li>
+      <li><b>7.4</b>Dos variables a la vez</li>
+      <li><b>7.5</b>Escenarios</li>
+      <li><b>7.6</b>La simulación de Monte Carlo</li>
+      <li><b>7.7</b>Decidir por etapas: el valor de esperar</li>
+      <li><b>7.8</b>Los avisos de este bloque</li>
+    </ul>
+  </div>
+
+  <!-- 7.1 -->
+  <h2 id="s7-1"><span class="num">7.1</span>Qué hace este bloque y qué no</h2>
+  <p class="lead">Este bloque no vuelve a capturar nada del proyecto: toma el flujo que quedó armado en los bloques 2 a 5 y lo <b>vuelve a calcular muchas veces</b>, cambiando los supuestos. Lo único que se escribe aquí son los rangos, las probabilidades y los escenarios que uno está dispuesto a sostener.</p>
+
+  <p>Lo que <b>no</b> hace es adivinar el futuro. Ninguna de las cinco herramientas produce información nueva sobre el precio de la fresa: lo que hacen es convertir <i>tu</i> incertidumbre —la que tú declaras— en consecuencias sobre el VAN. Si los rangos son inventados, los resultados también lo son; la app obliga a escribirlos precisamente para que queden a la vista y se puedan discutir.</p>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · riesgo no es lo mismo que incertidumbre</div>
+    <p>La distinción es de Knight (1921) y sigue ordenando el capítulo. Hay <b>riesgo</b> cuando se pueden poner probabilidades a los estados posibles: hay serie histórica, hay experiencia, hay base para decir «treinta por ciento». Hay <b>incertidumbre</b> cuando ni siquiera eso se puede: no se sabe qué puede pasar, mucho menos con qué frecuencia.</p>
+    <p>Las herramientas de este bloque se reparten esa frontera. La sensibilidad, el tornado y los valores límite <b>no piden probabilidades</b>: sirven bajo incertidumbre, porque solo describen qué pasa si. Los escenarios y la simulación sí las piden, y por eso valen lo que valga la probabilidad declarada. Ponerle una distribución a algo que no se conoce no lo vuelve conocido: lo disfraza.</p>
+  </div>
+
+  <p>El bloque usa como caso de práctica la <span class="ui">Fresa bajo macrotúnel en Zamora</span>: dos hectáreas, diez años, una tasa del 7.58&nbsp;% y un VAN de <b>$1,028,294</b>. Es el caso que la app trae pensado para este bloque —inversión grande, crédito pesado y márgenes estrechos—, es decir, un proyecto que se ve bien en el Bloque 6 y que aquí se descubre frágil.</p>
+
+  <!-- 7.2 -->
+  <h2 id="s7-2"><span class="num">7.2</span>Una variable a la vez: la araña y el tornado</h2>
+  <p>La primera tarjeta mueve cada supuesto por separado, entre −30&nbsp;% y +30&nbsp;%, y deja los demás quietos. Da dos figuras que dicen lo mismo de dos formas.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b7-sensibilidad.png" alt="Tarjeta 1 del Bloque 7: la gráfica de araña con las cinco variables y el tornado ordenado por amplitud"></div>
+    <figcaption><b>Figura 7.1.</b> Arriba, la <i>araña</i>: cada línea es una variable moviéndose sola, y donde cruza el cero esa variable por sí misma acaba con el proyecto. Abajo, el <i>tornado</i>: las mismas cinco variables movidas ±10&nbsp;%, ordenadas por cuánto mueven el VAN.</figcaption>
+  </figure>
+
+  <p>En la araña lo que importa es la <b>pendiente</b>: mientras más parada esté la línea, más delicada es esa variable. Las del precio y el rendimiento suben casi juntas y muy inclinadas; las de la inversión y la tasa de descuento son casi horizontales. Eso ya dice dónde está el problema del proyecto antes de calcular nada.</p>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · el tornado de la fresa con ±10&nbsp;%</div>
+    <table class="compacta">
+      <thead><tr><th>Variable</th><th class="num">VAN si baja 10&nbsp;%</th><th class="num">VAN si sube 10&nbsp;%</th><th class="num">Amplitud</th></tr></thead>
+      <tbody>
+        <tr><td><b>Precio de venta</b></td><td class="num">−$387,509</td><td class="num">$2,424,905</td><td class="num">$2,812,414</td></tr>
+        <tr><td><b>Rendimiento</b></td><td class="num">−$238,594</td><td class="num">$2,279,978</td><td class="num">$2,518,572</td></tr>
+        <tr><td><b>Costos de operación</b></td><td class="num">$2,102,810</td><td class="num">−$60,447</td><td class="num">$2,163,257</td></tr>
+        <tr><td>Inversión</td><td class="num">$1,248,713</td><td class="num">$807,720</td><td class="num">$440,993</td></tr>
+        <tr><td>Tasa de descuento</td><td class="num">$1,238,301</td><td class="num">$830,359</td><td class="num">$407,942</td></tr>
+      </tbody>
+    </table>
+    <p>Las tres primeras mueven el VAN entre <b>$2.2 y $2.8 millones</b> con solo un 10&nbsp;% de cambio; las dos últimas, menos de la mitad de un millón. Y las tres primeras, en su lado malo, ya dejan el VAN <b>negativo</b>. Un 10&nbsp;% de error en el precio no es un error grande en un estudio de mercado: es lo normal. Este proyecto no aguanta lo normal.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>La inversión aparece abajo, y eso engaña</div>
+    <p>El tornado suele sorprender porque la inversión —lo que todo el mundo discute en la junta— queda al final. La razón es aritmética: la inversión se paga una vez, en el año cero, mientras que el precio y el rendimiento afectan a los ingresos de <b>los diez años</b> y su efecto se acumula. Que la inversión pese poco no significa que se pueda inflar el presupuesto; significa que discutir dos semanas el costo del macrotúnel, mientras nadie revisa el precio de la fresa, es gastar la atención en el lugar equivocado.</p>
+  </div>
+
+  <!-- 7.3 -->
+  <h2 id="s7-3"><span class="num">7.3</span>Los valores límite</h2>
+  <p>La sensibilidad contesta «qué pasa si el precio baja 10&nbsp;%». El <b>valor límite</b> —<i>switching value</i>— invierte la pregunta: <b>cuánto</b> puede bajar el precio antes de que el VAN llegue a cero. La app lo busca numéricamente para cada variable y ordena la tabla de la más frágil a la más resistente.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b7-limite.png" alt="Tabla de valores límite del Bloque 7 con el cambio que anula el VAN de cada variable"></div>
+    <figcaption><b>Figura 7.2.</b> Los valores límite de la fresa. La última columna no es decorativa: es la pregunta que hay que llevarle al productor, porque un porcentaje no se discute y un precio sí.</figcaption>
+  </figure>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · por qué Gittinger prefiere el valor límite</div>
+    <p>Gittinger (1982) recomienda reportar valores límite en lugar de tablas de sensibilidad por una razón práctica: el valor límite se puede <b>contrastar con la experiencia</b>. Decir «el VAN se vuelve cero si el precio cae 7.3&nbsp;%, es decir a 93 pesos de cada 100 de los que pusimos» permite preguntarle a quien conoce el mercado si ha visto ese precio; una tabla de veinte celdas no permite preguntar nada.</p>
+    <p>La regla de lectura es sencilla: <b>un valor límite menor al 10&nbsp;% es una bandera roja</b>, porque un 10&nbsp;% está dentro del error normal de cualquier proyección. Entre 10 y 25&nbsp;% el resultado es discutible; arriba de 25&nbsp;% la variable prácticamente no amenaza al proyecto.</p>
+  </div>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · tres banderas rojas en la fresa</div>
+    <table class="compacta">
+      <thead><tr><th>Variable</th><th class="num">Cambio que anula el VAN</th><th class="num">Valor al que llegaría</th><th>Lectura</th></tr></thead>
+      <tbody>
+        <tr><td><b>Precio de venta</b></td><td class="num">−7.3&nbsp;%</td><td class="num">93&nbsp;%</td><td>bandera roja</td></tr>
+        <tr><td><b>Rendimiento</b></td><td class="num">−8.1&nbsp;%</td><td class="num">92&nbsp;%</td><td>bandera roja</td></tr>
+        <tr><td><b>Costos de operación</b></td><td class="num">+9.4&nbsp;%</td><td class="num">109&nbsp;%</td><td>bandera roja</td></tr>
+        <tr><td>Inversión</td><td class="num">+46.6&nbsp;%</td><td class="num">147&nbsp;%</td><td>resistente</td></tr>
+        <tr><td>Tasa de descuento</td><td class="num">+59.7&nbsp;%</td><td class="num">160&nbsp;%</td><td>resistente</td></tr>
+      </tbody>
+    </table>
+    <p>La obra podría costar casi la mitad más de lo presupuestado y el proyecto seguiría siendo viable; el crédito podría encarecerse hasta una tasa un 60&nbsp;% más alta y aguantaría. Pero basta que la fresa se pague un <b>7.3&nbsp;% menos</b> para que el VAN desaparezca. Ese es el hallazgo del capítulo de riesgo de esa tesis, y va en el resumen, no en un anexo.</p>
+  </div>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Cuando una variable no tiene valor límite</div>
+    <p>Si una variable no alcanza a anular el VAN dentro del rango que la app explora —de 2&nbsp;% a 8 veces su valor—, la celda queda vacía y la variable se va al final de la tabla. Que <b>todas</b> queden vacías es raro: o el proyecto es extraordinariamente robusto, o hay algo mal capturado en los bloques anteriores. La app lo dice con una nota en la tarjeta de revisión.</p>
+  </div>
+
+  <!-- 7.4 -->
+  <h2 id="s7-4"><span class="num">7.4</span>Dos variables a la vez</h2>
+  <p>Las variables no se mueven de una en una. La segunda tarjeta cruza dos —las que se elijan— en una rejilla de siete por siete, cada una entre −30&nbsp;% y +30&nbsp;%, y colorea el VAN de rojo a verde.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b7-dos.png" alt="Tarjeta 2 del Bloque 7: la rejilla de VAN para el precio de venta contra los costos de operación"></div>
+    <figcaption><b>Figura 7.3.</b> El VAN de la fresa según el precio (horizontal) y los costos de operación (vertical). La frontera entre lo rojo y lo verde es la combinación que hay que poder defender: sobre ella el proyecto apenas empata.</figcaption>
+  </figure>
+
+  <p>Esta es la figura que se imprime en una tesis, y se lee por su <b>frontera</b>, no celda por celda. En la fila central —costos como se presupuestaron— el proyecto aguanta una caída del precio de menos del 10&nbsp;%: con −10&nbsp;% el VAN ya es −$387,509. Pero si además los costos suben 10&nbsp;%, el precio ya no puede caer nada: con el precio en su valor base y los costos 10&nbsp;% arriba el VAN es <b>−$60,447</b>, prácticamente cero.</p>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · leer la esquina que importa</div>
+    <table class="compacta">
+      <thead><tr><th>Costos · Precio</th><th class="num">−20&nbsp;%</th><th class="num">−10&nbsp;%</th><th class="num">base</th><th class="num">+10&nbsp;%</th></tr></thead>
+      <tbody>
+        <tr><td><b>+20&nbsp;%</b></td><td class="num">−$5,180,564</td><td class="num">−$3,017,922</td><td class="num">−$1,181,117</td><td class="num">$265,654</td></tr>
+        <tr><td><b>+10&nbsp;%</b></td><td class="num">−$3,531,452</td><td class="num">−$1,526,368</td><td class="num">−$60,447</td><td class="num">$1,351,671</td></tr>
+        <tr><td><b>base</b></td><td class="num">−$1,948,920</td><td class="num">−$387,509</td><td class="num"><b>$1,028,294</b></td><td class="num">$2,424,905</td></tr>
+        <tr><td><b>−10&nbsp;%</b></td><td class="num">−$717,542</td><td class="num">$704,891</td><td class="num">$2,102,810</td><td class="num">$3,495,437</td></tr>
+      </tbody>
+    </table>
+    <p>El caso base está rodeado de rojo por dos lados. Bajar los costos un 10&nbsp;% —negociar el empaque, el flete o la plántula— deja el VAN en $2,102,810, casi lo mismo que subir el precio esa misma proporción ($2,424,905); con la diferencia de que el costo se negocia con un proveedor y el precio no se negocia con nadie.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>No cruces dos variables que se mueven juntas</div>
+    <p>La rejilla supone que las dos variables son <b>independientes</b>: cada celda combina un precio con un costo como si uno no dijera nada del otro. Eso es razonable para precio contra costos, y es falso para precio contra rendimiento —que en agricultura se mueven en contra— o para inversión contra tasa de descuento. Si las variables están relacionadas, buena parte de las celdas describe mundos que no pueden ocurrir, y el cuadro exagera tanto lo bueno como lo malo. Para eso está la simulación de la sección 7.6, que sí sabe correlacionar.</p>
+  </div>
+
+  <!-- 7.5 -->
+  <h2 id="s7-5"><span class="num">7.5</span>Escenarios</h2>
+  <p>Un escenario no es una variable: es un <b>estado del mundo completo</b>, con todos sus supuestos moviéndose a la vez y con una probabilidad declarada. La tercera tarjeta los captura en una hoja y calcula el VAN, la TIR y el valor esperado.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b7-escenarios.png" alt="Tarjeta 3 del Bloque 7: los tres escenarios de la fresa con su probabilidad, VAN, TIR y supuestos"></div>
+    <figcaption><b>Figura 7.4.</b> Los tres escenarios de la fresa. Arriba se escriben; abajo la app los evalúa y saca el valor esperado y su desviación. Los porcentajes son cambios sobre el caso base: −25 en precio significa un precio 25&nbsp;% más bajo.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · el resultado que contradice al Bloque 6</div>
+    <table class="compacta">
+      <thead><tr><th>Escenario</th><th class="num">Prob.</th><th class="num">VAN</th><th class="num">TIR</th><th>Supuestos</th></tr></thead>
+      <tbody>
+        <tr><td><b>Pesimista</b></td><td class="num">30&nbsp;%</td><td class="num">−$6,905,222</td><td class="num">−33.7&nbsp;%</td><td>precio −25&nbsp;%, rend. −12&nbsp;%, costos +12&nbsp;%, inv. +10&nbsp;%</td></tr>
+        <tr><td><b>Esperado</b></td><td class="num">45&nbsp;%</td><td class="num">$1,028,294</td><td class="num">12.1&nbsp;%</td><td>todo como se presupuestó</td></tr>
+        <tr><td><b>Optimista</b></td><td class="num">25&nbsp;%</td><td class="num">$5,273,279</td><td class="num">28.6&nbsp;%</td><td>precio +18&nbsp;%, rend. +8&nbsp;%, costos −5&nbsp;%</td></tr>
+        <tr class="total-row"><td><b>Valor esperado</b></td><td class="num">100&nbsp;%</td><td class="num"><b>−$290,515</b></td><td class="num">—</td><td>desviación estándar $4,652,733</td></tr>
+      </tbody>
+    </table>
+    <p>El Bloque 6 dictaminó «conviene realizarlo» con un VAN de $1,028,294. Pesados por su probabilidad, los tres escenarios dan un valor esperado <b>negativo</b>. No hay error en ninguno de los dos: el primero evalúa el caso más probable, el segundo evalúa la apuesta completa. Y la desviación —$4.65 millones, dieciséis veces el valor esperado— dice que el resultado depende casi por entero de cuál mundo ocurra.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>El escenario pesimista no es «el precio 25&nbsp;% abajo»</div>
+    <p>Es el precio 25&nbsp;% abajo <b>y</b> el rendimiento 12&nbsp;% abajo <b>y</b> los costos 12&nbsp;% arriba <b>y</b> la inversión 10&nbsp;% arriba, todo en el mismo mundo. Por eso su VAN (−$6.9 millones) es mucho peor que cualquier celda de la sensibilidad, y por eso hay que preguntarse si ese mundo es coherente: ¿es creíble que caiga el precio y al mismo tiempo suban los costos? En la fresa sí —una sobreoferta regional baja el precio mientras el empaque y el flete siguen subiendo con la inflación—, y por eso el escenario se sostiene. Un escenario mal armado es peor que no tener escenarios, porque le pone probabilidad a algo imposible.</p>
+  </div>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Las probabilidades deben sumar 100</div>
+    <p>Si no suman, la app normaliza para calcular el valor esperado y lo avisa. Normalizar salva la cuenta, no el razonamiento: si las probabilidades suman 80&nbsp;% es porque falta un estado del mundo que nadie escribió.</p>
+  </div>
+
+  <!-- 7.6 -->
+  <h2 id="s7-6"><span class="num">7.6</span>La simulación de Monte Carlo</h2>
+  <p>Los escenarios describen tres mundos. La simulación describe <b>miles</b>: en cada corrida sortea un valor de cada variable según la distribución declarada, rearma el flujo completo del proyecto —ingresos, costos, impuestos, crédito— y calcula su VAN. Con tres mil corridas aparece la distribución del resultado y, sobre todo, la probabilidad de perder, que es lo que pregunta un banco o un comité.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b7-montecarlo.png" alt="Tarjeta 4 del Bloque 7: los rangos de la simulación, el resumen, el histograma del VAN y las correlaciones"></div>
+    <figcaption><b>Figura 7.5.</b> La simulación de la fresa: 3,000 corridas con distribución triangular. El histograma pinta de rojo la parte que queda por debajo de cero; la segunda figura correlaciona lo sorteado en cada corrida con el VAN que salió.</figcaption>
+  </figure>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · qué distribución elegir</div>
+    <table class="compacta">
+      <thead><tr><th style="width:0.95in">Distribución</th><th>Cuándo usarla</th></tr></thead>
+      <tbody>
+        <tr><td><b>Triangular</b></td><td>Cuando solo hay tres números: mínimo, más probable y máximo. Es la opción honesta cuando la información viene de un experto y no de una serie. Es la que la app usa por omisión.</td></tr>
+        <tr><td><b>PERT</b></td><td>Igual que la triangular, pero pesa mucho más el valor central y suaviza las colas. Se prefiere cuando el valor más probable es realmente el más creíble.</td></tr>
+        <tr><td><b>Normal</b></td><td>Cuando hay una serie histórica de la que se sacó una media y una desviación. La app toma la mitad del rango declarado como desviación estándar.</td></tr>
+        <tr><td><b>Uniforme</b></td><td>Cuando de veras no se sabe nada dentro del rango. Es la más conservadora y la que más ensancha el resultado.</td></tr>
+      </tbody>
+    </table>
+    <p>El rango se declara como un porcentaje alrededor del valor base: 28&nbsp;% en el precio significa que puede ir de 72 a 128 pesos por cada 100 presupuestados. Ese número no se inventa: sale de la misma serie con la que se proyectó el precio en el Bloque 3.</p>
+  </div>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · 3,000 corridas de la fresa</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:30%">VAN esperado</td><td class="num"><b>$974,841</b></td><td style="width:30%">Desviación estándar</td><td class="num">$1,710,446</td></tr>
+      <tr><td>Coeficiente de variación</td><td class="num">1.75</td><td>Probabilidad de VAN negativo</td><td class="num"><b>28.1&nbsp;%</b></td></tr>
+      <tr><td>Mínimo y máximo</td><td class="num">−$5,228,494 … $6,554,163</td><td>Intervalo del 90&nbsp;%</td><td class="num">−$1,820,784 … $3,804,341</td></tr>
+    </tbody></table>
+    <p>La frase que va en la tesis es: <i>«con los rangos declarados, el proyecto tiene un 28&nbsp;% de probabilidad de dar un VAN negativo, y en el 90&nbsp;% de los casos el VAN queda entre −$1.8 y $3.8 millones»</i>. Un banco no pregunta el VAN: pregunta eso.</p>
+  </div>
+
+  <p>La media simulada ($974,841) queda muy cerca del VAN del caso base ($1,028,294), lo que es buena señal: quiere decir que los rangos están centrados y que no se metió un sesgo por descuido. La mediana, $991,495, confirma que la distribución es casi simétrica.</p>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Por qué la simulación y los escenarios no dan lo mismo</div>
+    <p>Los escenarios dieron un valor esperado de <b>−$290,515</b> y la simulación da <b>+$974,841</b>. La diferencia no es un error: los escenarios apilan cuatro desgracias en un solo mundo y le asignan el 30&nbsp;% de probabilidad, mientras que la simulación sortea cada variable por separado y solo rara vez le tocan las cuatro en contra al mismo tiempo. Además, la correlación negativa entre precio y rendimiento impide justo eso.</p>
+    <p>Las dos cifras se reportan juntas y se explica la diferencia. Quien solo reporta la que le conviene está escogiendo el resultado, no analizando el riesgo.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · la correlación precio–rendimiento</div>
+    <p>En agricultura el año de la buena cosecha suele ser el del precio bajo: si todos cosechan mucho, el mercado se satura. Suponer que precio y rendimiento son independientes <b>exagera el riesgo</b>, porque deja que la simulación produzca años catastróficos con poca producción y precio bajo a la vez, que en la realidad casi no ocurren.</p>
+    <p>La app permite declarar esa correlación —en la fresa, <b>−0.4</b>— y la impone sobre los sorteos por el método de Iman y Conover (1982), que reordena las muestras hasta que sus rangos tengan la correlación pedida sin deformar ninguna distribución. Si se deja en cero, la app lo advierte.</p>
+  </div>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · qué explica la variación</div>
+    <table class="compacta">
+      <thead><tr><th>Variable sorteada</th><th class="num">Correlación con el VAN</th><th>Lectura</th></tr></thead>
+      <tbody>
+        <tr><td><b>Precio de venta</b></td><td class="num">0.80</td><td>casi toda la incertidumbre del resultado</td></tr>
+        <tr><td>Costos de operación</td><td class="num">−0.41</td><td>importa, y se puede negociar</td></tr>
+        <tr><td>Rendimiento</td><td class="num">0.11</td><td>pequeño, porque la correlación lo compensa</td></tr>
+        <tr><td>Inversión</td><td class="num">−0.05</td><td>irrelevante para la incertidumbre</td></tr>
+      </tbody>
+    </table>
+    <p>Esta tabla dice <b>dónde conviene gastar en información</b>. Con 0.80 de correlación, cada peso que se gaste en un buen estudio de precios reduce más incertidumbre que todo lo que se pueda averiguar sobre las otras tres variables juntas. El rendimiento aparece bajo no porque no importe —en el tornado era la segunda— sino porque la correlación negativa con el precio cancela buena parte de su efecto sobre el VAN.</p>
+  </div>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>El resultado es reproducible</div>
+    <p>La simulación usa un generador con semilla fija: correrla otra vez con los mismos rangos da exactamente los mismos números, y eso es lo que permite que una tesis sea verificable. Cambiar el número de corridas sí cambia el resultado, poco. El botón <span class="ui">Descargar el análisis (.csv)</span> guarda la tabla completa para quien quiera repetirla en otro programa.</p>
+  </div>
+
+  <!-- 7.7 -->
+  <h2 id="s7-7"><span class="num">7.7</span>Decidir por etapas: el valor de esperar</h2>
+  <p>Todo lo anterior supone que hay que decidir hoy. La quinta tarjeta levanta ese supuesto: compara invertir ahora con esperar un año a ver qué pasa y decidir entonces, ya sabiendo en qué mundo se está.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b7-arbol.png" alt="Tarjeta 5 del Bloque 7: el árbol de decisión entre invertir ahora y esperar un año"></div>
+    <figcaption><b>Figura 7.6.</b> El árbol de la fresa con un 45&nbsp;% de probabilidad para el escenario bueno. El cuadro es la decisión; el círculo, el azar. La rama de esperar vale más porque en el mundo malo simplemente no se invierte.</figcaption>
+  </figure>
+
+  <p>El árbol toma sus dos puntas de los escenarios pesimista y optimista de la sección anterior, y lo único que se escribe aquí es la probabilidad del escenario bueno.</p>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · las tres cuentas del árbol</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:40%"><b>Invertir ahora</b></td><td class="num">−$1,424,897</td><td>0.45 × $5,273,279 + 0.55 × (−$6,905,222)</td></tr>
+      <tr><td><b>Esperar un año</b></td><td class="num">$2,205,799</td><td>(0.45 × $5,273,279 + 0.55 × $0) ÷ 1.0758</td></tr>
+      <tr class="total-row"><td><b>Valor de la opción de esperar</b></td><td class="num"><b>$3,630,696</b></td><td>la diferencia entre las dos</td></tr>
+      <tr><td>Valor de la información perfecta</td><td class="num">$3,797,872</td><td>saberlo hoy, sin perder el año</td></tr>
+    </tbody></table>
+    <p>El truco está en el cero de la segunda línea: quien espera y ve que el mundo es malo <b>no invierte</b>, y su pérdida es cero en vez de −$6.9 millones. Esa asimetría es todo el valor de la opción. Lo que cuesta esperar es un año de descuento —dividir entre 1.0758— y, en la realidad, lo que se pierda de mercado mientras tanto.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · el valor de la información perfecta</div>
+    <p>El <b>VEIP</b> es lo que valdría saber hoy, con certeza, cuál escenario ocurrirá: el valor esperado decidiendo con esa información, menos el valor esperado decidiendo a ciegas. En la fresa, $3,797,872.</p>
+    <p>Su uso es inmediato y muchas veces se ignora: es el <b>techo</b> de lo que tiene sentido gastar en un estudio de mercado, una prueba piloto o un contrato de precio garantizado. Ninguna información real es perfecta, así que lo razonable es gastar bastante menos; pero si un estudio cuesta más que el VEIP, no hay forma de que se pague, por bueno que sea.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Qué supone este árbol, y cuándo deja de valer</div>
+    <p>Supone tres cosas: que <b>se puede</b> esperar —el terreno sigue disponible, el apoyo no vence, el mercado no se lo lleva otro—, que al cabo del año se sabrá con certeza en qué mundo se está, y que esperar no cuesta nada más que el descuento. Cuando alguna falla, el valor de la opción es menor que el que la app calcula. Por eso el resultado se reporta como lo que es: una cota superior del beneficio de posponer, no una instrucción.</p>
+  </div>
+
+  <!-- 7.8 -->
+  <h2 id="s7-8"><span class="num">7.8</span>Los avisos de este bloque</h2>
+  <p>La última tarjeta revisa lo que se hizo y escribe advertencias en español. En la fresa salen dos.</p>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · lo que la app dice de la fresa</div>
+    <p style="font-style:italic">«Precio de venta, Rendimiento, Costos de operación: basta un cambio menor al 10&nbsp;% para que el VAN se vuelva cero. El resultado es frágil y hay que decirlo en las conclusiones.»</p>
+    <p style="font-style:italic">«Casi toda la variación del VAN viene de Precio de venta (correlación 0.80): ahí conviene gastar en información.»</p>
+  </div>
+
+  <table class="compacta">
+    <thead><tr><th style="width:0.95in">Clase</th><th>Lo que revisa</th></tr></thead>
+    <tbody>
+      <tr><td><b>Error</b></td><td>No hay proyecto que someter a riesgo: falta algo de los bloques anteriores.</td></tr>
+      <tr><td><b>Advertencia</b></td><td>Alguna variable tiene un valor límite menor al 10&nbsp;%; la simulación da más del 30&nbsp;% de probabilidad de perder; las probabilidades de los escenarios no suman 100&nbsp;%.</td></tr>
+      <tr><td><b>Nota</b></td><td>Ninguna variable por sí sola anula el VAN; la probabilidad de perder es menor al 5&nbsp;% y el proyecto aguanta; qué variable explica la variación; que se están simulando precio y rendimiento como independientes.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión · qué reportar del capítulo de riesgo</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Si</b> no hay base para poner probabilidades</td><td><b>entonces</b> reporta solo valores límite y tornado, y dilo: no inventes distribuciones.</td></tr>
+      <tr><td><b>Si</b> algún valor límite es menor al 10&nbsp;%</td><td><b>entonces</b> va en el resumen ejecutivo, no en un anexo, con la pregunta que le harías al productor.</td></tr>
+      <tr><td><b>Si</b> simulas precio y rendimiento</td><td><b>entonces</b> declara su correlación; dejarla en cero exagera el riesgo y hay que justificarlo.</td></tr>
+      <tr><td><b>Si</b> el valor esperado de los escenarios contradice al VAN base</td><td><b>entonces</b> reporta los dos y explica por qué difieren; no elijas el que conviene.</td></tr>
+      <tr><td><b>Si</b> la probabilidad de perder pasa del 30&nbsp;%</td><td><b>entonces</b> el proyecto es arriesgado aunque su VAN sea positivo, y así debe decirlo la conclusión.</td></tr>
+      <tr><td><b>Si</b> el valor de esperar es grande</td><td><b>entonces</b> pregunta primero si de verdad se puede esperar, y compara el VEIP con lo que cuesta un estudio.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">Todo lo de este bloque —valores límite, escenarios, simulación y árbol— entra en el informe del Bloque 10 con sus supuestos a la vista. El Bloque 8 cambia de pregunta: ya no si le conviene al dueño, sino si le conviene al país.</p>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "EconomicsPro: a browser-based platform for the economic and financial appraisal of agrifood projects"
+abstract: >-
+  EconomicsPro is a self-contained web application that carries an agricultural or agro-industrial project
+  through a whole appraisal in the browser, with no installation and no server-side computation. It defines the
+  project and its assumptions (horizon, constant or current prices, discount rate by MARR, WACC or CAPM, tax
+  regime with the exemption of article 74 of the Mexican income tax law), deflates and projects the price and
+  yield series by five methods, builds the sales programme, the investment schedule with automatic replacement,
+  the operating budget and the working capital, arranges the loans and the pro-forma statements with the two
+  cash flows, and appraises them with net present value, all the roots of the internal rate of return, modified
+  IRR, benefit-cost ratio, payback and equivalent annual value, together with the partial budgets and marginal
+  analysis of the CIMMYT manual. It then submits the result to risk (switching values, tornado, scenarios and a
+  Monte Carlo simulation with rank correlation), converts it to economic prices with conversion factors and an
+  exact bridge from the private to the economic NPV, compares alternatives (incremental IRR, capital rationing,
+  economic life, Faustmann rotation, buy or lease), and exports the figures, a self-contained report and a
+  package that lets anyone redo every calculation. Every method is cited to its source.
+type: software
+authors:
+  - given-names: "Luis Ángel"
+    family-names: "Barrera-Guzmán"
+    email: lbarrerag@chapingo.mx
+    orcid: "https://orcid.org/0000-0001-8057-2583"
+version: "1.0.6"
+date-released: "2026-09-27"
+repository-code: "https://github.com/luisangelbg/EconomicsPro"
+url: "https://luisangelbg.github.io/EconomicsPro/"
+license: GPL-3.0-or-later
+keywords:
+  - project appraisal
+  - agricultural economics
+  - cost-benefit analysis
+  - net present value
+  - internal rate of return
+  - discount rate
+  - pro-forma statements
+  - risk analysis
+  - Monte Carlo simulation
+  - shadow prices
+  - social appraisal
+  - capital rationing
+  - Faustmann rotation
+  - agrifood projects

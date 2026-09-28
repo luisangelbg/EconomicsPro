@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EconomicsPro · Manual de usuario · Capítulo 9</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../interior.css">
+<script src="../paginar.js"></script>
+<style>
+  .formula { font-family: var(--mono); font-size: 9pt; background: var(--marino-suave); border-radius: 5px; padding: 0.07in 0.12in; margin: 0.08in 0; }
+</style>
+</head>
+<body>
+
+<section class="capitulo" id="cap-b9" data-pestana="B9" data-orden="9" style="--acento: var(--b9)">
+  <div class="cap-apertura">
+    <div class="cap-num">9</div>
+    <div class="cap-etiqueta">Bloque 9 · Comparación y decisiones</div>
+    <h1>Comparación y decisiones</h1>
+    <div class="cap-regla"></div>
+    <p class="cap-resumen">Los ocho bloques anteriores contestaron si el proyecto conviene. Este contesta las preguntas que vienen después y que casi ningún estudio resuelve bien: cuál de varias alternativas, cómo comparar cosas que duran distinto, qué hacer cuando el dinero no alcanza para todas, cuándo cambiar la máquina, cuándo cortar la plantación y si conviene comprar o rentar.</p>
+    <ul class="cap-contenido">
+      <li><b>9.1</b>Qué hace este bloque y qué no</li>
+      <li><b>9.2</b>Las alternativas</li>
+      <li><b>9.3</b>Horizontes distintos: por qué manda el VAE</li>
+      <li><b>9.4</b>Cuál de las dos: la TIR incremental</li>
+      <li><b>9.5</b>Cuando el dinero no alcanza</li>
+      <li><b>9.6</b>Cuándo cambiar el tractor</li>
+      <li><b>9.7</b>Cuándo cortar la plantación</li>
+      <li><b>9.8</b>Comprar o rentar</li>
+      <li><b>9.9</b>Los avisos de este bloque</li>
+    </ul>
+  </div>
+
+  <!-- 9.1 -->
+  <h2 id="s9-1"><span class="num">9.1</span>Qué hace este bloque y qué no</h2>
+  <p class="lead">Un VAN positivo dice que el proyecto vale la pena, no que sea lo mejor que se puede hacer con ese dinero. Este bloque mete el proyecto de los bloques anteriores —con su flujo verdadero, no con un resumen— en una lista junto a otras alternativas y las pesa a todas con la misma tasa.</p>
+
+  <p>Lo que <b>no</b> hace es pedir un estudio completo de cada alternativa. Para entrar a la comparación bastan cuatro cifras: la inversión, el flujo neto de un año, cuántos años dura y lo que quedaría al final. Eso es deliberado: si para comparar hubiera que formular cinco proyectos enteros, nadie compararía nada y la decisión se tomaría a ojo, que es exactamente lo que este bloque quiere evitar.</p>
+
+  <p>El capítulo usa el caso de práctica del <span class="ui">Nopal verdura en Milpa Alta</span> —el proyecto limpio, sin gestación— contra las tres obras de riego que trae el botón <span class="ui">Cargar un ejemplo</span>. Todas se comparan a la tasa del 12.00&nbsp;% con la que se evaluó el nopal en el Bloque 6.</p>
+
+  <!-- 9.2 -->
+  <h2 id="s9-2"><span class="num">9.2</span>Las alternativas</h2>
+  <p>La primera tarjeta tiene arriba la hoja donde se escriben las alternativas y abajo la tabla con sus seis indicadores. El proyecto aparece siempre, sin escribirlo.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b9-alternativas.png" alt="Tarjeta 1 del Bloque 9 con la hoja de alternativas y la tabla de indicadores del nopal y las tres obras de riego"></div>
+    <figcaption><b>Figura 9.1.</b> El nopal contra tres obras de riego. La flecha sobre la columna del valor anual equivalente aparece sola cuando las alternativas duran distinto: es la columna que hay que leer.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · cuatro alternativas y cinco respuestas distintas</div>
+    <table class="compacta">
+      <thead><tr><th>Alternativa</th><th class="num">Inversión</th><th class="num">Años</th><th class="num">VAN</th><th class="num">TIR</th><th class="num">IR</th><th class="num">VAE</th></tr></thead>
+      <tbody>
+        <tr><td><b>Nopal</b> (el proyecto)</td><td class="num">$309,853</td><td class="num">15</td><td class="num">$909,659</td><td class="num"><b>39.0&nbsp;%</b></td><td class="num"><b>3.94</b></td><td class="num">$133,560</td></tr>
+        <tr><td><b>Riego por goteo</b></td><td class="num">$2,600,000</td><td class="num">15</td><td class="num"><b>$989,151</b></td><td class="num">18.6&nbsp;%</td><td class="num">1.38</td><td class="num"><b>$145,231</b></td></tr>
+        <tr><td>Riego por aspersión</td><td class="num">$1,400,000</td><td class="num">10</td><td class="num">$340,143</td><td class="num">17.5&nbsp;%</td><td class="num">1.24</td><td class="num">$60,200</td></tr>
+        <tr><td>Nivelación de tierras</td><td class="num">$800,000</td><td class="num">12</td><td class="num">$222,072</td><td class="num">17.7&nbsp;%</td><td class="num">1.28</td><td class="num">$35,851</td></tr>
+      </tbody>
+    </table>
+    <p>El VAN prefiere el <b>riego por goteo</b>; la TIR y el índice de rentabilidad prefieren el <b>nopal</b>, y por mucho. No es que un indicador esté mal calculado: es el desacuerdo clásico entre proyectos de tamaños muy distintos, y se resuelve en la sección 9.4.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · por qué la TIR prefiere lo pequeño</div>
+    <p>La TIR es un porcentaje y <b>no sabe cuántos pesos hay detrás</b>. El nopal rinde 39&nbsp;% sobre $309,853; el goteo rinde 18.6&nbsp;% sobre $2,600,000. Preferir el 39&nbsp;% equivale a decir que vale más ganar mucho sobre poco que poco sobre mucho, y eso solo es cierto si el dinero que sobra se puede invertir igual de bien en otra cosa.</p>
+    <p>Lo mismo pasa con el índice de rentabilidad, que es un cociente. Por eso, entre alternativas <b>que se excluyen</b> —no se puede hacer las dos—, la regla es el VAN o el valor anual equivalente; el índice de rentabilidad sirve para otra cosa, que es repartir un presupuesto entre proyectos independientes (sección 9.5).</p>
+  </div>
+
+  <!-- 9.3 -->
+  <h2 id="s9-3"><span class="num">9.3</span>Horizontes distintos: por qué manda el VAE</h2>
+  <p>En el ejemplo hay tres duraciones: 10, 12 y 15 años. La app lo detecta y marca la columna del valor anual equivalente, porque comparar los VAN de proyectos que duran distinto <b>no significa nada</b>.</p>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>El error más común de una tesis en este punto</div>
+    <p>Un VAN de $340,143 en diez años y uno de $222,072 en doce no son comparables: el primero deja libre la tierra y el dinero dos años antes, y ese tiempo vale. Compararlos directamente es como comparar dos salarios sin decir si son por semana o por quincena.</p>
+    <p>La solución no es alargar a mano el más corto ni recortar el más largo: es convertir cada VAN en la <b>anualidad equivalente</b> que lo produciría a lo largo de su propia vida, y comparar anualidades.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · el valor anual equivalente</div>
+    <p>El VAE reparte el VAN en pagos iguales a lo largo del horizonte, con el factor de recuperación del capital:</p>
+    <div class="formula">VAE = VAN · i · (1 + i)^n / [(1 + i)^n − 1]</div>
+    <p>Supone implícitamente que el proyecto <b>se repite</b> al terminar, que es el supuesto razonable cuando se trata de una obra o un equipo que habrá que reponer. Si el proyecto no se repite —una concesión que vence, una plantación que no se vuelve a sembrar—, entonces hay que igualar los horizontes de otra manera y decirlo.</p>
+  </div>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · cuándo el VAE cambia el veredicto y cuándo no</div>
+    <p>En este ejemplo <b>no lo cambia</b>: el goteo gana por VAN ($989,151) y también por VAE ($145,231), y la aspersión queda arriba de la nivelación por los dos caminos. Que coincidan es buena noticia, no una razón para no calcular el VAE: solo se sabe que coinciden después de calcularlo.</p>
+    <p>El veredicto sí se voltea cuando el proyecto de VAN más alto es también el más largo. Una obra de veinte años con un VAN de $1,000,000 al 12&nbsp;% da un VAE de $133,879, y una de ocho años con un VAN de $600,000 da $120,782: gana la primera. Pero si la corta valiera $700,000, su VAE sería de $140,912 y ganaría ella, con $300,000 menos de VAN.</p>
+  </div>
+
+  <!-- 9.4 -->
+  <h2 id="s9-4"><span class="num">9.4</span>Cuál de las dos: la TIR incremental</h2>
+  <p>La segunda tarjeta resuelve el desacuerdo de frente: toma dos alternativas y pregunta qué rinde el dinero <b>adicional</b> que pide la más cara.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b9-incremental.png" alt="Tarjeta 2 del Bloque 9 con la TIR incremental redactada y los perfiles del VAN con la intersección de Fisher"></div>
+    <figcaption><b>Figura 9.2.</b> Los cuatro perfiles del VAN y el punto donde se cruzan los dos comparados. A la izquierda del cruce gana la alternativa cara; a la derecha, la barata.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · los $2,290,147 de más</div>
+    <p style="font-style:italic">«Riego por goteo pide $2,290,147 más que el establecimiento de la plantación de nopal. Ese dinero adicional rinde 12.72&nbsp;%: mientras tu tasa esté por debajo de 12.72&nbsp;% conviene la alternativa más cara; por encima, la más barata. A tu tasa de 12.00&nbsp;% gana Riego por goteo.»</p>
+    <p>Esa es la respuesta completa, y cabe en tres renglones. El margen, eso sí, es estrecho: entre el 12.00&nbsp;% que se está usando y el 12.72&nbsp;% del cruce hay <b>setenta y dos centésimas de punto</b>. Si la tasa del proyecto se defendiera un poco más alta, el veredicto se voltearía; eso hay que decirlo en la tesis, no esconderlo.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · la intersección de Fisher</div>
+    <p>La <b>TIR incremental</b> es la tasa que hace cero el VAN de la <i>diferencia</i> entre los dos flujos: lo que cuesta de más contra lo que deja de más. Geométricamente es el punto donde los dos perfiles del VAN se cruzan, y por eso se llama <b>intersección de Fisher</b>.</p>
+    <p>La regla es directa: si la TIR incremental supera a la tasa de descuento, el dinero adicional se paga solo y conviene la alternativa cara; si no la supera, ese dinero rinde menos de lo que cuesta y conviene la barata, que a esa tasa es además la de mayor VAN. Las dos reglas —el VAN y la TIR incremental— siempre dan el mismo veredicto: la segunda solo lo explica mejor, porque dice <i>en qué condición</i> se sostiene.</p>
+  </div>
+
+  <!-- 9.5 -->
+  <h2 id="s9-5"><span class="num">9.5</span>Cuando el dinero no alcanza</h2>
+  <p>Las secciones anteriores suponen que las alternativas se excluyen. La tercera tarjeta supone lo contrario: son <b>independientes</b>, se podrían hacer varias, y lo que falta es dinero.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b9-racionamiento.png" alt="Tarjeta 3 del Bloque 9 con el paquete que cabe en el presupuesto por índice de rentabilidad y por búsqueda exhaustiva"></div>
+    <figcaption><b>Figura 9.3.</b> Con $3,000,000 de presupuesto, qué cabe. En verde, lo que se toma; en gris, lo que se queda fuera. Las barras van ordenadas por índice de rentabilidad, no por VAN.</figcaption>
+  </figure>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · la regla del índice y sus límites</div>
+    <p>Con presupuesto limitado, la regla clásica es ordenar los proyectos por <b>índice de rentabilidad</b> —VAN por peso invertido— y tomarlos de arriba hacia abajo mientras el dinero dure. Es una buena regla de dedo y funciona perfecto cuando los proyectos son divisibles.</p>
+    <p>El problema es que un proyecto <b>no se puede partir a la mitad</b>. Cuando el último que cabe deja un sobrante grande, a veces conviene saltárselo y tomar dos más pequeños que juntos rinden más. Por eso la app no se conforma con la regla: prueba <b>todas las combinaciones</b> que caben en el presupuesto —hasta 18 alternativas— y reporta cuánto VAN deja la regla sobre la mesa.</p>
+  </div>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · aquí la regla acierta</div>
+    <table class="compacta">
+      <thead><tr><th>Regla</th><th>Qué se toma</th><th class="num">Inversión</th><th class="num">VAN del paquete</th></tr></thead>
+      <tbody>
+        <tr><td>Por índice de rentabilidad</td><td>nopal + riego por goteo</td><td class="num">$2,909,853</td><td class="num">$1,898,809</td></tr>
+        <tr><td><b>El mejor paquete posible</b></td><td>nopal + riego por goteo</td><td class="num">$2,909,853</td><td class="num">$1,898,809</td></tr>
+      </tbody>
+    </table>
+    <p>Los dos caminos dan el mismo paquete y la app no escribe ninguna advertencia. Eso <b>se comprueba</b>, no se supone: con otro presupuesto la respuesta puede diferir, y cuando difiere la app dice exactamente cuántos pesos de VAN cuesta seguir la regla de dedo.</p>
+  </div>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Excluyentes o independientes: hay que decidirlo antes</div>
+    <p>Las tarjetas 2 y 3 contestan preguntas opuestas y la app no puede adivinar cuál aplica. Si las alternativas son <b>formas distintas de hacer lo mismo</b> —regar por goteo o por aspersión—, se excluyen y manda la tarjeta 2. Si son <b>obras distintas que podrían convivir</b> —nivelar y además nivelar otra parcela—, son independientes y manda la tarjeta 3. Mezclarlas produce paquetes imposibles.</p>
+  </div>
+
+  <!-- 9.6 -->
+  <h2 id="s9-6"><span class="num">9.6</span>Cuándo cambiar el tractor</h2>
+  <p>La cuarta tarjeta contesta una pregunta que en el campo se resuelve por costumbre: cuántos años conservar un equipo. La respuesta no es «hasta que se descomponga».</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b9-reemplazo.png" alt="Tarjeta 4 del Bloque 9 con el costo anual equivalente de un tractor y su mínimo a los diez años"></div>
+    <figcaption><b>Figura 9.4.</b> El costo anual equivalente de un tractor de $900,000, partido en su parte de capital —que baja— y su parte de operación —que sube—. Donde la suma toca fondo está la vida económica.</figcaption>
+  </figure>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · la vida económica no es la vida útil</div>
+    <p>La <b>vida útil</b> es cuántos años aguanta la máquina; la <b>vida económica</b> es cuántos años conviene tenerla. Son dos cosas distintas y casi siempre la segunda es más corta.</p>
+    <p>El costo anual equivalente de conservar un equipo <i>n</i> años tiene dos partes que se mueven en contra. La <b>parte de capital</b> —lo que se pagó menos lo que se recupera al venderlo, repartido entre los años— <b>baja</b>, porque la inversión se diluye. La <b>parte de operación</b> —combustible, mantenimiento, reparaciones— <b>sube</b>, porque una máquina vieja cuesta más tenerla andando. La suma baja primero y sube después, y el año en que toca fondo es la vida económica.</p>
+  </div>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · un tractor de $900,000</div>
+    <p>Pierde el 18&nbsp;% de su valor al año hasta un piso del 12&nbsp;% del precio; operarlo cuesta $60,000 el primer año y ese costo sube 15&nbsp;% al año.</p>
+    <table class="compacta">
+      <thead><tr><th class="num">Años</th><th class="num">Valor de reventa</th><th class="num">Parte de capital</th><th class="num">Parte de operación</th><th class="num">Costo anual equivalente</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td class="num">$738,000</td><td class="num">$270,000</td><td class="num">$60,000</td><td class="num">$330,000</td></tr>
+        <tr><td class="num">5</td><td class="num">$333,666</td><td class="num">$197,147</td><td class="num">$78,395</td><td class="num">$275,541</td></tr>
+        <tr><td class="num">9</td><td class="num">$150,858</td><td class="num">$158,701</td><td class="num">$100,814</td><td class="num">$259,515</td></tr>
+        <tr class="total-row"><td class="num"><b>10</b></td><td class="num">$123,703</td><td class="num">$152,237</td><td class="num">$107,097</td><td class="num"><b>$259,334</b></td></tr>
+        <tr><td class="num">11</td><td class="num">$108,000</td><td class="num">$146,345</td><td class="num">$113,664</td><td class="num">$260,009</td></tr>
+        <tr><td class="num">12</td><td class="num">$108,000</td><td class="num">$140,818</td><td class="num">$120,521</td><td class="num">$261,339</td></tr>
+      </tbody>
+    </table>
+    <p>La vida económica es de <b>10 años</b>, con un costo de $259,334 al año. Nótese lo plano que está el fondo: entre el año 9 y el 11 la diferencia es de menos de $700 al año, medio punto porcentual. Eso también es un resultado, y uno tranquilizador: la decisión no es delicada, y quien conserve el tractor un año de más no comete un error caro.</p>
+  </div>
+
+  <!-- 9.7 -->
+  <h2 id="s9-7"><span class="num">9.7</span>Cuándo cortar la plantación</h2>
+  <p>La quinta tarjeta es la versión forestal y frutícola de la misma idea, y tiene una vuelta de tuerca que sorprende a casi todos.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b9-rotacion.png" alt="Tarjeta 5 del Bloque 9 con los cinco turnos posibles y la comparación entre el VAN de una rotación y el valor de la tierra de Faustmann"></div>
+    <figcaption><b>Figura 9.5.</b> Cinco turnos posibles. En verde claro, el VAN de <i>una</i> rotación; en verde oscuro, el valor de la tierra si el ciclo se repite para siempre. La barra ámbar marca el turno óptimo, y no es el mismo por los dos criterios.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · una plantación con cinco turnos</div>
+    <p>Establecerla cuesta $160,000 una vez y mantenerla $14,000 al año.</p>
+    <table class="compacta">
+      <thead><tr><th class="num">Turno</th><th class="num">Cosecha</th><th class="num">Cosecha por año</th><th class="num">VAN de una rotación</th><th class="num">Valor de la tierra</th></tr></thead>
+      <tbody>
+        <tr><td class="num">6</td><td class="num">$600,000</td><td class="num">$100,000</td><td class="num">$86,419</td><td class="num">$175,161</td></tr>
+        <tr class="total-row"><td class="num"><b>8</b></td><td class="num">$900,000</td><td class="num">$112,500</td><td class="num">$133,948</td><td class="num"><b>$224,701</b></td></tr>
+        <tr><td class="num"><b>10</b></td><td class="num">$1,200,000</td><td class="num">$120,000</td><td class="num"><b>$147,265</b></td><td class="num">$217,196</td></tr>
+        <tr><td class="num">12</td><td class="num">$1,450,000</td><td class="num">$120,833</td><td class="num">$125,458</td><td class="num">$168,779</td></tr>
+        <tr><td class="num">14</td><td class="num">$1,650,000</td><td class="num">$117,857</td><td class="num">$84,828</td><td class="num">$106,651</td></tr>
+      </tbody>
+    </table>
+    <p>El turno que maximiza el VAN de <b>una</b> cosecha es el de <b>10 años</b>; el que maximiza el valor de la tierra, si se vuelve a plantar, es el de <b>8</b>. Dos años de diferencia sobre la misma plantación, y la respuesta correcta depende por entero de si la tierra se vuelve a usar.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · el valor de la tierra de Faustmann</div>
+    <p>Martin Faustmann lo planteó en 1849 y sigue siendo la referencia. La idea: si la tierra se vuelve a plantar en cuanto se corta, esperar un año más no solo <b>agrega</b> crecimiento, también <b>retrasa</b> todas las rotaciones que vienen después, para siempre. Ese costo de oportunidad no aparece en el VAN de una sola cosecha.</p>
+    <div class="formula">valor de la tierra = VAN de una rotación / [1 − (1 + i)^(−n)]</div>
+    <p>Como el divisor es menor que 1, el valor de la tierra siempre es mayor que el VAN de una rotación; y como crece más rápido para los turnos cortos, el óptimo se <b>adelanta</b>. La regla práctica: cuando la plantación se repite, se corta antes de lo que diría el VAN.</p>
+  </div>
+
+  <!-- 9.8 -->
+  <h2 id="s9-8"><span class="num">9.8</span>Comprar o rentar</h2>
+  <p>La sexta tarjeta convierte las dos formas de tener una máquina en lo que cuestan al año, después de impuestos, a la misma tasa y con la misma vida.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b9-rentar.png" alt="Tarjeta 6 del Bloque 9 con la comparación entre comprar y arrendar una máquina"></div>
+    <figcaption><b>Figura 9.6.</b> Comprar contra arrendar la misma máquina por seis años. Se comparan valores presentes de <i>costo</i>: gana el menor.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · una máquina de $900,000 por seis años</div>
+    <p>Comprarla deja una reventa de $250,000 y cuesta $60,000 al año de mantenimiento; rentarla cuesta $190,000 al año con el mantenimiento incluido.</p>
+    <table class="compacta">
+      <thead><tr><th>Opción</th><th class="num">Valor presente del costo</th><th class="num">Costo anual equivalente</th></tr></thead>
+      <tbody>
+        <tr><td>Comprar</td><td class="num">$812,401</td><td class="num">$197,597</td></tr>
+        <tr class="total-row"><td><b>Arrendar</b></td><td class="num"><b>$546,817</b></td><td class="num"><b>$133,000</b></td></tr>
+      </tbody>
+    </table>
+    <p>Conviene <b>arrendar</b>, por $265,583 de valor presente. Y hay un detalle que conviene entender: el costo anual equivalente de arrendar, $133,000, es exactamente la renta de $190,000 menos el 30&nbsp;% de impuesto que se deduce. Tenía que salir así —una serie de pagos iguales tiene como anualidad equivalente el propio pago— y sirve para comprobar que la cuenta está bien hecha.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · qué entra en cada lado</div>
+    <table class="compacta">
+      <thead><tr><th style="width:0.9in">Opción</th><th>Lo que cuenta</th></tr></thead>
+      <tbody>
+        <tr><td><b>Comprar</b></td><td>el desembolso completo el año cero; <b>menos</b> el impuesto que ahorra la depreciación cada año; <b>más</b> el mantenimiento, ya descontado su efecto fiscal; <b>menos</b> lo que se recupera al venderla.</td></tr>
+        <tr><td><b>Arrendar</b></td><td>la renta de cada año, deducible completa, más lo que se siga pagando aparte si la renta no incluye el mantenimiento.</td></tr>
+      </tbody>
+    </table>
+    <p>Dos advertencias. La primera: aquí no aparece el crédito, porque comparar «comprar con préstamo» contra «rentar» mezcla la decisión de <b>tener</b> la máquina con la de <b>cómo financiarla</b>; esa segunda decisión es del Bloque 5. La segunda: lo que decide no es el ahorro fiscal sino quién usa mejor la máquina; si va a estar parada ocho meses al año, rentarla gana por razones que ningún cálculo fiscal alcanza a expresar.</p>
+  </div>
+
+  <!-- 9.9 -->
+  <h2 id="s9-9"><span class="num">9.9</span>Los avisos de este bloque</h2>
+  <p>La última tarjeta reúne lo que el bloque encontró. En este ejemplo escribe cinco mensajes, y los cinco son el capítulo entero en resumen.</p>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · lo que la app dice del ejemplo</div>
+    <p style="font-style:italic">«Las alternativas duran distinto (10, 12, 15 años): comparar sus VAN no significa nada. Usa el valor anual equivalente, que es la columna marcada.»</p>
+    <p style="font-style:italic">«El VAN prefiere Riego por goteo y la TIR prefiere el establecimiento de la plantación de nopal: es el desacuerdo clásico entre proyectos de distinto tamaño. Mira la TIR incremental de abajo.»</p>
+    <p style="font-style:italic">«Invertir los $2,290,147 de más de Riego por goteo rinde 12.72&nbsp;%: conviene mientras tu tasa esté por debajo de eso.»</p>
+    <p style="font-style:italic">«La vida económica del equipo es de 10 años, con un costo anual equivalente de $259,334. Conservarlo más tiempo sale más caro por año de servicio.»</p>
+    <p style="font-style:italic">«El turno que maximiza el VAN de una sola rotación es de 10 años, pero el que maximiza el valor de la tierra es de 8: cuando la plantación se repite, conviene cortar antes.»</p>
+  </div>
+
+  <table class="compacta">
+    <thead><tr><th style="width:0.95in">Clase</th><th>Lo que revisa</th></tr></thead>
+    <tbody>
+      <tr><td><b>Advertencia</b></td><td>Las alternativas duran distinto y hay que usar el valor anual equivalente; la regla del índice de rentabilidad deja VAN sobre la mesa frente al mejor paquete posible.</td></tr>
+      <tr><td><b>Nota</b></td><td>El VAN y la TIR prefieren alternativas distintas; cuánto rinde el dinero adicional de la más cara; cuál es la vida económica del equipo y su costo anual; en qué turno conviene cortar según se repita o no la plantación; si conviene comprar o arrendar y por cuánto.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión · qué usar en cada pregunta</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Si</b> las alternativas se excluyen y duran lo mismo</td><td><b>entonces</b> manda el <b>VAN</b>, y la TIR incremental lo explica.</td></tr>
+      <tr><td><b>Si</b> se excluyen y duran distinto</td><td><b>entonces</b> manda el <b>valor anual equivalente</b>, y hay que decir que se supone repetición.</td></tr>
+      <tr><td><b>Si</b> son independientes y el dinero no alcanza</td><td><b>entonces</b> ordena por <b>índice de rentabilidad</b> y comprueba contra el mejor paquete posible.</td></tr>
+      <tr><td><b>Si</b> la pregunta es cuántos años conservar un equipo</td><td><b>entonces</b> es el mínimo del <b>costo anual equivalente</b>, no la vida útil del fabricante.</td></tr>
+      <tr><td><b>Si</b> la plantación se vuelve a sembrar</td><td><b>entonces</b> el turno óptimo es el de <b>Faustmann</b>, que es más corto que el del VAN.</td></tr>
+      <tr><td><b>Si</b> comparas comprar contra rentar</td><td><b>entonces</b> hazlo después de impuestos, a la misma vida y sin meter el crédito.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">Aquí termina el análisis. El Bloque 10 no agrega un cálculo más: recoge todo lo que se hizo, lo convierte en figuras publicables, en un informe que se lee solo y en un paquete que permite a otro repetir el estudio.</p>
+  </div>
+</section>
+
+</body>
+</html>

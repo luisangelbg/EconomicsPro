@@ -1,0 +1,2224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>EconomicsPro — tests</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/i18n.js"></script>
+<style>
+  body { padding: 20px; }
+  .t { font-family: var(--mono); font-size: .8rem; padding: 2px 0; }
+  .ok { color: var(--success); } .bad { color: var(--danger); font-weight: 700; }
+  h2 { margin: 18px 0 4px; font-size: 1rem; }
+</style>
+</head>
+<body>
+<h1>EconomicsPro · <span id="sum">…</span></h1>
+<div id="out"></div>
+<script src="../js/core.js"></script>
+<script src="../js/finance.js"></script>
+<script src="../js/stats.js"></script>
+<script src="../js/art.js"></script>
+<script src="../js/plotkit.js"></script>
+<script src="../js/playground.js"></script>
+<script src="../js/project.js"></script>
+<script src="../js/plots2.js"></script>
+<script src="../js/import.js"></script>
+<script src="../js/exdata3.js"></script>
+<script src="../js/market.js"></script>
+<script src="../js/plots3.js"></script>
+<script src="../js/budget.js"></script>
+<script src="../js/exdata4.js"></script>
+<script src="../js/plots4.js"></script>
+<script src="../js/finstate.js"></script>
+<script src="../js/plots5.js"></script>
+<script src="../js/appraisal.js"></script>
+<script src="../js/plots6.js"></script>
+<script src="../js/risk.js"></script>
+<script src="../js/plots7.js"></script>
+<script src="../js/social.js"></script>
+<script src="../js/plots8.js"></script>
+<script src="../js/decide.js"></script>
+<script src="../js/plots9.js"></script>
+<script src="../js/zip.js"></script>
+<script src="../js/figure.js"></script>
+<script src="../js/report.js"></script>
+<script src="../js/block10.js"></script>
+<script src="../js/practice.js"></script>
+<script src="../js/home.js"></script>
+<script>
+/* Unit tests for Block 1. Open this page (double click or server) — every line must be green.
+
+   The reference values come from the worked examples and the interest tables of
+   the standard textbooks: the annuity and gradient factors of Blank & Tarquin
+   and Coss Bu, the loan schedules of Baca Urbina, the depreciation methods of
+   the income tax literature, the indicators of Gittinger's chapter 5 and the
+   double-root example of Brealey, Myers & Allen. Where no published value
+   exists, the test checks the definition itself: that the NPV at the IRR is
+   zero, that the principal of a loan schedule adds up to the loan, that a
+   depreciation schedule never goes below the salvage value, and so on. */
+(async function () {
+  const out = document.getElementById('out');
+  let pass = 0, fail = 0;
+  const section = t => out.insertAdjacentHTML('beforeend', `<h2>${t}</h2>`);
+  function check(name, cond, detail) {
+    if (cond) pass++; else fail++;
+    out.insertAdjacentHTML('beforeend', `<div class="t ${cond ? 'ok' : 'bad'}">${cond ? '✓' : '✗'} ${name}${detail != null ? ' — ' + detail : ''}</div>`);
+  }
+  const near = (a, b, tol) => Math.abs(a - b) <= (tol == null ? 1e-9 : tol);
+  const sum = a => a.reduce((x, y) => x + y, 0);
+
+  /* ============================================================
+     language, theme and number formatting
+     ============================================================ */
+  section('Idioma, tema y formato de números');
+  const saved = {};
+  try { saved.lang = localStorage.getItem('economicspro:lang'); saved.theme = localStorage.getItem('economicspro:theme'); } catch (e) { /* ignore */ }
+  const savedAttr = document.documentElement.getAttribute('data-theme');
+  window.addEventListener('load', () => {
+    try {
+      saved.lang == null ? localStorage.removeItem('economicspro:lang') : localStorage.setItem('economicspro:lang', saved.lang);
+      saved.theme == null ? localStorage.removeItem('economicspro:theme') : localStorage.setItem('economicspro:theme', saved.theme);
+    } catch (e) { /* ignore */ }
+    savedAttr == null ? document.documentElement.removeAttribute('data-theme') : document.documentElement.setAttribute('data-theme', savedAttr);
+  });
+  I18N.set('en'); check('T() devuelve inglés tras I18N.set("en")', T('hola', 'hello') === 'hello');
+  check('<html lang> sigue al idioma', document.documentElement.lang === 'en');
+  I18N.set('es'); check('T() devuelve español tras I18N.set("es")', T('hola', 'hello') === 'hola');
+  check('T() acepta objetos {es, en}', T({ es: 'uno', en: 'one' }) === 'uno');
+  check('T() acepta listas paralelas', T(['a', 'b'], ['x', 'y'])[1] === 'b');
+  const themeBefore = Theme.current(); Theme.toggle(); const themeAfter = Theme.current(); Theme.toggle();
+  check('Theme.toggle alterna claro/oscuro', themeBefore !== themeAfter && Theme.current() === themeBefore);
+
+  check('fmtMoney con dos decimales y separador de miles', fmtMoney(1234567.891) === '$1,234,567.89', fmtMoney(1234567.891));
+  check('fmtMoney negativo usa el signo menos tipográfico', fmtMoney(-2500) === '−$2,500.00', fmtMoney(-2500));
+  check('fmtMoney contable pone la pérdida en paréntesis', fmtMoney(-2500, 2, { accounting: true }) === '($2,500.00)', fmtMoney(-2500, 2, { accounting: true }));
+  check('fmtMoney no inventa un cero negativo', fmtMoney(-0.001, 2) === '$0.00', fmtMoney(-0.001, 2));
+  check('fmtPct(0.1234) = 12.34%', fmtPct(0.1234) === '12.34%', fmtPct(0.1234));
+  check('fmtRate(null) = —', fmtRate(null) === '—');
+  check('parseNum lee "1,250.50"', parseNum('1,250.50') === 1250.5);
+  check('parseNum lee "$ 1 250.50"', parseNum('$ 1 250.50') === 1250.5);
+  check('parseNum lee paréntesis contables "(400)"', parseNum('(400)') === -400);
+  check('parseNum de un campo vacío es null, no cero', parseNum('') === null && parseNum('   ') === null);
+  check('parseRate("12%") = 0.12', near(parseRate('12%'), 0.12, 1e-12));
+  check('parseRate("12") = 0.12', near(parseRate('12'), 0.12, 1e-12));
+  check('parseRate("0.12") = 0.12', near(parseRate('0.12'), 0.12, 1e-12));
+  check('moneyScale elige miles y millones', moneyScale([1.5e6]).suffix === 'k' && moneyScale([2e9]).suffix === 'M');
+
+  /* ============================================================
+     discounting: factors against the published interest tables
+     ============================================================ */
+  section('Descuento y factores de interés (tablas de Blank & Tarquin / Coss Bu)');
+  check('Fin.pv: 1,000 a 5 años al 10 % = 620.92', near(Fin.pv(1000, 0.1, 5), 620.921323, 1e-5), fmtFixed(Fin.pv(1000, 0.1, 5), 4));
+  check('Fin.fv: 1,000 por 5 años al 10 % = 1,610.51', near(Fin.fv(1000, 0.1, 5), 1610.51, 0.01));
+  check('(P/A, 10 %, 5) = 3.7908', near(Fin.annuityFactor(0.1, 5), 3.790786769, 1e-8), fmtFixed(Fin.annuityFactor(0.1, 5), 6));
+  check('(A/P, 10 %, 5) = 0.26380', near(Fin.capitalRecovery(0.1, 5), 0.263797481, 1e-8));
+  check('(F/A, 10 %, 5) = 6.1051', near(Fin.fvAnnuity(1, 0.1, 5), 6.1051, 1e-4));
+  check('(P/G, 10 %, 5) = 6.8618', near(Fin.pvGradient(1, 0.1, 5), 6.861800, 1e-5), fmtFixed(Fin.pvGradient(1, 0.1, 5), 6));
+  check('la anualidad con tasa cero vale n · A', near(Fin.pvAnnuity(500, 0, 7), 3500, 1e-9));
+  check('(A/P) con tasa cero vale 1/n', near(Fin.capitalRecovery(0, 8), 0.125, 1e-12));
+  check('serie geométrica con g = i vale n·A₁/(1+i)', near(Fin.pvGeometric(100, 0.1, 0.1, 5), 5 * 100 / 1.1, 1e-9));
+  check('perpetuidad: 1,000 al año al 8 % vale 12,500', near(Fin.pvPerpetuity(1000, 0.08), 12500, 1e-9));
+  check('perpetuidad creciente: 1,000 al 8 % con g = 3 % vale 20,000', near(Fin.pvGrowingPerpetuity(1000, 0.08, 0.03), 20000, 1e-9));
+
+  /* ============================================================
+     the indicators
+     ============================================================ */
+  section('Indicadores de rentabilidad');
+  const F = [-1000, 500, 400, 300, 100];
+  check('VAN de (−1000, 500, 400, 300, 100) al 10 % = 78.82', near(Fin.npv(0.1, F), 78.819753, 1e-5), fmtFixed(Fin.npv(0.1, F), 4));
+  check('el VAN a tasa cero es la suma simple', near(Fin.npv(0, F), 300, 1e-9));
+  check('t0 = 1 descuenta también el periodo 0', near(Fin.npv(0.1, F, 1), Fin.npv(0.1, F) / 1.1, 1e-9));
+  const irr1 = Fin.irr(F);
+  check('TIR de la misma serie ≈ 14.49 %', near(irr1, 0.14489, 1e-4), fmtPct(irr1, 4));
+  check('el VAN a la TIR es cero', near(Fin.npv(irr1, F), 0, 1e-6));
+  check('una serie sin cambio de signo no tiene TIR', Fin.irr([-100, -50, -20]) === null);
+  check('Fin.signChanges cuenta los cambios de signo', Fin.signChanges(F) === 1 && Fin.signChanges([-1000, 3000, -2200]) === 2);
+
+  /* Brealey, Myers & Allen: a project with two internal rates of return */
+  const DOUBLE = [-1000, 3000, -2200];
+  const roots = Fin.irrAll(DOUBLE);
+  check('la serie de doble raíz devuelve dos TIR', roots.length === 2, roots.map(r => fmtPct(r, 2)).join(' y '));
+  check('primera raíz ≈ 27.64 %', near(roots[0], 0.2763932, 1e-5));
+  check('segunda raíz ≈ 72.36 %', near(roots[1], 0.7236068, 1e-5));
+  check('irrInfo avisa que la TIR es múltiple', Fin.irrInfo(DOUBLE).multiple === true && Fin.irrInfo(F).multiple === false);
+  const mirr1 = Fin.mirr(F, 0.1, 0.12);
+  check('TIRM (financia 10 %, reinvierte 12 %) = 13.17 %', near(mirr1, 0.131686, 1e-5), fmtPct(mirr1, 4));
+  check('la TIRM con ambas tasas iguales a la TIR es la TIR', near(Fin.mirr(F, irr1, irr1), irr1, 1e-6));
+
+  check('periodo de recuperación simple = 2.33 años', near(Fin.payback(F), 2 + 100 / 300, 1e-9), fmtFixed(Fin.payback(F), 4));
+  check('periodo de recuperación descontado = 2.95 años', near(Fin.discountedPayback(0.1, F), 2.9533333, 1e-6), fmtFixed(Fin.discountedPayback(0.1, F), 4));
+  check('sin recuperación dentro del horizonte devuelve null', Fin.discountedPayback(0.5, F) === null);
+
+  const ben = [0, 500, 400, 300, 100], cst = [1000, 0, 0, 0, 0];
+  check('relación B/C bruta = 1.079', near(Fin.bcRatio(ben, cst, 0.1), 1.0788198, 1e-6), fmtFixed(Fin.bcRatio(ben, cst, 0.1), 5));
+  check('relación B/C neta con el mismo dato coincide', near(Fin.netBCRatio(F, 0.1), 1.0788198, 1e-6));
+  check('índice de rentabilidad = VAN/Inversión + 1', near(Fin.profitabilityIndex(F, 0.1), 1.0788198, 1e-6));
+  const eaa1 = Fin.eaa(Fin.npv(0.1, F), 0.1, 4);
+  check('valor anual equivalente = 24.87', near(eaa1, 24.866, 1e-3), fmtFixed(eaa1, 4));
+  check('CAUE de un equipo de 100,000 a 5 años, rescate 20,000, costo anual 8,000 = 32,592.78', near(Fin.eac(100000, 20000, 0.12, 5, 8000), 32592.776, 0.01), fmtFixed(Fin.eac(100000, 20000, 0.12, 5, 8000), 2));
+  const ap = Fin.appraise(F, 0.1);
+  check('appraise reúne todos los indicadores', near(ap.npv, 78.819753, 1e-5) && near(ap.irr, irr1, 1e-9) && ap.accept === true && ap.n === 4);
+
+  /* ============================================================
+     rates
+     ============================================================ */
+  section('Tasas de interés, TREMA y costo de capital');
+  check('tasa efectiva de 12 % nominal capitalizable mensual = 12.6825 %', near(Fin.effectiveRate(0.12, 12), 0.12682503, 1e-8), fmtPct(Fin.effectiveRate(0.12, 12), 6));
+  check('la nominal que produce esa efectiva vuelve a 12 %', near(Fin.nominalRate(Fin.effectiveRate(0.12, 12), 12), 0.12, 1e-10));
+  check('capitalización continua de 12 % = 12.7497 %', near(Fin.effectiveContinuous(0.12), 0.1274969, 1e-6));
+  check('Fisher: 15 % nominal con 5 % de inflación deja 9.5238 % real', near(Fin.realRate(0.15, 0.05), 0.0952381, 1e-7), fmtPct(Fin.realRate(0.15, 0.05), 5));
+  check('Fisher inverso devuelve la nominal', near(Fin.nominalFromReal(Fin.realRate(0.15, 0.05), 0.05), 0.15, 1e-12));
+  check('TREMA = (1+π)(1+premio) − 1: 5 % y 10 % dan 15.5 %, no 15 %', near(Fin.trema(0.05, 0.10), 0.155, 1e-12));
+  check('tasa mensual a anual: 1 % mensual = 12.6825 % anual', near(Fin.convertRate(0.01, 12, 1), 0.12682503, 1e-8));
+  const w = Fin.wacc({ equity: 60, debt: 40, costEquity: 0.18, costDebt: 0.12, tax: 0.30 });
+  check('CPPC 60/40, ke 18 %, kd 12 %, ISR 30 % = 14.16 %', near(w, 0.1416, 1e-12), fmtPct(w, 4));
+  check('CPPC sin deuda es el costo del capital propio', near(Fin.wacc({ equity: 100, debt: 0, costEquity: 0.18, costDebt: 0.12, tax: 0.3 }), 0.18, 1e-12));
+  check('CAPM con riesgo país: 7 % + 1.2 × 5.5 % + 2 % = 15.6 %', near(Fin.capm(0.07, 1.2, 0.055, 0.02), 0.156, 1e-12));
+
+  /* ============================================================
+     loans
+     ============================================================ */
+  section('Tablas de amortización del crédito');
+  const L1 = Fin.amortize({ principal: 100000, rate: 0.10, periods: 5, type: 'level' });
+  check('pago igual de un crédito de 100,000 al 10 % a 5 años = 26,379.75', near(L1.payment, 26379.7481, 1e-4), fmtFixed(L1.payment, 4));
+  check('el primer interés es 10,000 y el primer capital 16,379.75', near(L1.rows[0].interest, 10000, 1e-9) && near(L1.rows[0].principal, 16379.7481, 1e-4));
+  check('el saldo final es exactamente cero', near(L1.rows[4].balance, 0, 1e-9));
+  check('la suma del capital pagado es el monto del crédito', near(sum(L1.rows.map(r => r.principal)), 100000, 1e-6));
+  check('el interés total del crédito es 31,898.74', near(L1.totalInterest, 31898.7406, 1e-3), fmtFixed(L1.totalInterest, 2));
+  const L2 = Fin.amortize({ principal: 100000, rate: 0.10, periods: 5, type: 'capital' });
+  check('capital constante: primer pago 30,000 y último 22,000', near(L2.rows[0].payment, 30000, 1e-9) && near(L2.rows[4].payment, 22000, 1e-9));
+  check('capital constante paga menos interés total que el pago igual', L2.totalInterest < L1.totalInterest && near(L2.totalInterest, 30000, 1e-9));
+  const L3 = Fin.amortize({ principal: 100000, rate: 0.10, periods: 5, type: 'bullet' });
+  check('pago único al final: 4 años de solo interés y 110,000 el último', near(L3.rows[0].payment, 10000, 1e-9) && near(L3.rows[4].payment, 110000, 1e-9));
+  const L4 = Fin.amortize({ principal: 100000, rate: 0.10, periods: 5, grace: 2, graceType: 'interest', type: 'level' });
+  check('gracia de 2 años pagando interés: 10,000 al año y luego 3 pagos de 40,211.48', near(L4.rows[1].payment, 10000, 1e-9) && near(L4.payment, 40211.4804, 1e-3), fmtFixed(L4.payment, 2));
+  const L5 = Fin.amortize({ principal: 100000, rate: 0.10, periods: 5, grace: 2, graceType: 'capitalised', type: 'level' });
+  check('gracia capitalizada: la deuda crece a 121,000 y el pago sube a 48,655.89', near(L5.rows[1].balance, 121000, 1e-6) && near(L5.payment, 48655.89, 0.01), fmtFixed(L5.payment, 2));
+  check('gracia capitalizada: el saldo cierra en cero', near(L5.rows[L5.rows.length - 1].balance, 0, 1e-6));
+
+  /* ============================================================
+     depreciation
+     ============================================================ */
+  section('Depreciación');
+  const D1 = Fin.depreciate({ cost: 100000, salvage: 10000, life: 5, method: 'sl' });
+  check('línea recta: 18,000 al año', D1.rows.every(r => near(r.depreciation, 18000, 1e-9)));
+  check('línea recta: valor en libros al tercer año = 46,000', near(D1.rows[2].book, 46000, 1e-9));
+  check('la depreciación acumulada nunca pasa del monto depreciable', near(D1.total, 90000, 1e-9));
+  const D2 = Fin.depreciate({ cost: 100000, salvage: 10000, life: 5, method: 'syd' });
+  check('suma de dígitos: 30,000 el primer año y 6,000 el quinto', near(D2.rows[0].depreciation, 30000, 1e-9) && near(D2.rows[4].depreciation, 6000, 1e-9));
+  const D3 = Fin.depreciate({ cost: 100000, salvage: 10000, life: 5, method: 'ddb' });
+  check('saldos decrecientes al doble: 40,000 el primer año', near(D3.rows[0].depreciation, 40000, 1e-9));
+  check('saldos decrecientes: nunca deprecia por debajo del rescate', D3.rows.every(r => r.book >= 10000 - 1e-9) && near(D3.total, 90000, 1e-6));
+  const D4 = Fin.depreciate({ cost: 100000, salvage: 10000, life: 4, method: 'units', units: [1000, 2000, 1500, 500] });
+  check('por unidades producidas: reparte 90,000 según la producción', near(D4.rows[1].depreciation, 90000 * 2000 / 5000, 1e-9) && near(D4.total, 90000, 1e-9));
+  check('valor en libros a mitad de la vida útil', near(Fin.bookValue({ cost: 100000, salvage: 10000, life: 5, method: 'sl' }, 2), 64000, 1e-9));
+
+  /* ============================================================
+     break-even and leverage
+     ============================================================ */
+  section('Punto de equilibrio y apalancamiento');
+  const BE = Fin.breakeven({ price: 6200, variableCost: 4000, fixedCost: 300000, capacity: 200 });
+  check('punto de equilibrio = 136.36 t', near(BE.units, 300000 / 2200, 1e-9), fmtFixed(BE.units, 2));
+  check('margen de contribución = 35.48 % del precio', near(BE.ratio, 2200 / 6200, 1e-12));
+  check('en valor: 845,454.55 pesos', near(BE.value, 300000 / 2200 * 6200, 1e-6));
+  check('exige el 68.2 % de la capacidad instalada', near(BE.capacityPct, 300000 / 2200 / 200, 1e-12));
+  check('precio de equilibrio a plena capacidad = 5,500', near(BE.breakevenPrice, 4000 + 300000 / 200, 1e-9));
+  check('margen de seguridad = 31.8 %', near(BE.safetyMargin, 1 - 300000 / 2200 / 200, 1e-12));
+  check('sin margen de contribución no hay punto de equilibrio', Fin.breakeven({ price: 100, variableCost: 120, fixedCost: 1000 }).units === null);
+  const MIX = Fin.breakevenMix([{ name: 'A', price: 100, variableCost: 60, share: 0.7 }, { name: 'B', price: 200, variableCost: 150, share: 0.3 }], 43000);
+  check('mezcla de productos: margen ponderado = 43', near(MIX.weightedMargin, 0.7 * 40 + 0.3 * 50, 1e-12));
+  check('mezcla de productos: 1,000 unidades en total', near(MIX.units, 1000, 1e-9) && near(MIX.byProduct[0].units, 700, 1e-9));
+  const LV = Fin.leverage({ units: 1000, price: 10, variableCost: 6, fixedCost: 2000, interest: 500 });
+  check('apalancamiento operativo = 2, financiero = 1.333, total = 2.667',
+    near(LV.operating, 2, 1e-12) && near(LV.financial, 4 / 3, 1e-12) && near(LV.total, 8 / 3, 1e-12));
+
+  /* ============================================================
+     sensitivity, switching values and simulation
+     ============================================================ */
+  section('Sensibilidad, valores límite y simulación');
+  /* a project of −1000 and four annual benefits of 400 at 10 % */
+  const flowsOf = m => [-1000, 400 * m, 400 * m, 400 * m, 400 * m];
+  const base = Fin.npv(0.1, flowsOf(1));
+  check('VAN base = 267.95', near(base, 400 * Fin.annuityFactor(0.1, 4) - 1000, 1e-9), fmtFixed(base, 2));
+  const sw = Fin.switchingValue(m => Fin.npv(0.1, flowsOf(m)));
+  check('valor límite: el beneficio puede caer 21.13 % antes de anular el VAN',
+    near(sw.change, 1000 / Fin.annuityFactor(0.1, 4) / 400 - 1, 1e-6), fmtPct(sw.change, 4));
+  check('el VAN en el valor límite es cero', near(Fin.npv(0.1, flowsOf(sw.multiplier)), 0, 1e-6));
+  check('una variable que nunca anula el VAN devuelve null', Fin.switchingValue(m => 500 + 0 * m) === null);
+  const s1 = Fin.sensitivity1(m => Fin.npv(0.1, flowsOf(m)), [-0.1, 0, 0.1]);
+  check('sensibilidad de una variable devuelve un punto por cambio', s1.length === 3 && near(s1[1].value, base, 1e-9));
+  const tor = Fin.tornado([
+    { name: 'a', f: m => Fin.npv(0.1, flowsOf(m)) },
+    { name: 'b', f: m => Fin.npv(0.1, [-1000 * m, 400, 400, 400, 400]) },
+  ], 0.1);
+  check('el tornado ordena por amplitud y el beneficio manda sobre la inversión', tor[0].name === 'a' && tor[0].swing > tor[1].swing);
+  check('la amplitud del tornado es simétrica en un modelo lineal', near(tor[0].high - base, base - tor[0].low, 1e-6));
+
+  const fixedSim = Fin.monteCarlo([{ name: 'm', dist: 'fixed', value: 1 }], v => Fin.npv(0.1, flowsOf(v.m)), { n: 200 });
+  check('simulación con valores fijos reproduce el VAN determinista', near(fixedSim.mean, base, 1e-9) && near(fixedSim.sd, 0, 1e-9));
+  const sim = Fin.monteCarlo([{ name: 'm', dist: 'triangular', min: 0.6, mode: 1, max: 1.4 }], v => Fin.npv(0.1, flowsOf(v.m)), { n: 4000, seed: 7 });
+  check('la media de una triangular simétrica cae en el valor central', near(sim.mean, base, base * 0.05), fmtFixed(sim.mean, 1));
+  check('la simulación es reproducible con la misma semilla',
+    near(Fin.monteCarlo([{ name: 'm', dist: 'triangular', min: 0.6, mode: 1, max: 1.4 }], v => Fin.npv(0.1, flowsOf(v.m)), { n: 500, seed: 7 }).mean,
+      Fin.monteCarlo([{ name: 'm', dist: 'triangular', min: 0.6, mode: 1, max: 1.4 }], v => Fin.npv(0.1, flowsOf(v.m)), { n: 500, seed: 7 }).mean, 1e-12));
+  check('cambiar la semilla cambia el resultado',
+    !near(Fin.monteCarlo([{ name: 'm', dist: 'triangular', min: 0.6, mode: 1, max: 1.4 }], v => Fin.npv(0.1, flowsOf(v.m)), { n: 500, seed: 1 }).mean,
+      Fin.monteCarlo([{ name: 'm', dist: 'triangular', min: 0.6, mode: 1, max: 1.4 }], v => Fin.npv(0.1, flowsOf(v.m)), { n: 500, seed: 2 }).mean, 1e-9));
+  check('los percentiles están ordenados y encierran la mediana', sim.p05 < sim.median && sim.median < sim.p95);
+  check('P(VAN < 0) coincide con la proporción de corridas negativas',
+    near(sim.pLoss, sim.values.filter(v => v < 0).length / sim.values.length, 1e-12));
+
+  /* the distributions themselves */
+  const r0 = rng(11);
+  const drawMean = (spec, n) => { const s = Fin.sampler(spec); let a = 0; for (let i = 0; i < n; i++) a += s(r0); return a / n; };
+  check('uniforme(10, 20) tiene media 15', near(drawMean({ dist: 'uniform', min: 10, max: 20 }, 20000), 15, 0.15));
+  check('triangular(0, 3, 9) tiene media (0+3+9)/3 = 4', near(drawMean({ dist: 'triangular', min: 0, mode: 3, max: 9 }, 20000), 4, 0.08));
+  check('PERT(0, 3, 9) tiene media (0 + 4·3 + 9)/6 = 3.5', near(drawMean({ dist: 'pert', min: 0, mode: 3, max: 9 }, 20000), 3.5, 0.08));
+  check('normal(100, 15) tiene media 100', near(drawMean({ dist: 'normal', mean: 100, sd: 15 }, 20000), 100, 0.5));
+  check('lognormal parametrizada por media y desviación conserva la media', near(drawMean({ dist: 'lognormal', mean: 100, sd: 30 }, 40000), 100, 1.5));
+  check('discreta respeta las probabilidades', near(drawMean({ dist: 'discrete', values: [0, 10], probs: [0.3, 0.7] }, 20000), 7, 0.2));
+
+  /* the correlation imposed on the ranks */
+  const cols = [Array.from({ length: 3000 }, () => randn(r0)), Array.from({ length: 3000 }, () => randn(r0))];
+  Fin.imposeCorrelation(cols, [[1, -0.6], [-0.6, 1]], r0);
+  const obs = Stats.pearson(cols[0], cols[1]);
+  check('Iman–Conover impone la correlación pedida (−0.6)', near(obs, -0.6, 0.08), fmtFixed(obs, 3));
+  check('Cholesky rechaza una matriz que no es definida positiva', Fin.cholesky([[1, 2], [2, 1]], 2) === null);
+
+  /* ============================================================
+     comparing projects
+     ============================================================ */
+  section('Comparación de proyectos');
+  const A = [-1000, 600, 600, 600], B = [-2000, 1150, 1150, 1150];
+  const inc = Fin.incrementalIRR(A, B);
+  check('TIR incremental de B sobre A ≈ 29.92 %', near(inc, 0.299191, 1e-5), fmtPct(inc, 3));
+  check('en la intersección de Fisher los dos proyectos valen lo mismo',
+    near(Fin.npv(inc, A), Fin.npv(inc, B), 1e-6));
+  check('Faustmann: turno de 1 año con −100 y +150 al 10 % vale 400',
+    near(Fin.faustmann([-100, 150], 0.1, 1), 400, 1e-9));
+  check('Faustmann de un turno largo es menor que el VAN perpetuo de un turno corto',
+    Fin.faustmann([-100, 0, 0, 0, 0, 260], 0.1, 5) < 400);
+
+  /* ============================================================
+     prices and series
+     ============================================================ */
+  section('Precios, deflación y crecimiento');
+  const defl = Fin.deflate([100, 110, 121], [100, 110, 121], 100);
+  check('deflactar con su propio índice deja la serie constante', defl.every(v => near(v, 100, 1e-9)));
+  check('inflar una serie al 5 %: el tercer año es 110.25', near(Fin.inflateSeries(100, 0.05, 3)[2], 110.25, 1e-9));
+  check('TCMA de 100 a 200 en 10 años = 7.177 %', near(Fin.cagr(100, 200, 10), Math.pow(2, 0.1) - 1, 1e-12), fmtPct(Fin.cagr(100, 200, 10), 4));
+
+  /* ============================================================
+     statistics
+     ============================================================ */
+  section('Estadística de apoyo');
+  check('media y desviación muestral de 2, 4, 4, 4, 5, 5, 7, 9', near(Stats.mean([2, 4, 4, 4, 5, 5, 7, 9]), 5, 1e-12) && near(Stats.sd([2, 4, 4, 4, 5, 5, 7, 9]), 2.13809, 1e-5));
+  check('la regresión recupera exactamente una recta', (() => {
+    const g = Stats.linreg([1, 2, 3, 4, 5], [3, 5, 7, 9, 11]);
+    return near(g.a, 1, 1e-9) && near(g.b, 2, 1e-9) && near(g.r2, 1, 1e-9);
+  })());
+  check('correlación de una relación perfecta e inversa = −1', near(Stats.pearson([1, 2, 3, 4], [8, 6, 4, 2]), -1, 1e-9));
+  check('el histograma conserva todas las observaciones', (() => {
+    const h = Stats.histogram([1, 2, 2, 3, 3, 3, 4, 4, 5], 5);
+    return sum(h.bins.map(b => b.count)) === 9;
+  })());
+  check('cuantil por interpolación: la mediana de 1…5 es 3', near(Fin.quantile([1, 2, 3, 4, 5], 0.5), 3, 1e-12));
+  check('normal acumulada: Φ(1.96) = 0.975', near(Stats.normCdf(1.96), 0.975, 1e-4), fmtFixed(Stats.normCdf(1.96), 6));
+  check('normal inversa: z(0.975) = 1.95996', near(Stats.normInv(0.975), 1.959964, 1e-5));
+  check('Φ y su inversa se cancelan', near(Stats.normCdf(Stats.normInv(0.3)), 0.3, 1e-4));
+
+  /* ============================================================
+     the project laboratory
+     ============================================================ */
+  section('Laboratorio del proyecto (Bloque 1)');
+  const pr = Lab.PRESETS.avocado;
+  const cfgA = {
+    p: pr, scale: pr.scale, invest: pr.invest, price: pr.price, yieldFull: pr.yieldFull,
+    fixedCost: pr.fixedCost, varCost: pr.varCost, estabCost: pr.estabCost, rate: 0.12, horizon: pr.horizon,
+  };
+  const bA = Lab.buildProject(cfgA);
+  check('el año 0 es exactamente la inversión, en negativo', near(bA.rows[0].net, -pr.invest * pr.scale, 1e-6));
+  check('la huerta no vende nada durante los años de gestación', bA.rows.slice(1, pr.gestation + 1).every(r => r.revenue === 0));
+  check('durante la gestación sí hay costo de mantenimiento', bA.rows[2].cost > 0 && near(bA.rows[2].cost, pr.estabCost * pr.scale, 1e-6));
+  check('el primer año de cosecha ya genera ingreso', bA.rows[pr.gestation + 1].revenue > 0);
+  check('el rendimiento madura hasta el 100 %', near(Lab.yieldShare(pr.gestation + pr.ramp, pr.gestation, pr.ramp), 1, 1e-12));
+  check('la maduración del rendimiento no baja nunca', (() => {
+    let prev = -1;
+    for (let t = 0; t <= 12; t++) { const s = Lab.yieldShare(t, 4, 4); if (s < prev - 1e-12) return false; prev = s; }
+    return true;
+  })());
+  check('el último año incluye el valor residual', near(bA.rows[pr.horizon].residual, pr.invest * pr.scale * pr.salvage, 1e-6));
+  check('la huerta de aguacate con los valores típicos tiene VAN positivo al 12 %', Fin.npv(0.12, bA.flows) > 0, fmtMoney(Fin.npv(0.12, bA.flows), 0));
+  check('multiplicar el precio sube el VAN y multiplicar el costo lo baja', (() => {
+    const up = Fin.npv(0.12, Lab.buildProject(cfgA, { price: 1.1 }).flows);
+    const dn = Fin.npv(0.12, Lab.buildProject(cfgA, { cost: 1.1 }).flows);
+    const b0 = Fin.npv(0.12, bA.flows);
+    return up > b0 && dn < b0;
+  })());
+  check('los seis proyectos del laboratorio están completos', Object.keys(Lab.PRESETS).every(k => {
+    const p = Lab.PRESETS[k];
+    return p.es && p.en && p.horizon > 0 && p.yieldFull > 0 && p.price > 0 && p.unit.length === 2;
+  }), Object.keys(Lab.PRESETS).length + ' proyectos');
+  check('cada proyecto típico tiene TIR definida y mayor que cero', Object.keys(Lab.PRESETS).every(k => {
+    const p = Lab.PRESETS[k];
+    const cfg = { p, scale: p.scale, invest: p.invest, price: p.price, yieldFull: p.yieldFull, fixedCost: p.fixedCost, varCost: p.varCost, estabCost: p.estabCost, rate: 0.12, horizon: p.horizon };
+    const irr = Fin.irr(Lab.buildProject(cfg).flows);
+    return irr != null && irr > 0 && irr < 2;
+  }), Object.keys(Lab.PRESETS).map(k => {
+    const p = Lab.PRESETS[k];
+    const cfg = { p, scale: p.scale, invest: p.invest, price: p.price, yieldFull: p.yieldFull, fixedCost: p.fixedCost, varCost: p.varCost, estabCost: p.estabCost, rate: 0.12, horizon: p.horizon };
+    return k + ' ' + fmtPct(Fin.irr(Lab.buildProject(cfg).flows), 1);
+  }).join(' · '));
+
+  /* ============================================================
+     Block 2: the project and its assumptions
+     ============================================================ */
+  section('El proyecto y sus supuestos (Bloque 2)');
+  const P0 = Project.defaults();
+  check('el proyecto por omisión es coherente consigo mismo', !Project.hasErrors(Project.validate(P0)));
+  check('trae los ocho tipos de proyecto', Object.keys(Project.KINDS).length === 8 && Project.KINDS.perennial.gestation === 4);
+  check('cada tipo tiene su ilustración y su horizonte', Object.keys(Project.KINDS).every(k => typeof Art[Project.KINDS[k].art] === 'function' && Project.KINDS[k].horizon > 0));
+  check('los seis ejemplos completan nombre, tipo y escala', Object.keys(Project.EXAMPLES).every(k => {
+    const q = Project.merge(Project.defaults(), Project.EXAMPLES[k].patch);
+    return q.name && Project.KINDS[q.kind] && q.scale > 0 && !Project.hasErrors(Project.validate(q));
+  }), Object.keys(Project.EXAMPLES).length + ' ejemplos');
+
+  /* --- the rate, in its four forms --- */
+  const marr = JSON.parse(JSON.stringify(P0));
+  marr.inflation = 0.045; marr.rate.mode = 'marr'; marr.rate.riskPremium = 0.10;
+  const Rm = Project.rates(marr);
+  check('TREMA: 4.5 % de inflación con 10 % de premio da 14.95 % nominal', near(Rm.nominal, 0.15450 - 0.005, 1e-9) && near(Rm.nominal, (1.045 * 1.10) - 1, 1e-12), fmtPct(Rm.nominal, 4));
+  check('TREMA: la tasa real es el premio al riesgo', near(Rm.real, 0.10, 1e-12));
+  check('TREMA: el término cruzado es π · premio', near(Rm.parts.find(x => x.key === 'cross').value, 0.045 * 0.10, 1e-12));
+  check('las partes de la TREMA suman exactamente la tasa nominal', near(Rm.parts.reduce((a, b) => a + b.value, 0), Rm.nominal, 1e-12));
+  check('a precios constantes se usa la tasa real', Rm.used === Rm.real);
+  const marrCur = JSON.parse(JSON.stringify(marr)); marrCur.priceBasis = 'current';
+  check('a precios corrientes se usa la tasa nominal', Project.rates(marrCur).used === Rm.nominal);
+
+  const wacc = JSON.parse(JSON.stringify(P0));
+  wacc.rate.mode = 'wacc'; wacc.rate.equity = 60; wacc.rate.debt = 40;
+  wacc.rate.costEquity = 0.18; wacc.rate.costDebt = 0.12; wacc.tax.income = 0.30; wacc.inflation = 0.045;
+  const Rw = Project.rates(wacc);
+  check('CPPC 60/40 con ke 18 %, kd 12 % e ISR 30 % = 14.16 %', near(Rw.nominal, 0.1416, 1e-12), fmtPct(Rw.nominal, 4));
+  check('CPPC: la tasa real sale por Fisher, no por resta', near(Rw.real, (1.1416 / 1.045) - 1, 1e-12) && !near(Rw.real, 0.1416 - 0.045, 1e-6), fmtPct(Rw.real, 4));
+  check('CPPC: las dos partes suman la tasa nominal', near(Rw.parts.reduce((a, b) => a + b.value, 0), Rw.nominal, 1e-12));
+
+  const capm = JSON.parse(JSON.stringify(P0));
+  capm.rate.mode = 'capm'; capm.rate.rf = 0.075; capm.rate.beta = 0.95; capm.rate.marketPremium = 0.055; capm.rate.countryRisk = 0.02;
+  capm.rate.debt = 0; capm.rate.equity = 100;
+  const Rc = Project.rates(capm);
+  check('CAPM sin deuda: 7.5 % + 0.95 × 5.5 % + 2 % = 12.725 %', near(Rc.nominal, 0.075 + 0.95 * 0.055 + 0.02, 1e-12), fmtPct(Rc.nominal, 4));
+  const capmD = JSON.parse(JSON.stringify(capm));
+  capmD.rate.debt = 40; capmD.rate.equity = 60; capmD.rate.costDebt = 0.12; capmD.tax.income = 0.30;
+  const Rcd = Project.rates(capmD);
+  check('CAPM con deuda pasa por el CPPC y baja la tasa', near(Rcd.nominal, 0.6 * Rc.nominal + 0.4 * 0.12 * 0.7, 1e-12) && Rcd.nominal < Rc.nominal, fmtPct(Rcd.nominal, 4));
+
+  const man = JSON.parse(JSON.stringify(P0));
+  man.rate.mode = 'manual'; man.rate.manual = 0.12; man.rate.manualIsReal = true; man.inflation = 0.05;
+  check('tasa escrita como real: la nominal la deduce Fisher', near(Project.rates(man).nominal, 1.12 * 1.05 - 1, 1e-12));
+  man.rate.manualIsReal = false;
+  check('tasa escrita como nominal: la real la deduce Fisher', near(Project.rates(man).real, 1.12 / 1.05 - 1, 1e-12));
+
+  /* --- the coherence checks --- */
+  const short = JSON.parse(JSON.stringify(P0));
+  short.horizon = 3; short.gestation = 4;
+  check('avisa como error un horizonte que termina antes de la primera cosecha',
+    Project.validate(short).some(m => m.level === 'error' && /primera producción|first harvest/.test(m.es + m.en)));
+  const tight = JSON.parse(JSON.stringify(P0));
+  tight.horizon = 9; tight.gestation = 4; tight.ramp = 4;
+  check('avisa cuando quedan pocos años a plena producción',
+    Project.validate(tight).some(m => m.level === 'warning' && /plena producción|full production/.test(m.es + m.en)));
+  const cheap = JSON.parse(JSON.stringify(P0));
+  cheap.rate.mode = 'manual'; cheap.rate.manual = 0.01; cheap.rate.manualIsReal = true;
+  check('avisa que una tasa de 1 % es de evaluación social, no financiera',
+    Project.validate(cheap).some(m => m.level === 'warning' && /muy baja|very low/.test(m.es + m.en)));
+  const dear = JSON.parse(JSON.stringify(P0));
+  dear.rate.mode = 'manual'; dear.rate.manual = 0.45; dear.rate.manualIsReal = true;
+  check('avisa que una tasa de 45 % castiga demasiado el futuro',
+    Project.validate(dear).some(m => m.level === 'warning' && /castiga|penalises/.test(m.es + m.en)));
+  const negReal = JSON.parse(JSON.stringify(P0));
+  negReal.rate.mode = 'manual'; negReal.rate.manual = 0.03; negReal.rate.manualIsReal = false; negReal.inflation = 0.10;
+  check('avisa cuando la tasa real resulta negativa',
+    Project.validate(negReal).some(m => m.level === 'warning' && /real es negativa|real rate is negative/.test(m.es + m.en)));
+  const noScale = JSON.parse(JSON.stringify(P0));
+  noScale.scale = 0;
+  check('una escala de cero es un error, no un aviso', Project.hasErrors(Project.validate(noScale)));
+  const fx = JSON.parse(JSON.stringify(P0));
+  fx.usesForeign = true; fx.exchangeRate = 0;
+  check('declarar divisas sin tipo de cambio es un error', Project.hasErrors(Project.validate(fx)));
+  check('cada mensaje viene en los dos idiomas', Project.validate(short).every(m => m.es && m.en && m.level));
+
+  /* --- the primary sector exemption (article 74 of the income tax law) --- */
+  const uma = Project.UMA_DAILY;
+  const fisica = JSON.parse(JSON.stringify(P0)); fisica.tax.primaryRegime = 'fisica';
+  check('persona física: 40 UMA anuales exentas', near(Project.exemptIncome(fisica).amount, 40 * uma * 365, 1e-6), fmtMoney(Project.exemptIncome(fisica).amount, 0));
+  const moral5 = JSON.parse(JSON.stringify(P0)); moral5.tax.primaryRegime = 'moral'; moral5.tax.members = 5;
+  check('persona moral: 20 UMA por socio', Project.exemptIncome(moral5).umas === 100);
+  const moral20 = JSON.parse(JSON.stringify(P0)); moral20.tax.primaryRegime = 'moral'; moral20.tax.members = 20;
+  check('persona moral: el tope son 200 UMA', Project.exemptIncome(moral20).umas === 200);
+  check('sin régimen del sector primario no hay exención', Project.exemptIncome(P0).amount === 0);
+
+  /* --- saving and loading --- */
+  const savedProject = (() => { try { return localStorage.getItem(Project.KEY); } catch (e) { return null; } })();
+  const mine = JSON.parse(JSON.stringify(P0));
+  mine.name = 'Huerta de prueba'; mine.scale = 7.5; mine.rate.riskPremium = 0.13;
+  Project.save(mine);
+  const back = Project.load();
+  check('el proyecto vuelve completo del navegador', back.name === 'Huerta de prueba' && back.scale === 7.5 && near(back.rate.riskPremium, 0.13, 1e-12));
+  check('al guardar queda la fecha', !!back.savedAt);
+  check('un archivo incompleto toma los valores por omisión de lo que falte',
+    Project.merge(Project.defaults(), { name: 'X', rate: { riskPremium: 0.2 } }).rate.costEquity === P0.rate.costEquity);
+  check('merge no acepta llaves que el modelo no conoce', Project.merge(Project.defaults(), { intruso: 1 }).intruso === undefined);
+  Project.clear();
+  check('borrar el proyecto deja el navegador limpio', Project.load() === null);
+  try { if (savedProject != null) localStorage.setItem(Project.KEY, savedProject); } catch (e) { /* ignore */ }
+
+  /* --- the sentence the report will print --- */
+  check('la frase del informe nombra el método y las dos tasas', /TREMA|MARR/.test(Rm.es) && /nominal/.test(Rm.es) && /real/.test(Rm.es));
+  check('la frase existe en los dos idiomas y dicen lo mismo', Rm.en !== Rm.es && /MARR/.test(Rm.en));
+
+  /* --- the figures of the block --- */
+  check('las tres figuras del Bloque 2 se dibujan sin error', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      Plots2.drawTimeline(svg, P0);
+      const a = svg.childElementCount > 0;
+      Plots2.drawRateChart(svg, Rm);
+      const b = svg.childElementCount > 0;
+      Plots2.drawDiscountChart(svg, Rm, P0);
+      const c = svg.childElementCount > 0;
+      return a && b && c;
+    } finally { document.body.removeChild(svg); }
+  })());
+  check('la línea del tiempo aguanta un proyecto de un solo año', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try { Plots2.drawTimeline(svg, Object.assign({}, P0, { horizon: 1, gestation: 0, ramp: 1 })); return svg.childElementCount > 0; }
+    finally { document.body.removeChild(svg); }
+  })());
+
+  /* ============================================================
+     Block 3: market, prices and revenue
+     ============================================================ */
+  section('Mercado, precios e ingresos (Bloque 3)');
+
+  /* --- reading what the user pastes or imports --- */
+  check('el separador se reconoce solo: tabulador, punto y coma o coma',
+    Import.detectSeparator('a\tb\tc') === '\t' && Import.detectSeparator('a;b;c') === ';' && Import.detectSeparator('a,b,c') === ',');
+  check('el lector respeta las comillas y las comas dentro de una celda', (() => {
+    const rows = Import.parseDelimited('2020,"Maíz, temporal",3450\n2021,Trigo,3620');
+    return rows.length === 2 && rows[0][1] === 'Maíz, temporal' && rows[0][2] === '3450';
+  })());
+  check('las comillas dobles escapadas se leen como una comilla', Import.parseDelimited('a,"di ""hola""",b')[0][1] === 'di "hola"');
+  check('las líneas vacías del final no son datos', Import.parseDelimited('1,2\n3,4\n\n\n').length === 2);
+  check('una fila de encabezados se distingue de una de números',
+    Import.looksLikeHeader(['año', 'precio', 'rendimiento']) && !Import.looksLikeHeader(['2020', '3450', '3.1']));
+  check('numericRows salta las filas vacías y señala las que no son número', (() => {
+    const r = Import.numericRows([{ a: '2020', b: '10' }, { a: '', b: '' }, { a: '2021', b: 'diez' }], ['a', 'b']);
+    return r.rows.length === 2 && r.rows[0].b === 10 && r.bad.length === 1;
+  })());
+  check('numericRows lee los formatos contables y con signo de moneda', (() => {
+    const r = Import.numericRows([{ a: '$1,250.50', b: '(400)' }], ['a', 'b']);
+    return r.rows[0].a === 1250.5 && r.rows[0].b === -400;
+  })());
+
+  /* --- deflating --- */
+  const YRS = [2020, 2021, 2022];
+  const NOM = [100, 110, 121];
+  const IDX = [100, 110, 121];
+  const dfl = Market.deflate(YRS, NOM, IDX, 2022);
+  check('deflactar con su propio índice deja la serie plana', dfl.real.every(v => near(v, 121, 1e-9)) && dfl.baseYear === 2022);
+  const dfl2 = Market.deflate(YRS, NOM, IDX, 2020);
+  check('deflactar a otro año base reescala toda la serie', dfl2.real.every(v => near(v, 100, 1e-9)));
+  const dfl3 = Market.deflate(YRS, NOM, IDX, 2024, { inflation: 0.05 });
+  check('si el año base es posterior a la serie, el índice se extiende con la inflación',
+    dfl3.extrapolated === true && near(dfl3.baseIndex, 121 * 1.05 * 1.05, 1e-9) && near(dfl3.real[2], 121 * 1.1025, 1e-9));
+  const dfl4 = Market.deflate(YRS, NOM, [100, null, 121], 2022);
+  check('un año sin índice se queda sin valor real y se cuenta', dfl4.real[1] === null && dfl4.missing === 1);
+  check('deflactar no cambia el año que ya está en la base', near(Market.deflate(YRS, NOM, IDX, 2021).real[1], 110, 1e-9));
+
+  /* --- describing a series --- */
+  const desc = Market.describe([2016, 2017, 2018, 2019, 2020], [10, 12, 14, 16, 18]);
+  check('la descripción recupera media, desviación y tendencia exactas',
+    near(desc.mean, 14, 1e-12) && near(desc.trend.b, 2, 1e-9) && near(desc.trend.r2, 1, 1e-9));
+  check('una recta perfecta da una tendencia significativa', desc.trend.significant === true && desc.trend.p < 1e-6);
+  const noisy = Market.describe([2016, 2017, 2018, 2019, 2020], [10, 18, 11, 17, 12]);
+  check('una serie sin tendencia real no resulta significativa', noisy.trend.significant === false, pEq(noisy.trend.p));
+  check('el CV mide la variabilidad relativa', near(noisy.cv, Stats.sd([10, 18, 11, 17, 12]) / Stats.mean([10, 18, 11, 17, 12]), 1e-12));
+  check('la TCMA de la serie es el crecimiento compuesto entre extremos', near(desc.cagr, Math.pow(18 / 10, 1 / 4) - 1, 1e-12));
+  check('una serie con huecos usa solo los años que sí tienen dato',
+    Market.describe([2016, 2017, 2018], [10, null, 14]).n === 2);
+
+  /* the t distribution behind the significance of the trend, against published values */
+  check('t de Student: P(T ≤ 2.228) con 10 grados de libertad = 0.975', near(Market.studentCdf(2.228, 10), 0.975, 1e-4), fmtFixed(Market.studentCdf(2.228, 10), 5));
+  check('t de Student: P(T ≤ 1.812) con 10 grados de libertad = 0.95', near(Market.studentCdf(1.812, 10), 0.95, 1e-4));
+  check('t de Student: P(T ≤ 3.182) con 3 grados de libertad = 0.975', near(Market.studentCdf(3.182, 3), 0.975, 1e-4));
+  check('t de Student: con muchos grados se acerca a la normal', near(Market.studentCdf(1.96, 10000), 0.975, 1e-3));
+  check('t de Student: en cero vale la mitad', near(Market.studentCdf(0, 7), 0.5, 1e-12));
+
+  /* --- forecasting --- */
+  const fcMean = Market.forecast(desc, { method: 'mean', horizon: 3, lastN: 3 });
+  check('el promedio de los últimos 3 años proyecta 16 tres veces',
+    fcMean.values.length === 3 && fcMean.values.every(v => near(v.value, 16, 1e-9)));
+  check('la proyección continúa los años de la serie', fcMean.values[0].year === 2021 && fcMean.values[2].year === 2023);
+  const fcTrend = Market.forecast(desc, { method: 'trend', horizon: 2 });
+  check('la tendencia proyecta 20 y 22', near(fcTrend.values[0].value, 20, 1e-8) && near(fcTrend.values[1].value, 22, 1e-8));
+  const fcNoisy = Market.forecast(noisy, { method: 'trend', horizon: 3 });
+  check('la banda de la tendencia se ensancha al alejarse de los datos',
+    fcNoisy.values[2].sd > fcNoisy.values[0].sd, fmtFixed(fcNoisy.values[0].sd, 2) + ' → ' + fmtFixed(fcNoisy.values[2].sd, 2));
+  check('la banda encierra al valor central', fcNoisy.values.every(v => v.low <= v.value && v.value <= v.high));
+  const fcCagr = Market.forecast(desc, { method: 'cagr', horizon: 2, growth: 0.1 });
+  check('el crecimiento compuesto aplica la tasa año con año', near(fcCagr.values[1].value, 18 * 1.1 * 1.1, 1e-9));
+  const fcFixed = Market.forecast(desc, { method: 'fixed', horizon: 2, fixed: 25, spread: 0.2 });
+  check('un valor fijo se proyecta tal cual, con la banda que se indique',
+    near(fcFixed.values[0].value, 25, 1e-12) && near(fcFixed.values[0].high, 30, 1e-12));
+  check('el último valor observado también es un método', near(Market.forecast(desc, { method: 'last', horizon: 1 }).values[0].value, 18, 1e-12));
+
+  /* --- the market --- */
+  const bal = Market.marketBalance({ demand: 1000, supply: 800, demandGrowth: 0.05, supplyGrowth: 0, horizon: 3, projectVolume: 100, elasticity: -0.5 });
+  check('la demanda insatisfecha del primer año es 250', near(bal.rows[0].gap, 1000 * 1.05 - 800, 1e-9));
+  check('la participación del proyecto es volumen entre demanda', near(bal.share, 0.1, 1e-12));
+  check('la parte de la brecha que cubre se calcula sobre el primer año', near(bal.shareOfGap, 100 / (1000 * 1.05 - 800), 1e-12));
+  check('con elasticidad −0.5 agregar 10 % del mercado baja el precio 20 %', near(bal.priceEffect, -0.2, 1e-12), fmtPct(bal.priceEffect, 1));
+  check('sin elasticidad no se inventa un efecto sobre el precio',
+    Market.marketBalance({ demand: 1000, supply: 800, horizon: 1, projectVolume: 100 }).priceEffect === null);
+  check('la demanda crece año con año', near(bal.rows[2].demand, 1000 * Math.pow(1.05, 3), 1e-9));
+
+  /* --- the sales programme --- */
+  check('la maduración del rendimiento coincide con la del laboratorio del Bloque 1',
+    [0, 1, 3, 5, 8].every(t => near(Market.yieldShare(t, 4, 4), Lab.yieldShare(t, 4, 4), 1e-12)));
+  const prog = Market.programme({
+    horizon: 5, baseYear: 2026, scale: 10, gestation: 0, ramp: 1,
+    yieldFull: 12, price: 25000, loss: 0.1, soldShare: 1,
+  });
+  check('la producción es rendimiento por escala', near(prog.rows[0].production, 120, 1e-9));
+  check('la merma se descuenta del volumen vendido', near(prog.rows[0].volume, 108, 1e-9));
+  check('el ingreso es volumen por precio', near(prog.rows[0].revenue, 108 * 25000, 1e-9));
+  check('los años quedan fechados desde el año base', prog.rows[0].year === 2027 && prog.rows[4].year === 2031);
+  check('el total suma todos los años', near(prog.totals.total, prog.rows.reduce((a, r) => a + r.total, 0), 1e-6));
+  const progGest = Market.programme({ horizon: 8, scale: 1, gestation: 3, ramp: 3, yieldFull: 10, price: 100 });
+  check('durante la gestación no hay producción ni ingreso',
+    progGest.rows.slice(0, 3).every(r => r.production === 0 && r.total === 0));
+  check('el rendimiento pleno llega en el año de maduración', near(progGest.rows[5].yield, 10, 1e-9));
+  const progCh = Market.programme({
+    horizon: 1, scale: 1, gestation: 0, ramp: 1, yieldFull: 100, price: 1000, loss: 0,
+    channels: [{ share: 60, factor: 0.85 }, { share: 40, factor: 1.2 }],
+  });
+  check('los canales ponderan el precio: 60 % al 0.85 y 40 % al 1.2 dan 0.99',
+    near(progCh.rows[0].effectivePrice, 990, 1e-9), fmtMoney(progCh.rows[0].effectivePrice, 2));
+  check('los canales se normalizan aunque no sumen 100',
+    near(Market.channelPrice(100, [{ share: 6, factor: 0.5 }, { share: 6, factor: 1.5 }]).price, 100, 1e-9));
+  const progBy = Market.programme({
+    horizon: 1, scale: 2, gestation: 0, ramp: 1, yieldFull: 10, price: 100, loss: 0,
+    byproducts: [{ perUnit: 0.5, price: 40 }], otherIncome: 500,
+  });
+  check('los subproductos se cuentan sobre la producción bruta', near(progBy.rows[0].byproducts, 20 * 0.5 * 40, 1e-9));
+  check('los otros ingresos entran cada año', near(progBy.rows[0].other, 500, 1e-9) && near(progBy.rows[0].total, 2000 + 400 + 500, 1e-9));
+  const progYears = Market.programme({
+    horizon: 3, scale: 1, gestation: 0, ramp: 1, yieldFull: 5, loss: 0,
+    priceByYear: [10, 20, 30], yieldByYear: [1, 2, 3],
+  });
+  check('un precio y un rendimiento por año mandan sobre los valores fijos',
+    near(progYears.rows[1].revenue, 2 * 20, 1e-9) && near(progYears.rows[2].revenue, 3 * 30, 1e-9));
+
+  /* --- the coherence checks of the block --- */
+  const proj3 = Project.defaults();
+  const mkModel = (over) => Object.assign({
+    priceDesc: Market.describe([2020, 2021, 2022, 2023, 2024], [10, 11, 10.5, 11.5, 11]),
+    yieldDesc: Market.describe([2020, 2021, 2022, 2023, 2024], [3, 3.2, 3.1, 3.3, 3.2]),
+    deflated: { missing: 0 }, priceMethod: 'mean', loss: 0.05, channels: [],
+    programme: Market.programme({ horizon: 3, scale: 1, gestation: 0, ramp: 1, yieldFull: 3, price: 10 }),
+  }, over || {});
+  check('una serie de dos años avisa que es poca historia',
+    Market.validate(mkModel({ priceDesc: Market.describe([2023, 2024], [10, 11]) }), proj3).some(m => m.level === 'warning' && /frágil|fragile/.test(m.es + m.en)));
+  check('un solo año es error, no aviso',
+    Market.validate(mkModel({ priceDesc: Market.describe([2024], [10]) }), proj3).some(m => m.level === 'error'));
+  check('proyectar una tendencia que no es significativa se avisa',
+    Market.validate(mkModel({ priceMethod: 'trend' }), proj3).some(m => m.level === 'warning' && /tendencia que los datos|trend the data/.test(m.es + m.en)));
+  check('un precio muy variable manda al Bloque 7',
+    Market.validate(mkModel({ priceDesc: Market.describe([2020, 2021, 2022, 2023, 2024], [5, 15, 6, 16, 7]) }), proj3).some(m => /Bloque 7|Block 7/.test(m.es + m.en)));
+  check('una participación de mercado grande avisa que el precio ya no es un dato',
+    Market.validate(mkModel({ balance: { share: 0.35, gap: 100 } }), proj3).some(m => /participación|share/.test(m.es + m.en)));
+  check('una merma de 40 % se cuestiona',
+    Market.validate(mkModel({ loss: 0.4 }), proj3).some(m => /merma|losses/.test(m.es + m.en)));
+  check('hacer crecer un precio real a precios constantes se avisa',
+    Market.validate(mkModel({ priceMethod: 'cagr', priceGrowth: 0.05 }), proj3).some(m => /precios constantes|constant prices/.test(m.es + m.en)));
+  check('un programa sin ingreso es error',
+    Market.validate(mkModel({ programme: Market.programme({ horizon: 2, scale: 0, gestation: 0, ramp: 1, yieldFull: 0, price: 0 }) }), proj3).some(m => m.level === 'error'));
+  check('cada aviso del bloque viene en los dos idiomas',
+    Market.validate(mkModel({ loss: 0.4 }), proj3).every(m => m.es && m.en && m.level));
+
+  /* --- the example series --- */
+  check('las seis series de ejemplo tienen diez años completos', Object.keys(ExData3.SERIES).every(k => {
+    const s = ExData3.SERIES[k];
+    return s.price.length === 10 && s.yield.length === 10 && s.price.every(v => v > 0) && s.yield.every(v => v > 0);
+  }), Object.keys(ExData3.SERIES).length + ' series');
+  check('el índice de precios del ejemplo crece todos los años', ExData3.CPI.every((v, i) => i === 0 || v > ExData3.CPI[i - 1]));
+  check('cada serie de ejemplo tiene su mercado', Object.keys(ExData3.SERIES).every(k => ExData3.MARKETS[k] && ExData3.MARKETS[k].demand > 0 && ExData3.MARKETS[k].elasticity < 0));
+  check('las filas del ejemplo llegan listas para la tabla', (() => {
+    const rows = ExData3.rowsFor('avocado');
+    return rows.length === 10 && rows[0].year === '2016' && Import.numericRows(rows, ['year', 'price', 'yield', 'index']).bad.length === 0;
+  })());
+  check('el maíz del ejemplo casi no gana en términos reales, como dice la teoría del bloque', (() => {
+    const rows = ExData3.rowsFor('maize');
+    const years = rows.map(r => +r.year), nom = rows.map(r => +r.price), idx = rows.map(r => +r.index);
+    const real = Market.deflate(years, nom, idx, 2025).real;
+    const growth = Fin.cagr(real[0], real[real.length - 1], 9);
+    return growth != null && Math.abs(growth) < 0.02;
+  })(), (() => {
+    const rows = ExData3.rowsFor('maize');
+    const real = Market.deflate(rows.map(r => +r.year), rows.map(r => +r.price), rows.map(r => +r.index), 2025).real;
+    return 'nominal ' + fmtPct(Fin.cagr(+rows[0].price, +rows[9].price, 9), 1) + ' vs real ' + fmtPct(Fin.cagr(real[0], real[9], 9), 1);
+  })());
+
+  /* --- the figures of the block --- */
+  check('las tres figuras del Bloque 3 se dibujan sin error', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      Plots3.drawSeries(svg, desc, fcMean, { showTrend: true });
+      const a = svg.childElementCount > 0;
+      Plots3.drawMarket(svg, bal, { projectVolume: 100 });
+      const b = svg.childElementCount > 0;
+      Plots3.drawProgramme(svg, prog);
+      const c = svg.childElementCount > 0;
+      return a && b && c;
+    } finally { document.body.removeChild(svg); }
+  })());
+  check('las figuras aguantan una serie vacía sin romperse', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      Plots3.drawSeries(svg, Market.describe([], []), { values: [] }, {});
+      Plots3.drawMarket(svg, null, {});
+      Plots3.drawProgramme(svg, { rows: [] });
+      return true;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+
+  /* ============================================================
+     Block 4: investment, costs and working capital
+     ============================================================ */
+  section('Inversión, costos y capital de trabajo (Bloque 4)');
+
+  /* --- reading the words the user types in a cell --- */
+  check('el tipo de activo se reconoce en español y en inglés',
+    Budget.parseKind('Maquinaria') === 'machinery' && Budget.parseKind('machinery') === 'machinery' &&
+    Budget.parseKind('Terreno') === 'land' && Budget.parseKind('Obra civil e instalaciones') === 'works');
+  check('reconoce también la palabra que el productor usaría',
+    Budget.parseKind('tractor') === 'machinery' && Budget.parseKind('camioneta') === 'vehicles' &&
+    Budget.parseKind('pie de cría') === 'livestock' && Budget.parseKind('bodega') === 'works');
+  check('lo que no reconoce cae en «otros», no se pierde', Budget.parseKind('lo que sea') === 'other' && Budget.parseKind('') === 'other');
+  check('el grupo del costo se reconoce igual',
+    Budget.parseGroup('Mano de obra') === 'labour' && Budget.parseGroup('jornales') === 'labour' &&
+    Budget.parseGroup('Insumos') === 'inputs' && Budget.parseGroup('fletes') === 'services');
+  check('la base del costo se reconoce por palabras, y por omisión es por unidad',
+    Budget.parseBase('por tonelada') === 'output' && Budget.parseBase('per tonne') === 'output' &&
+    Budget.parseBase('total al año') === 'total' && Budget.parseBase('') === 'unit' && Budget.parseBase('ha') === 'unit');
+  check('«sí», «no» y sus variantes se entienden',
+    Budget.parseYes('sí', false) === true && Budget.parseYes('no', true) === false &&
+    Budget.parseYes('yes', false) === true && Budget.parseYes('', true) === true);
+
+  /* --- what each cost item costs, according to its basis --- */
+  const ctx4 = { scale: 10, production: 120 };
+  check('una partida por unidad se multiplica por la escala',
+    near(Budget.itemAmount({ base: 'unit', qty: 30, unitCost: 350 }, ctx4), 30 * 350 * 10, 1e-9));
+  check('una partida por tonelada sigue a la producción',
+    near(Budget.itemAmount({ base: 'output', qty: 1, unitCost: 2500 }, ctx4), 2500 * 120, 1e-9));
+  check('una partida total entra completa',
+    near(Budget.itemAmount({ base: 'total', qty: 1, unitCost: 180000 }, ctx4), 180000, 1e-9));
+  check('cambiar el rendimiento no mueve los costos por hectárea pero sí los de cosecha', (() => {
+    const perHa = Budget.itemAmount({ base: 'unit', qty: 1, unitCost: 1000 }, { scale: 10, production: 240 });
+    const perT = Budget.itemAmount({ base: 'output', qty: 1, unitCost: 100 }, { scale: 10, production: 240 });
+    return near(perHa, 10000, 1e-9) && near(perT, 24000, 1e-9);
+  })());
+
+  /* --- purchases and replacements --- */
+  const invList = [
+    { name: 'Riego', kind: 'obra', qty: 10, unitCost: 45000, year: 0, life: 15, salvagePct: 0, replace: 'sí' },
+    { name: 'Equipo', kind: 'equipo', qty: 1, unitCost: 100000, year: 0, life: 5, salvagePct: 0, replace: 'sí' },
+    { name: 'Terreno', kind: 'terreno', qty: 1, unitCost: 500000, year: 0, life: 0, salvagePct: 0, replace: 'no' },
+  ];
+  const buys20 = Budget.purchases(invList, 20);
+  check('el equipo de 5 años se repone en los años 5, 10 y 15 dentro de un horizonte de 20',
+    buys20.filter(b => b.name === 'Equipo').map(b => b.year).join(',') === '0,5,10,15');
+  check('el riego de 15 años se repone una sola vez', buys20.filter(b => b.name === 'Riego').length === 2);
+  check('no se compra un activo en el último año del horizonte', !buys20.some(b => b.year >= 20));
+  check('el terreno no se repone nunca', buys20.filter(b => b.name === 'Terreno').length === 1);
+  check('marcar «no reponer» detiene las reposiciones',
+    Budget.purchases([{ kind: 'equipo', qty: 1, unitCost: 100, year: 0, life: 5, replace: 'no' }], 20).length === 1);
+  check('una partida con monto cero no entra al calendario',
+    Budget.purchases([{ kind: 'equipo', qty: 0, unitCost: 100000, year: 0, life: 5 }], 20).length === 0);
+
+  /* --- depreciation --- */
+  const dep20 = Budget.depreciation(buys20, 20);
+  check('el terreno no se deprecia y conserva su valor', near(dep20.landValue, 500000, 1e-9));
+  check('la depreciación empieza el año siguiente a la compra', dep20.byYear[0] === 0 && dep20.byYear[1] > 0);
+  check('cada compra se deprecia por separado', dep20.detail.filter(d => d.name === 'Equipo').length === 4);
+  check('el equipo comprado en el año 15 solo alcanza a depreciar 5 de sus 10 partes', (() => {
+    const last = dep20.detail.find(d => d.name === 'Equipo' && d.year === 15);
+    return near(last.taken, 100000, 1e-6) && near(last.book, 0, 1e-6);
+  })());
+  check('lo que no se depreció queda como valor en libros', dep20.bookValue > 0, fmtMoney(dep20.bookValue, 0));
+  const depSalv = Budget.depreciation(Budget.purchases([{ kind: 'maquinaria', qty: 1, unitCost: 100000, year: 0, life: 10, salvagePct: 20, replace: 'no' }], 10), 10);
+  check('el porcentaje de rescate se respeta: nunca deprecia por debajo de él', (() => {
+    const d = Budget.depreciation(Budget.purchases([{ kind: 'maquinaria', qty: 1, unitCost: 100000, year: 0, life: 10, salvagePct: 0.2, replace: 'no' }], 10), 10);
+    return near(d.bookValue, 20000, 1e-6);
+  })());
+
+  /* --- amortisation of the pre-operating investment --- */
+  const amo = Budget.amortisation([{ name: 'Estudios', amount: 100000, year: 0 }], 10, 5);
+  check('lo diferido se amortiza en partes iguales', near(amo.byYear[1], 20000, 1e-9) && near(amo.byYear[5], 20000, 1e-9));
+  check('la amortización termina cuando debe', amo.byYear[6] === 0 && near(amo.total, 100000, 1e-9));
+  check('lo que no cabe en el horizonte se reporta', near(Budget.amortisation([{ amount: 100000, year: 0 }], 3, 5).notAmortised, 40000, 1e-6));
+
+  /* --- the cost of each year --- */
+  const costRows = Budget.costs({
+    horizon: 6, scale: 10, gestation: 2,
+    production: [0, 0, 40, 80, 120, 120],
+    establishment: [{ name: 'Mantenimiento', group: 'labour', base: 'unit', qty: 1, unitCost: 45000, variable: true }],
+    operating: [
+      { name: 'Labores', group: 'labour', base: 'unit', qty: 1, unitCost: 60000, variable: true },
+      { name: 'Cosecha', group: 'services', base: 'output', qty: 1, unitCost: 2500, variable: true },
+    ],
+    fixed: [{ name: 'Administración', amount: 200000 }],
+  });
+  check('mientras no produce se aplica el presupuesto de establecimiento',
+    near(costRows[0].variable, 450000, 1e-9) && costRows[0].growing === true);
+  check('al producir se cambia al presupuesto de operación',
+    near(costRows[2].variable, 600000 + 2500 * 40, 1e-9) && costRows[2].growing === false);
+  check('los costos fijos del año entran siempre, produzca o no',
+    costRows.every(r => near(r.fixed, 200000, 1e-9)));
+  check('el costo por unidad y el costo por tonelada se calculan solos',
+    near(costRows[4].perUnit, costRows[4].cash / 10, 1e-9) && near(costRows[4].perOutput, costRows[4].cash / 120, 1e-9));
+  check('sin producción no hay costo por tonelada', costRows[0].perOutput === null);
+  check('los grupos suman el total de la lista',
+    near(Object.values(costRows[2].byGroup).reduce((a, b) => a + b, 0), costRows[2].variable, 1e-9));
+  /* The two cuts of a cost —the accounting one (variable/fixed) and the one
+     the break-even needs (volume/capacity)— have to add up to the same total,
+     or Blocks 5 and 7 would be reading a different budget from Block 4. */
+  check('las dos formas de partir el costo suman lo mismo',
+    costRows.every(r => near(r.volumeCost + r.capacityCost, r.cash, 1e-9) && near(r.variable + r.fixed, r.cash, 1e-9)));
+
+  /* --- working capital --- */
+  const wcRows = [{ cash: 365000 }, { cash: 730000 }, { cash: 730000 }];
+  const wc1 = Budget.workingCapital(wcRows, { method: 'cycle', daysInventory: 60, daysReceivable: 30, daysPayable: 20 });
+  check('el ciclo de caja son inventario más cobranza menos proveedores', wc1.days === 70);
+  check('la necesidad es el costo por la fracción del año que dura el ciclo',
+    near(wc1.need[0], 365000 * 70 / 365, 1e-9));
+  check('el capital de trabajo se invierte el año ANTERIOR al que se necesita',
+    near(wc1.invest[0], wc1.need[0], 1e-9) && near(wc1.invest[1], wc1.need[1] - wc1.need[0], 1e-9));
+  check('cuando la necesidad deja de crecer ya no se invierte más', near(wc1.invest[2], 0, 1e-9));
+  check('lo acumulado se recupera al final', near(wc1.recovered, wc1.need[2], 1e-9));
+  const wc2 = Budget.workingCapital(wcRows, { method: 'months', months: 3 });
+  check('tres meses de costo es la cuarta parte del año', near(wc2.need[0], 365000 * 3 * 30.4167 / 365, 1e-6));
+  const wc3 = Budget.workingCapital(wcRows, { method: 'pct', pct: 0.25 });
+  check('el método de porcentaje toma la parte indicada del costo', near(wc3.need[1], 730000 * 0.25, 1e-9));
+
+  /* --- everything together --- */
+  const proj4 = Project.merge(Project.defaults(), { horizon: 10, scale: 10, gestation: 2, ramp: 2, baseYear: 2026 });
+  const market4 = { prog: { rows: Array.from({ length: 10 }, (_, i) => ({ t: i + 1, production: i < 2 ? 0 : 120, total: i < 2 ? 0 : 3000000 })) },
+    priceFc: { values: Array.from({ length: 10 }, () => ({ value: 25000 })) } };
+  const built4 = Budget.build({
+    investments: invList, deferred: [{ name: 'Estudios', amount: 100000, year: 0 }], deferredLife: 5,
+    establishment: [{ group: 'labour', base: 'unit', qty: 1, unitCost: 45000 }],
+    operating: [{ group: 'labour', base: 'unit', qty: 1, unitCost: 60000 }, { group: 'services', base: 'output', qty: 1, unitCost: 2500 }],
+    fixed: [{ name: 'Administración', amount: 200000 }],
+    wcMethod: 'cycle', wcDaysInventory: 60, wcDaysReceivable: 30, wcDaysPayable: 20,
+  }, proj4, market4);
+  check('la inversión inicial suma fija, diferida y el primer capital de trabajo',
+    near(built4.summary.initial, built4.summary.fixedInvestment + built4.summary.deferred + built4.schedule[0].workingCapital, 1e-6),
+    fmtMoney(built4.summary.initial, 0));
+  check('el calendario tiene una fila por año, del 0 al horizonte', built4.schedule.length === 11 && built4.schedule[0].t === 0);
+  check('el total del calendario coincide con la suma de sus partes',
+    built4.schedule.every(s => near(s.total, s.fixed + s.deferred + s.replacement + s.workingCapital, 1e-9)));
+  check('el valor de rescate reúne activos, terreno y capital de trabajo',
+    near(built4.salvage.total, built4.salvage.assets + built4.salvage.land + built4.salvage.workingCapital, 1e-9),
+    fmtMoney(built4.salvage.total, 0));
+  check('el costo por tonelada a plena producción se compara con el precio',
+    built4.summary.perOutputAtFull > 0 && built4.summary.perOutputAtFull < 25000, fmtMoney(built4.summary.perOutputAtFull, 0));
+
+  /* --- the coherence checks --- */
+  const mkBudget = (over) => Budget.build(Object.assign({
+    investments: [{ kind: 'maquinaria', qty: 1, unitCost: 500000, year: 0, life: 10, replace: 'sí' }],
+    deferred: [], deferredLife: 5, establishment: [],
+    operating: [{ group: 'labour', base: 'unit', qty: 1, unitCost: 10000 }], fixed: [],
+    wcMethod: 'cycle', wcDaysInventory: 30, wcDaysReceivable: 30, wcDaysPayable: 10,
+  }, over || {}), proj4, market4);
+  check('un proyecto sin inversión es error', mkBudget({ investments: [] }).messages.some(m => m.level === 'error'));
+  check('un proyecto sin costos es error', mkBudget({ operating: [] }).messages.some(m => m.level === 'error'));
+  check('un activo que no llega al final del horizonte y no se repone se avisa',
+    mkBudget({ investments: [{ kind: 'equipo', qty: 1, unitCost: 100000, year: 0, life: 4, replace: 'no' }] })
+      .messages.some(m => m.level === 'warning' && /reposición|replacement/.test(m.es + m.en)));
+  check('un ciclo de caja mayor a un año se cuestiona',
+    mkBudget({ wcDaysInventory: 400 }).messages.some(m => /ciclo de caja|cash cycle/.test(m.es + m.en)));
+  check('un ciclo de caja de cero días también',
+    mkBudget({ wcDaysInventory: 0, wcDaysReceivable: 0, wcDaysPayable: 0 }).messages.some(m => /cero|zero/.test(m.es + m.en)));
+  check('si el costo por tonelada supera al precio, se avisa',
+    mkBudget({ operating: [{ group: 'services', base: 'output', qty: 1, unitCost: 40000 }] })
+      .messages.some(m => /costo por tonelada|cost per tonne/.test(m.es + m.en)));
+  check('si el costo supera al ingreso todos los años, se avisa',
+    mkBudget({ fixed: [{ name: 'Exceso', amount: 9000000 }] })
+      .messages.some(m => /pierde dinero|loses money/.test(m.es + m.en)));
+  check('cada aviso del Bloque 4 viene en los dos idiomas', mkBudget({}).messages.every(m => m.es && m.en && m.level));
+
+  /* --- the example budgets --- */
+  check('los seis presupuestos de ejemplo están completos', Object.keys(ExData4.BUDGETS).every(k => {
+    const b = ExData4.BUDGETS[k];
+    return b.investments.length && b.operating.length && b.investments.every(i => i.unitCost > 0) &&
+      b.operating.every(c => c.unitCost > 0) && b.note && b.note.length === 2;
+  }), Object.keys(ExData4.BUDGETS).length + ' presupuestos');
+  check('los ejemplos llegan a la tabla como palabras, no como claves internas', (() => {
+    const g = ExData4.gridsFor('avocado');
+    return g.investments.every(r => Budget.KINDS[r.kind] === undefined) &&
+      Budget.parseKind(g.investments[1].kind) === 'works' &&
+      Budget.parseBase(g.operating[g.operating.length - 1].base) === 'output';
+  })());
+  check('cada ejemplo produce un presupuesto válido con su proyecto', Object.keys(ExData4.BUDGETS).every(k => {
+    const g = ExData4.gridsFor(k);
+    const m = Budget.build({
+      investments: g.investments, deferred: g.deferred, deferredLife: 5,
+      establishment: g.establishment, operating: g.operating, fixed: g.fixed,
+      wcMethod: g.wc.wcMethod, wcDaysInventory: g.wc.wcDaysInventory,
+      wcDaysReceivable: g.wc.wcDaysReceivable, wcDaysPayable: g.wc.wcDaysPayable,
+    }, proj4, market4);
+    return m.summary.initial > 0 && m.summary.costAtFull > 0 && !m.messages.some(x => x.level === 'error');
+  }));
+
+  check('lo mismo en los presupuestos de ejemplo', Object.keys(ExData4.BUDGETS).every(k => {
+    const g = ExData4.gridsFor(k);
+    const m = Budget.build({
+      investments: g.investments, deferred: g.deferred, deferredLife: 5,
+      establishment: g.establishment, operating: g.operating, fixed: g.fixed,
+      wcMethod: g.wc.wcMethod, wcDaysInventory: g.wc.wcDaysInventory,
+      wcDaysReceivable: g.wc.wcDaysReceivable, wcDaysPayable: g.wc.wcDaysPayable,
+    }, proj4, market4);
+    return m.costs.every(r => near(r.volumeCost + r.capacityCost, r.cash, 1e-6));
+  }));
+  /* --- the figures --- */
+  check('las cuatro figuras del Bloque 4 se dibujan sin error', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      Plots4.drawStructure(svg, built4);
+      Plots4.drawSchedule(svg, built4);
+      Plots4.drawCosts(svg, built4, { price: 25000 });
+      Plots4.drawGroups(svg, built4);
+      return svg.childElementCount > 0;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+  check('las figuras aguantan un presupuesto vacío', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    const empty = Budget.build({ investments: [], deferred: [], establishment: [], operating: [], fixed: [] }, proj4, null);
+    try {
+      Plots4.drawStructure(svg, empty);
+      Plots4.drawSchedule(svg, empty);
+      Plots4.drawCosts(svg, empty, {});
+      Plots4.drawGroups(svg, empty);
+      return true;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+
+  /* ============================================================
+     Block 5: financing and pro-forma statements
+     ============================================================ */
+  section('Financiamiento y estados proforma (Bloque 5)');
+
+  /* A deliberately simple project, so every number below can be checked by
+     hand: 3 years, revenue 100,000 a year, cash cost 40,000, depreciation
+     10,000, investment 100,000 in year 0 plus 5,000 of working capital, and a
+     salvage value of 75,000 at the end. */
+  const P5 = Project.merge(Project.defaults(), {
+    horizon: 3, baseYear: 2026, scale: 1, gestation: 0, ramp: 1,
+    tax: { income: 0.30, applyPTU: false, primaryRegime: 'none' },
+  });
+  const MK5 = {
+    prog: { rows: [1, 2, 3].map(t => ({ t, production: 100, volume: 100, revenue: 100000, effectivePrice: 1000, total: 100000 })) },
+    priceFc: { values: [1, 2, 3].map(() => ({ value: 1000 })) },
+  };
+  const BG5 = {
+    costs: [1, 2, 3].map(t => ({
+      t, cash: 40000, variable: 30000, fixed: 10000, production: 100,
+      capacityCost: 10000, volumeCost: 30000, unitVariable: 300,
+    })),
+    depreciation: { byYear: [0, 10000, 10000, 10000], detail: [] },
+    amortisation: { byYear: [0, 0, 0, 0], total: 0, notAmortised: 0 },
+    schedule: [
+      { t: 0, fixed: 100000, deferred: 0, replacement: 0, workingCapital: 5000, total: 105000 },
+      { t: 1, fixed: 0, deferred: 0, replacement: 0, workingCapital: 0, total: 0 },
+      { t: 2, fixed: 0, deferred: 0, replacement: 0, workingCapital: 0, total: 0 },
+      { t: 3, fixed: 0, deferred: 0, replacement: 0, workingCapital: 0, total: 0 },
+    ],
+    wc: { need: [5000, 5000, 5000], invest: [5000, 0, 0, 0] },
+    salvage: { total: 75000, assets: 70000, land: 0, workingCapital: 5000 },
+    summary: { initial: 105000 },
+    deferredLife: 5,
+  };
+  const noLoan = { longTermShare: 0, seasonalShare: 0, fee: 0 };
+  const S5 = FinState.build(noLoan, P5, MK5, BG5);
+
+  check('el estado de resultados sale exacto: 100,000 − 40,000 − 10,000 = 50,000 de utilidad de operación',
+    near(S5.rows[0].ebit, 50000, 1e-9));
+  check('sin deuda la utilidad antes de impuestos es la de operación', near(S5.rows[0].ebt, 50000, 1e-9));
+  check('el impuesto es el 30 % de la utilidad', near(S5.rows[0].tax, 15000, 1e-9));
+  check('la utilidad neta es 35,000', near(S5.rows[0].net, 35000, 1e-9));
+  check('el flujo del año 0 es toda la inversión, capital de trabajo incluido', near(S5.projectFlow[0], -105000, 1e-9));
+  check('el flujo de un año normal es utilidad neta más depreciación', near(S5.projectFlow[1], 45000, 1e-9));
+  check('el último año suma el valor de rescate', near(S5.projectFlow[3], 45000 + 75000, 1e-9));
+  check('sin crédito los dos flujos son idénticos', S5.projectFlow.every((v, i) => near(v, S5.investorFlow[i], 1e-9)));
+  check('sin crédito el dueño pone toda la inversión', near(S5.equityPut, 105000, 1e-9));
+  check('el balance cuadra todos los años', S5.balance.every(b => Math.abs(b.gap) < 1e-6),
+    'peor diferencia ' + fmtFixed(Math.max(...S5.balance.map(b => Math.abs(b.gap))), 8));
+  check('el activo del primer año es caja, capital de trabajo y activo fijo neto', (() => {
+    const b = S5.balance[1];
+    return near(b.cash, 45000, 1e-9) && near(b.workingCapital, 5000, 1e-9) && near(b.fixedNet, 90000, 1e-9) && near(b.assets, 140000, 1e-9);
+  })());
+  check('el capital contable crece con las utilidades retenidas', near(S5.balance[1].capital, 105000 + 35000, 1e-9));
+
+  /* --- with a loan --- */
+  const withLoan = { longTermShare: 0.5, longTermRate: 0.10, longTermYears: 3, longTermGrace: 0, longTermType: 'level', fee: 0, seasonalShare: 0 };
+  const S5L = FinState.build(withLoan, P5, MK5, BG5);
+  check('el crédito toma el 50 % de la inversión fija y diferida', near(S5L.loans.longTerm.amount, 50000, 1e-9));
+  check('el pago anual del crédito es 20,105.74', near(S5L.loans.longTerm.payment, 50000 * Fin.capitalRecovery(0.10, 3), 1e-6), fmtMoney(S5L.loans.longTerm.payment, 2));
+  check('el dueño ya solo pone la diferencia', near(S5L.equityPut, 105000 - 50000, 1e-9));
+  check('el interés del primer año son 5,000', near(S5L.rows[0].interest, 5000, 1e-9));
+  check('el escudo fiscal es la tasa por los intereses',
+    near(S5L.rows[0].taxProject - S5L.rows[0].tax, 5000 * 0.30, 1e-9), fmtMoney(S5L.rows[0].taxProject - S5L.rows[0].tax, 2));
+  check('el flujo del proyecto no cambia al meter deuda', S5L.projectFlow.every((v, i) => near(v, S5.projectFlow[i], 1e-9)));
+  check('el flujo del inversionista del año 0 es solo lo que él puso', near(S5L.investorFlow[0], -55000, 1e-9));
+  check('el balance con crédito también cuadra', S5L.balance.every(b => Math.abs(b.gap) < 1e-6));
+  check('el pasivo baja conforme se paga el crédito',
+    S5L.balance[1].liabilities > S5L.balance[2].liabilities && near(S5L.balance[3].liabilities, 0, 1e-6));
+  check('la cobertura del servicio de la deuda se calcula sobre el flujo antes de pagarlo', (() => {
+    const r = S5L.ratios[0], row = S5L.rows[0];
+    return near(r.dscr, (row.net + row.depreciation + row.interest) / r.service, 1e-9);
+  })());
+
+  /* --- the fee, capitalised --- */
+  const S5F = FinState.build(Object.assign({}, withLoan, { fee: 0.02 }), P5, MK5, BG5);
+  check('la comisión de apertura se capitaliza y el balance sigue cuadrando',
+    near(S5F.loans.fee, 1000, 1e-9) && S5F.balance.every(b => Math.abs(b.gap) < 1e-6));
+  check('la comisión la pone el dueño, no el crédito', near(S5F.equityPut, 105000 + 1000 - 50000, 1e-9));
+
+  /* --- the seasonal loan --- */
+  const BG5wc = JSON.parse(JSON.stringify(BG5));
+  BG5wc.wc = { need: [10000, 20000, 20000], invest: [10000, 10000, 0, 0] };
+  BG5wc.schedule[0].workingCapital = 10000;
+  BG5wc.schedule[1].workingCapital = 10000;
+  const S5S = FinState.build({ longTermShare: 0, seasonalShare: 1, seasonalRate: 0.16, fee: 0 }, P5, MK5, BG5wc);
+  check('el avío se dispone al ritmo del capital de trabajo', near(S5S.loans.received[0], 10000, 1e-9) && near(S5S.loans.received[1], 10000, 1e-9));
+  check('el interés del avío se cobra sobre lo que estuvo dispuesto', near(S5S.loans.interest[1], 10000 * 0.16, 1e-9) && near(S5S.loans.interest[2], 20000 * 0.16, 1e-9));
+  check('el avío se liquida con la última cosecha', near(S5S.loans.principal[3], 20000, 1e-9) && near(S5S.loans.balance[3], 0, 1e-9));
+  check('el saldo del avío es siempre lo recibido menos lo pagado', (() => {
+    let acc = 0;
+    return S5S.loans.balance.every((b, t) => { acc += (S5S.loans.received[t] || 0) - (S5S.loans.principal[t] || 0); return near(b, acc, 1e-6); });
+  })());
+  check('con avío el balance sigue cuadrando', S5S.balance.every(b => Math.abs(b.gap) < 1e-6),
+    'peor diferencia ' + fmtFixed(Math.max(...S5S.balance.map(b => Math.abs(b.gap))), 8));
+
+  /* --- taxes --- */
+  const carry = { losses: 0 };
+  const t1 = FinState.taxOf(-20000, { rate: 0.3, revenue: 100000 }, carry);
+  check('un año con pérdida no paga impuesto y la guarda', near(t1.tax, 0, 1e-9) && near(carry.losses, 20000, 1e-9));
+  const t2 = FinState.taxOf(50000, { rate: 0.3, revenue: 100000 }, carry);
+  check('la pérdida se amortiza contra la utilidad del año siguiente',
+    near(t2.lossUsed, 20000, 1e-9) && near(t2.tax, 30000 * 0.3, 1e-9) && near(carry.losses, 0, 1e-9));
+  const t3 = FinState.taxOf(50000, { rate: 0.3, revenue: 100000, exempt: 100000 }, { losses: 0 });
+  check('si la exención cubre todo el ingreso, no hay impuesto', near(t3.tax, 0, 1e-9));
+  const t4 = FinState.taxOf(50000, { rate: 0.3, revenue: 100000, exempt: 40000 }, { losses: 0 });
+  check('una exención parcial reduce el impuesto en la misma proporción del ingreso',
+    near(t4.tax, 50000 * 0.6 * 0.3, 1e-9), fmtMoney(t4.tax, 2));
+  const t5 = FinState.taxOf(100000, { rate: 0.3, revenue: 200000, applyPTU: true, ptuRate: 0.10 }, { losses: 0 });
+  check('la PTU se reparte antes del impuesto y baja la base',
+    near(t5.ptu, 10000, 1e-9) && near(t5.tax, 90000 * 0.3, 1e-9));
+
+  /* the carry-forward really matters in a perennial project */
+  const P5g = Project.merge(Project.defaults(), { horizon: 6, baseYear: 2026, scale: 1, gestation: 2, tax: { income: 0.30 } });
+  const MK5g = { prog: { rows: [1, 2, 3, 4, 5, 6].map(t => ({ t, production: t <= 2 ? 0 : 100, volume: t <= 2 ? 0 : 100, revenue: t <= 2 ? 0 : 100000, effectivePrice: 1000, total: t <= 2 ? 0 : 100000 })) } };
+  const BG5g = JSON.parse(JSON.stringify(BG5));
+  /* while it does not produce, everything is a cost of keeping the plantation:
+     it goes with the area, not with the tonne, so cash = capacityCost */
+  BG5g.costs = [1, 2, 3, 4, 5, 6].map(t => ({ t, cash: t <= 2 ? 20000 : 40000, variable: t <= 2 ? 20000 : 30000, fixed: t <= 2 ? 0 : 10000, production: t <= 2 ? 0 : 100, capacityCost: t <= 2 ? 20000 : 10000, volumeCost: t <= 2 ? 0 : 30000, unitVariable: t <= 2 ? 0 : 300 }));
+  BG5g.depreciation.byYear = [0, 10000, 10000, 10000, 10000, 10000, 10000];
+  BG5g.amortisation.byYear = [0, 0, 0, 0, 0, 0, 0];
+  BG5g.schedule = [BG5.schedule[0]].concat([1, 2, 3, 4, 5, 6].map(t => ({ t, fixed: 0, deferred: 0, replacement: 0, workingCapital: 0, total: 0 })));
+  BG5g.wc = { need: [5000, 5000, 5000, 5000, 5000, 5000], invest: [5000, 0, 0, 0, 0, 0, 0] };
+  const S5g = FinState.build(noLoan, P5g, MK5g, BG5g);
+  check('la plantación pierde dinero mientras no produce', S5g.rows[0].net < 0 && S5g.rows[1].net < 0);
+  check('el primer año productivo usa las pérdidas acumuladas y paga menos impuesto',
+    S5g.rows[2].lossUsed > 0 && S5g.rows[2].tax < S5g.rows[3].tax, fmtMoney(S5g.rows[2].tax, 0) + ' contra ' + fmtMoney(S5g.rows[3].tax, 0));
+  check('el balance de un proyecto con gestación también cuadra', S5g.balance.every(b => Math.abs(b.gap) < 1e-6));
+
+  /* --- break-even --- */
+  check('el punto de equilibrio trata como variable solo lo que sigue al volumen', (() => {
+    const be = S5.breakeven[0];
+    /* fixed for break-even = costs per unit and lump sums + depreciation + interest */
+    return near(be.fixedCost, 10000 + 10000, 1e-9) && near(be.units, 20000 / (1000 - 300), 1e-9);
+  })(), fmtNum(S5.breakeven[0].units, 2) + ' unidades');
+  check('el margen de seguridad es lo que puede caer el volumen', near(S5.breakeven[0].safetyMargin, 1 - S5.breakeven[0].units / 100, 1e-9));
+  check('el precio de equilibrio cubre el costo variable más los fijos por unidad',
+    near(S5.breakeven[0].breakevenPrice, 300 + 20000 / 100, 1e-9));
+  check('con crédito, los intereses entran a los costos fijos del equilibrio',
+    S5L.breakeven[0].fixedCost > S5.breakeven[0].fixedCost);
+
+  /* --- ratios --- */
+  check('el margen neto es utilidad entre ingreso', near(S5.ratios[0].margin, 35000 / 100000, 1e-9));
+  check('el rendimiento del activo usa el activo del mismo año', near(S5.ratios[0].roa, 35000 / S5.balance[1].assets, 1e-9));
+  check('el apalancamiento es pasivo entre activo', near(S5L.ratios[0].leverage, S5L.balance[1].liabilities / S5L.balance[1].assets, 1e-9));
+  check('la cobertura de intereses es la utilidad de operación entre los intereses',
+    near(S5L.ratios[0].coverage, 50000 / 5000, 1e-9));
+
+  /* --- coherence --- */
+  const mkS = (fin, proj, mk, bg) => FinState.build(Object.assign({}, noLoan, fin || {}), proj === undefined ? P5 : proj, mk === undefined ? MK5 : mk, bg === undefined ? BG5 : bg);
+  check('sin ingresos del Bloque 3 es error', mkS({}, P5, null, BG5).messages.some(m => m.level === 'error'));
+  check('sin presupuesto del Bloque 4 es error', mkS({}, P5, MK5, null).messages.some(m => m.level === 'error'));
+  check('una caja negativa se avisa con el año', (() => {
+    const bg = JSON.parse(JSON.stringify(BG5));
+    bg.costs.forEach(c => { c.cash = 200000; });
+    return mkS({}, P5, MK5, bg).messages.some(m => /se queda en|falls to/.test(m.es + m.en));
+  })());
+  check('una cobertura menor a 1.2 se avisa', (() => {
+    const s = FinState.build({ longTermShare: 1, longTermRate: 0.35, longTermYears: 2, longTermType: 'level', fee: 0, seasonalShare: 0 }, P5, MK5, BG5);
+    return s.messages.some(m => /cobertura|coverage/.test(m.es + m.en));
+  })());
+  check('un crédito sin gracia en un proyecto con gestación se avisa',
+    FinState.build({ longTermShare: 0.5, longTermRate: 0.1, longTermYears: 6, longTermGrace: 0, longTermType: 'level', fee: 0 }, P5g, MK5g, BG5g)
+      .messages.some(m => /gracia|grace/.test(m.es + m.en)));
+  check('una tasa de crédito por debajo de la inflación se señala como subsidiada', (() => {
+    const p = Project.merge(P5, { inflation: 0.20 });
+    return FinState.build({ longTermShare: 0.5, longTermRate: 0.05, longTermYears: 3, longTermType: 'level', fee: 0 }, p, MK5, BG5)
+      .messages.some(m => /subsidiado|subsidised/.test(m.es + m.en));
+  })());
+  check('un crédito que no termina de pagarse dentro del horizonte se reporta',
+    FinState.build({ longTermShare: 0.5, longTermRate: 0.1, longTermYears: 10, longTermType: 'level', fee: 0 }, P5, MK5, BG5)
+      .messages.some(m => /no termina de pagarse|not fully repaid/.test(m.es + m.en)));
+  check('cada aviso del Bloque 5 viene en los dos idiomas', S5L.messages.every(m => m.es && m.en && m.level));
+
+  /* --- the figures --- */
+  check('las cuatro figuras del Bloque 5 se dibujan sin error', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      Plots5.drawIncome(svg, S5L);
+      Plots5.drawFlows(svg, S5L);
+      Plots5.drawBreakeven(svg, S5L, 0);
+      Plots5.drawDebt(svg, S5L);
+      return svg.childElementCount > 0;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+  check('las figuras aguantan un proyecto sin crédito ni datos', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      const empty = FinState.build(noLoan, P5, null, null);
+      Plots5.drawIncome(svg, empty);
+      Plots5.drawFlows(svg, empty);
+      Plots5.drawBreakeven(svg, empty, 0);
+      Plots5.drawDebt(svg, empty);
+      return true;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+
+  /* ============================================================
+     Block 6: financial appraisal
+     ============================================================ */
+  section('Evaluación financiera (Bloque 6)');
+
+  /* the same small project of Block 5, so the numbers stay hand-checkable */
+  const A6 = { rateProject: null, rateEquity: null, treatments: [], adjust: 0.10, minimumRate: 1, fieldPrice: null };
+  const P6 = Project.merge(P5, { rate: { mode: 'manual', manual: 0.10, manualIsReal: true }, inflation: 0.045 });
+  const AP = Appraisal.build(A6, P6, S5);
+
+  check('la tasa del proyecto viene del Bloque 2 cuando no se escribe otra', near(AP.rateProject, 0.10, 1e-12));
+  check('con una TREMA, la tasa del dueño es la misma', near(AP.rateEquity, 0.10, 1e-12));
+  check('el VAN coincide con el que da el motor financiero',
+    near(AP.project.npv, Fin.npv(0.10, S5.projectFlow), 1e-9), fmtMoney(AP.project.npv, 2));
+  check('el VAN se puede calcular a mano: −105,000 + 45,000·(P/A,10%,3) + 75,000/1.1³',
+    near(AP.project.npv, -105000 + 45000 * Fin.annuityFactor(0.1, 3) + 75000 / Math.pow(1.1, 3), 1e-6));
+  check('la TIR hace cero el VAN', near(Fin.npv(AP.project.irr, S5.projectFlow), 0, 1e-4), fmtPct(AP.project.irr, 3));
+  check('el valor anual equivalente reparte el VAN en anualidades',
+    near(AP.project.eaa, AP.project.npv * Fin.capitalRecovery(0.10, 3), 1e-6));
+
+  /* --- the decomposition has to add up to the NPV, exactly --- */
+  check('las piezas del VAN suman el VAN', (() => {
+    const p = AP.parts;
+    return near(p.revenue - p.cost - p.tax - p.investment + p.salvage, AP.project.npv, 1e-6);
+  })(), fmtMoney(AP.parts.npv, 2));
+  check('el valor presente de los ingresos es el que corresponde',
+    near(AP.parts.revenue, 100000 * Fin.annuityFactor(0.1, 3), 1e-6));
+  check('la inversión de la descomposición es la del año 0', near(AP.parts.investment, 105000, 1e-6));
+  check('el valor de rescate entra descontado al último año', near(AP.parts.salvage, 75000 / Math.pow(1.1, 3), 1e-6));
+  check('la descomposición también cuadra con crédito y con gestación', (() => {
+    const a = Appraisal.build(A6, P6, S5L), b = Appraisal.build(A6, Project.merge(P5g, { rate: { mode: 'manual', manual: 0.10, manualIsReal: true } }), S5g);
+    const ok = x => near(x.parts.revenue - x.parts.cost - x.parts.tax - x.parts.investment + x.parts.salvage, x.project.npv, 1e-6);
+    return ok(a) && ok(b);
+  })());
+
+  /* --- each flow with its own rate --- */
+  const P6w = Project.merge(P5, {
+    inflation: 0, priceBasis: 'constant',
+    rate: { mode: 'wacc', equity: 60, debt: 40, costEquity: 0.18, costDebt: 0.12 },
+    tax: { income: 0.30 },
+  });
+  check('con CPPC, la tasa del proyecto es el costo promedio ponderado',
+    near(Appraisal.build(A6, P6w, S5L).rateProject, 0.6 * 0.18 + 0.4 * 0.12 * 0.7, 1e-12));
+  check('y la del dueño es el costo de su propio capital', near(Appraisal.equityRate(P6w), 0.18, 1e-12));
+  check('la tasa del dueño es más cara que la del proyecto cuando hay deuda',
+    Appraisal.equityRate(P6w) > Appraisal.build(A6, P6w, S5L).rateProject);
+  check('con CAPM, la tasa del dueño sale del modelo', (() => {
+    const p = Project.merge(P5, { inflation: 0, rate: { mode: 'capm', rf: 0.07, beta: 1.1, marketPremium: 0.06, countryRisk: 0.02 } });
+    return near(Appraisal.equityRate(p), 0.07 + 1.1 * 0.06 + 0.02, 1e-12);
+  })());
+  check('a precios constantes la tasa del dueño se deflacta con Fisher', (() => {
+    const p = Project.merge(P5, { inflation: 0.05, priceBasis: 'constant', rate: { mode: 'wacc', equity: 100, debt: 0, costEquity: 0.18 } });
+    return near(Appraisal.equityRate(p), Fin.realRate(0.18, 0.05), 1e-12);
+  })());
+  check('una tasa escrita a mano manda sobre la del Bloque 2',
+    near(Appraisal.build({ rateProject: 0.2, rateEquity: 0.25, treatments: [] }, P6, S5).rateProject, 0.2, 1e-12));
+
+  /* --- what the loan does --- */
+  const APL = Appraisal.build(A6, P6, S5L);
+  check('el crédito no cambia el VAN del proyecto', near(APL.project.npv, AP.project.npv, 1e-9));
+  check('el crédito sí cambia el del inversionista', !near(APL.investor.npv, AP.investor.npv, 1));
+  check('con crédito barato el dueño gana más que sin él', APL.investor.npv > AP.investor.npv,
+    fmtMoney(APL.investor.npv, 0) + ' contra ' + fmtMoney(AP.investor.npv, 0));
+  check('el dictamen nombra el VAN, la TIR y la recuperación',
+    /VAN|valor actual neto/i.test(AP.verdict.es) && /tasa interna/i.test(AP.verdict.es) && /recupera/i.test(AP.verdict.es));
+  check('el dictamen existe en los dos idiomas', AP.verdict.en !== AP.verdict.es && /net present value/i.test(AP.verdict.en));
+
+  /* --- the coherence checks --- */
+  check('una TIR múltiple se avisa y se listan todas', (() => {
+    const st = JSON.parse(JSON.stringify(S5));
+    st.projectFlow = [-1000, 3000, -2200];
+    st.investorFlow = [-1000, 3000, -2200];
+    st.rows = st.rows.slice(0, 2);
+    const m = Appraisal.build(A6, P6, st);
+    return m.project.multipleIRR && m.messages.some(x => /TIR modificada|modified IRR/.test(x.es + x.en));
+  })());
+  check('un VAN frágil ante dos puntos de tasa se avisa', (() => {
+    const st = JSON.parse(JSON.stringify(S5));
+    /* a project whose NPV is barely positive at 10 % */
+    st.projectFlow = [-89000, 36000, 36000, 36000];
+    st.investorFlow = st.projectFlow.slice();
+    const m = Appraisal.build(A6, P6, st);
+    return m.project.npv > 0 && m.messages.some(x => /frágil|fragile/.test(x.es + x.en));
+  })());
+  check('una tasa del dueño menor que la del proyecto se cuestiona',
+    Appraisal.build({ rateProject: 0.15, rateEquity: 0.08, treatments: [] }, P6, S5)
+      .messages.some(x => /menor que la del proyecto|below the project/.test(x.es + x.en)));
+  check('si el proyecto conviene pero el inversionista pierde, se explica', (() => {
+    const m = Appraisal.build({ rateProject: 0.10, rateEquity: 0.90, treatments: [] }, P6, S5L);
+    return m.project.npv > 0 && m.investor.npv <= 0 && m.messages.some(x => /el inversionista pierde|the investor loses/.test(x.es + x.en));
+  })());
+  check('cada aviso del Bloque 6 viene en los dos idiomas', AP.messages.every(x => x.es && x.en && x.level));
+
+  /* ============================================================
+     marginal analysis (Perrin et al., CIMMYT 1976)
+     ============================================================ */
+  const TREAT = [
+    { name: 'Sin fertilizar', yield: 3.0, cost: 0 },
+    { name: '60 kg N', yield: 4.2, cost: 3600 },
+    { name: '120 kg N', yield: 5.0, cost: 7200 },
+    { name: '120 kg N + herbicida', yield: 5.1, cost: 9000 },
+    { name: '180 kg N', yield: 5.2, cost: 10800 },
+  ];
+  const MG = Appraisal.marginal({ treatments: TREAT, price: 5600, adjust: 0.10, minimumRate: 1 });
+  check('el rendimiento se ajusta hacia abajo antes de valorarlo', near(MG.rows[0].adjusted, 2.7, 1e-9));
+  check('el beneficio bruto de campo es rendimiento ajustado por precio de campo', near(MG.rows[0].gross, 2.7 * 5600, 1e-9));
+  check('el beneficio neto descuenta solo los costos que varían', near(MG.rows[1].net, 3.78 * 5600 - 3600, 1e-9), fmtMoney(MG.rows[1].net, 0));
+  check('los tratamientos se ordenan por lo que cuestan', MG.rows.every((r, i) => i === 0 || r.varCost >= MG.rows[i - 1].varCost));
+  check('un tratamiento que cuesta más y deja menos queda dominado',
+    MG.rows[3].dominated === true && MG.rows[4].dominated === true);
+  check('los que no son dominados forman una frontera creciente',
+    MG.kept.every((r, i) => i === 0 || r.net > MG.kept[i - 1].net));
+  check('la tasa de retorno marginal del primer escalón es 68 %',
+    near(MG.kept[1].mrr, (17568 - 15120) / 3600, 1e-9), fmtPct(MG.kept[1].mrr, 1));
+  check('la del segundo escalón es 12 %', near(MG.kept[2].mrr, (18000 - 17568) / 3600, 1e-9), fmtPct(MG.kept[2].mrr, 1));
+  check('con una tasa mínima de 100 % no se justifica fertilizar', MG.recommended.name === 'Sin fertilizar');
+  check('con una tasa mínima de 50 % se recomienda el primer escalón',
+    Appraisal.marginal({ treatments: TREAT, price: 5600, adjust: 0.10, minimumRate: 0.5 }).recommended.name === '60 kg N');
+  check('con una tasa mínima de 10 % se llega hasta el segundo escalón',
+    Appraisal.marginal({ treatments: TREAT, price: 5600, adjust: 0.10, minimumRate: 0.1 }).recommended.name === '120 kg N');
+  check('sin ajuste del rendimiento los beneficios suben', (() => {
+    const raw = Appraisal.marginal({ treatments: TREAT, price: 5600, adjust: 0, minimumRate: 1 });
+    return raw.rows[0].net > MG.rows[0].net;
+  })());
+  check('un precio propio por tratamiento manda sobre el general', (() => {
+    const mg = Appraisal.marginal({ treatments: [{ name: 'A', yield: 1, cost: 0, price: 1000 }], price: 5600, adjust: 0 });
+    return near(mg.rows[0].gross, 1000, 1e-9);
+  })());
+  check('una lista vacía no rompe nada', Appraisal.marginal({ treatments: [], price: 100 }).rows.length === 0);
+
+  /* --- the figures --- */
+  check('las cuatro figuras del Bloque 6 se dibujan sin error', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      Plots6.drawProfile(svg, APL);
+      Plots6.drawWaterfall(svg, APL);
+      Plots6.drawPayback(svg, APL);
+      Plots6.drawMarginal(svg, MG);
+      return svg.childElementCount > 0;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+  check('las figuras aguantan un proyecto sin TIR y un análisis vacío', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    const st = JSON.parse(JSON.stringify(S5));
+    st.projectFlow = [-100, -50, -20, -10];
+    st.investorFlow = st.projectFlow.slice();
+    try {
+      const m = Appraisal.build(A6, P6, st);
+      Plots6.drawProfile(svg, m);
+      Plots6.drawWaterfall(svg, m);
+      Plots6.drawPayback(svg, m);
+      Plots6.drawMarginal(svg, Appraisal.marginal({ treatments: [], price: 0 }));
+      return true;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+
+  /* ============================================================
+     Block 7: risk and uncertainty
+     ============================================================ */
+  section('Riesgo e incertidumbre (Bloque 7)');
+
+  const BASE7 = Risk.baseline(P5, MK5, BG5, Object.assign({}, S5, { rateProject: 0.10 }));
+
+  /* --- the fast rebuild has to be the same flow, not a similar one --- */
+  check('con todos los multiplicadores en 1, el flujo reconstruido es idéntico al del Bloque 5',
+    Risk.rebuild(BASE7, {}).flow.every((v, i) => near(v, S5.projectFlow[i], 1e-6)),
+    'diferencia máxima ' + fmtFixed(Math.max(...Risk.rebuild(BASE7, {}).flow.map((v, i) => Math.abs(v - S5.projectFlow[i]))), 8));
+  check('y el VAN reconstruido es el mismo', near(Risk.npvOf(BASE7, {}), Fin.npv(0.10, S5.projectFlow), 1e-6));
+
+  /* the strong check: against the whole chain, not against itself */
+  check('subir el precio 10 % da lo mismo por el camino rápido que rehaciendo todo el estudio', (() => {
+    const mk = JSON.parse(JSON.stringify(MK5));
+    mk.prog.rows.forEach(r => { r.revenue *= 1.1; r.total *= 1.1; r.effectivePrice *= 1.1; });
+    const full = FinState.build({ longTermShare: 0, seasonalShare: 0, fee: 0 }, P5, mk, BG5);
+    const fast = Risk.rebuild(BASE7, { price: 1.1 }).flow;
+    return full.projectFlow.every((v, i) => near(v, fast[i], 1e-6));
+  })());
+  check('y bajar los costos 10 % también', (() => {
+    const bg = JSON.parse(JSON.stringify(BG5));
+    bg.costs.forEach(c => { c.volumeCost *= 0.9; c.capacityCost *= 0.9; c.cash = c.volumeCost + c.capacityCost; });
+    bg.wc = { need: bg.costs.map(c => c.cash * 0.125), invest: [bg.costs[0].cash * 0.125, 0, 0, 0] };
+    bg.schedule[0].workingCapital = bg.costs[0].cash * 0.125;
+    bg.salvage = { total: 70000 + bg.costs[0].cash * 0.125, assets: 70000, land: 0, workingCapital: bg.costs[0].cash * 0.125 };
+    const full = FinState.build({ longTermShare: 0, seasonalShare: 0, fee: 0 }, P5, MK5, bg);
+    const fast = Risk.rebuild(BASE7, { cost: 0.9 }).flow;
+    return full.projectFlow.every((v, i) => near(v, fast[i], 1e-6));
+  })(), 'incluye el capital de trabajo, que sigue al costo');
+  check('el rendimiento mueve el ingreso y los costos por tonelada, no los de superficie', (() => {
+    const built = Risk.rebuild(BASE7, { yield: 1.2 });
+    const r = built.rows[0];
+    return near(r.revenue, 100000 * 1.2, 1e-9) && near(r.cost, 30000 * 1.2 + 10000, 1e-9);
+  })());
+  check('la inversión mueve la depreciación y el valor de rescate', (() => {
+    const built = Risk.rebuild(BASE7, { invest: 1.5 });
+    return near(built.rows[0].depreciation, 10000 * 1.5, 1e-9) && near(built.flow[0], -(100000 * 1.5 + 5000), 1e-9);
+  })());
+  check('el impuesto se vuelve a calcular, no se escala', (() => {
+    const built = Risk.rebuild(BASE7, { price: 0.4 });
+    /* with 40 % of the revenue the year loses money, so it pays no tax */
+    return built.rows[0].ebit < 0 && near(built.rows[0].tax, 0, 1e-9);
+  })());
+  check('las pérdidas de los años sin producir se amortizan después, también al reconstruir', (() => {
+    const baseG = Risk.baseline(P5g, MK5g, BG5g, Object.assign({}, S5g, { rateProject: 0.10 }));
+    const built = Risk.rebuild(baseG, {});
+    const loss = built.rows.filter(r => r.ebit < 0);
+    const profit = built.rows.filter(r => r.ebit > 0);
+    /* the first profitable year still carries the losses, so it pays less tax
+       than the one after it */
+    return loss.length === 2 && profit.length > 1 && profit[0].tax < profit[1].tax;
+  })());
+
+  /* --- sensitivity --- */
+  const SP = Risk.spider(BASE7, [-0.2, -0.1, 0, 0.1, 0.2]);
+  check('la araña trae una línea por variable', SP.length === Risk.VARS.length);
+  check('en el cambio cero todas las líneas pasan por el VAN base',
+    SP.every(l => near(l.points.find(p => p.change === 0).npv, Risk.npvOf(BASE7, {}), 1e-6)));
+  check('subir el precio sube el VAN y subir el costo lo baja', (() => {
+    const price = SP.find(l => l.key === 'price'), cost = SP.find(l => l.key === 'cost');
+    return price.points[4].npv > price.points[0].npv && cost.points[4].npv < cost.points[0].npv;
+  })());
+  const SW = Risk.switching(BASE7);
+  check('los valores límite anulan el VAN, por construcción',
+    SW.filter(s => s.multiplier != null).every(s => near(Risk.npvOf(BASE7, { [s.key]: s.multiplier }), 0, 1)),
+    SW.map(s => s.key + ' ' + (s.change == null ? '—' : fmtPct(s.change, 1))).join(' · '));
+  check('la lista se ordena de la variable más frágil a la más robusta',
+    SW.every((s, i) => i === 0 || Math.abs(s.change == null ? Infinity : s.change) >= Math.abs(SW[i - 1].change == null ? Infinity : SW[i - 1].change)));
+  const TOR = Risk.tornado(BASE7, 0.1);
+  check('el tornado se ordena por amplitud', TOR.every((r, i) => i === 0 || r.swing <= TOR[i - 1].swing));
+  check('en este proyecto el precio manda sobre la inversión',
+    TOR.findIndex(r => r.name === 'price') < TOR.findIndex(r => r.name === 'invest'));
+
+  /* --- two variables --- */
+  const G2 = Risk.grid2(BASE7, 'price', 'yield', [-0.2, -0.1, 0, 0.1, 0.2]);
+  check('la tabla de dos variables es cuadrada', G2.rows.length === 5 && G2.rows[0].values.length === 5);
+  check('la esquina de precio y rendimiento altos es la mejor',
+    G2.rows[4].values[4] === Math.max(...G2.rows.reduce((a, r) => a.concat(r.values), [])));
+  check('el centro de la tabla es el caso base', near(G2.rows[2].values[2], Risk.npvOf(BASE7, {}), 1e-6));
+
+  /* --- scenarios --- */
+  const SC = Risk.scenarios(BASE7, [
+    { name: 'Pesimista', probability: 0.25, price: -0.2, yield: -0.15 },
+    { name: 'Esperado', probability: 0.5 },
+    { name: 'Optimista', probability: 0.25, price: 0.15, yield: 0.1 },
+  ]);
+  check('el escenario esperado reproduce el caso base', near(SC.list[1].npv, Risk.npvOf(BASE7, {}), 1e-6));
+  check('el pesimista queda por debajo y el optimista por encima', SC.list[0].npv < SC.list[1].npv && SC.list[2].npv > SC.list[1].npv);
+  check('el valor esperado es el promedio ponderado',
+    near(SC.expected, SC.list.reduce((a, s) => a + s.npv * s.probability, 0), 1e-6), fmtMoney(SC.expected, 0));
+  check('la desviación mide qué tanto depende el resultado del escenario', SC.sd > 0);
+  check('las probabilidades se normalizan si no suman 100 %', (() => {
+    const s = Risk.scenarios(BASE7, [{ name: 'A', probability: 1 }, { name: 'B', probability: 1, price: 0.1 }]);
+    return near(s.probabilityTotal, 2, 1e-9) && near(s.expected, (s.list[0].npv + s.list[1].npv) / 2, 1e-6);
+  })());
+
+  /* --- Monte Carlo --- */
+  const SIM = Risk.simulate(BASE7, {
+    dist: 'triangular', corr: -0.3, n: 800, seed: 5,
+    price: { spread: 0.25 }, yield: { spread: 0.2 }, cost: { spread: 0.12 }, invest: { spread: 0.1 },
+  });
+  check('la simulación corre y devuelve la distribución del VAN', SIM && SIM.n === 800 && SIM.values.length === 800);
+  check('la media de la simulación queda cerca del caso base',
+    Math.abs(SIM.mean - Risk.npvOf(BASE7, {})) < Math.abs(Risk.npvOf(BASE7, {})) * 0.3,
+    fmtMoney(SIM.mean, 0) + ' contra ' + fmtMoney(Risk.npvOf(BASE7, {}), 0));
+  check('los percentiles están ordenados', SIM.p05 < SIM.median && SIM.median < SIM.p95);
+  check('la probabilidad de pérdida es la proporción de corridas negativas',
+    near(SIM.pLoss, SIM.values.filter(v => v < 0).length / SIM.values.length, 1e-12), fmtPct(SIM.pLoss, 1));
+  check('la misma semilla da el mismo resultado', (() => {
+    const a = Risk.simulate(BASE7, { corr: -0.3, n: 300, seed: 9, price: { spread: 0.2 }, yield: { spread: 0.2 } });
+    const b = Risk.simulate(BASE7, { corr: -0.3, n: 300, seed: 9, price: { spread: 0.2 }, yield: { spread: 0.2 } });
+    return near(a.mean, b.mean, 1e-12) && near(a.pLoss, b.pLoss, 1e-12);
+  })());
+  check('lo que explica la variación viene ordenado y el precio sale arriba',
+    SIM.drivers.length > 1 && Math.abs(SIM.drivers[0].r) >= Math.abs(SIM.drivers[1].r) && SIM.drivers[0].key === 'price',
+    SIM.drivers.map(d => d.key + ' ' + fmtFixed(d.r, 2)).join(' · '));
+  check('el precio se correlaciona positivamente con el VAN y el costo, negativamente',
+    SIM.drivers.find(d => d.key === 'price').r > 0 && SIM.drivers.find(d => d.key === 'cost').r < 0);
+  check('ignorar la correlación entre precio y rendimiento ensancha la distribución', (() => {
+    const withCorr = Risk.simulate(BASE7, { corr: -0.6, n: 1500, seed: 3, price: { spread: 0.3 }, yield: { spread: 0.3 } });
+    const without = Risk.simulate(BASE7, { corr: 0, n: 1500, seed: 3, price: { spread: 0.3 }, yield: { spread: 0.3 } });
+    return without.sd > withCorr.sd;
+  })(), 'es el punto que explica el bloque');
+  check('sin rangos declarados no hay simulación', Risk.simulate(BASE7, { price: { spread: 0 } }) === null);
+
+  /* --- the decision tree --- */
+  const TREE = Risk.decisionTree({ probability: 0.6, npvGood: 1000, npvBad: -500, rate: 0.10 });
+  check('invertir ahora vale el promedio ponderado de los dos escenarios',
+    near(TREE.now, 0.6 * 1000 + 0.4 * -500, 1e-9), fmtMoney(TREE.now, 2));
+  check('esperar evita el escenario malo, pero llega un año después',
+    near(TREE.wait, (0.6 * 1000 + 0.4 * 0) / 1.1, 1e-9), fmtMoney(TREE.wait, 2));
+  check('el valor de la opción de esperar es la diferencia', near(TREE.option, TREE.wait - TREE.now, 1e-12));
+  check('aquí conviene esperar', TREE.best === 'wait');
+  check('si el escenario malo también gana dinero, esperar solo cuesta un año', (() => {
+    const t = Risk.decisionTree({ probability: 0.6, npvGood: 1000, npvBad: 500, rate: 0.10 });
+    return t.best === 'now' && t.option < 0;
+  })());
+  check('el valor de la información perfecta es lo que se gana por saber antes',
+    near(TREE.perfectInfo, (0.6 * 1000 + 0.4 * 0) - TREE.now, 1e-9), fmtMoney(TREE.perfectInfo, 2));
+
+  /* --- coherence --- */
+  const mkRisk = over => Object.assign({
+    base: BASE7, npv0: Risk.npvOf(BASE7, {}), switching: SW, sim: null, scenarios: SC,
+    spec: { corr: -0.3 },
+  }, over || {});
+  check('una variable que aguanta menos del 10 % se marca como frágil', (() => {
+    const tight = [{ key: 'price', es: 'Precio', en: 'Price', change: -0.05, multiplier: 0.95 }];
+    return Risk.validate(mkRisk({ switching: tight }), P5).some(m => /frágil|fragile/.test(m.es + m.en));
+  })());
+  check('una probabilidad de pérdida alta se avisa',
+    Risk.validate(mkRisk({ sim: { pLoss: 0.4, mean: 1, drivers: [] } }), P5).some(m => /arriesgado|risky/.test(m.es + m.en)));
+  check('simular precio y rendimiento como independientes se señala',
+    Risk.validate(mkRisk({ sim: { pLoss: 0.1, mean: 1, drivers: [] }, spec: { corr: 0 } }), P5).some(m => /independientes|independent/.test(m.es + m.en)));
+  check('probabilidades de escenarios que no suman 100 % se avisan', (() => {
+    const s = Risk.scenarios(BASE7, [{ name: 'A', probability: 0.3 }, { name: 'B', probability: 0.3 }]);
+    return Risk.validate(mkRisk({ scenarios: s }), P5).some(m => /suman|add up/.test(m.es + m.en));
+  })());
+  check('cada aviso del Bloque 7 viene en los dos idiomas',
+    Risk.validate(mkRisk({ sim: { pLoss: 0.4, mean: 1, drivers: [] } }), P5).every(m => m.es && m.en && m.level));
+
+  /* --- the figures --- */
+  check('las seis figuras del Bloque 7 se dibujan sin error', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      Plots7.drawSpider(svg, SP);
+      Plots7.drawTornado(svg, TOR, Risk.npvOf(BASE7, {}));
+      Plots7.drawHeat(svg, G2, { a: 'precio', b: 'rendimiento' });
+      Plots7.drawHistogram(svg, SIM);
+      Plots7.drawDrivers(svg, SIM.drivers);
+      Plots7.drawTree(svg, TREE);
+      return svg.childElementCount > 0;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+  check('las figuras aguantan que no haya simulación todavía', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      Plots7.drawHistogram(svg, null);
+      Plots7.drawDrivers(svg, null);
+      Plots7.drawSpider(svg, []);
+      return true;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+
+  /* ============================================================
+     Block 8: economic and social appraisal
+     ============================================================ */
+  section('Evaluación económica y social (Bloque 8)');
+
+  /* the fixture of Block 5 needs the groups of cost the social block reads */
+  const BG8 = JSON.parse(JSON.stringify(BG5));
+  BG8.costs.forEach(c => { c.byGroup = { labour: 12000, inputs: 18000, services: 10000 }; });
+  BG8.fixedList = [];
+  const P8 = Project.merge(P5, { socialRate: 0.10, rate: { mode: 'manual', manual: 0.10, manualIsReal: true } });
+  const S8base = FinState.build({ longTermShare: 0, seasonalShare: 0, fee: 0 }, P8, MK5, BG8);
+  const AP8 = Appraisal.build({ rateProject: null, rateEquity: null, treatments: [] }, P8, S8base);
+  const neutral = Object.assign(Social.defaults(), {
+    standard: 1, product: 1, labour: 1, inputs: 1, machinery: 1, services: 1, admin: 1, other: 1,
+    investment: 1, exchange: 1, exportShare: 0, importShare: 0, subsidy: 0,
+  });
+
+  /* --- with every factor at 1, the only difference is the transfers --- */
+  const N8 = Social.build(neutral, P8, MK5, BG8, S8base, AP8);
+  check('con todos los factores en 1, el flujo económico es el privado más los impuestos',
+    N8.flow.every((v, t) => near(v, S8base.projectFlow[t] + (t === 0 ? 0 : N8.rows[t - 1].taxes), 1e-6)),
+    'diferencia máxima ' + fmtFixed(Math.max(...N8.flow.map((v, t) => Math.abs(v - S8base.projectFlow[t] - (t === 0 ? 0 : N8.rows[t - 1].taxes)))), 8));
+  check('y el VAN económico supera al privado exactamente en el valor presente de los impuestos',
+    near(N8.economic.npv - Fin.npv(0.10, S8base.projectFlow), N8.bridge.transfers, 1e-6), fmtMoney(N8.bridge.transfers, 2));
+  check('sin distorsiones, las tres correcciones de precios valen cero',
+    near(N8.bridge.product, 0, 1e-9) && near(N8.bridge.costs, 0, 1e-9) && near(N8.bridge.investment, 0, 1e-9));
+
+  /* --- the bridge has to close, whatever the factors --- */
+  const closes = s => {
+    const m = Social.build(Object.assign(Social.defaults(), s), P8, MK5, BG8, S8base, AP8);
+    const sum = m.bridge.privateAtSocial + m.bridge.transfers + m.bridge.product + m.bridge.costs + m.bridge.investment;
+    return Math.abs(sum - m.economic.npv) < Math.max(1e-6, Math.abs(m.economic.npv) * 1e-9);
+  };
+  check('la descomposición cierra con los factores por omisión', closes({}));
+  check('cierra con mano de obra barata y producto caro', closes({ labour: 0.5, product: 1.2 }));
+  check('cierra con subsidio y exportación', closes({ subsidy: 8000, exportShare: 0.6, exchange: 1.15 }));
+  check('cierra con insumos importados', closes({ importShare: 0.4, exchange: 1.2 }));
+  check('cierra con un factor de inversión fijado a mano', closes({ investment: 0.75 }));
+
+  /* --- what each factor does --- */
+  const cheapLabour = Social.build(Object.assign(Social.defaults(), neutral, { labour: 0.5 }), P8, MK5, BG8, S8base, AP8);
+  check('abaratar la mano de obra sube el VAN económico', cheapLabour.economic.npv > N8.economic.npv);
+  check('y lo sube exactamente en la mitad del costo laboral, descontado',
+    near(cheapLabour.economic.npv - N8.economic.npv, Fin.npv(0.10, [0].concat(N8.rows.map(r => r.labourCost * 0.5))), 1e-6));
+  const better = Social.build(Object.assign(Social.defaults(), neutral, { product: 1.2 }), P8, MK5, BG8, S8base, AP8);
+  check('un precio cuenta mayor que el de mercado sube el ingreso económico',
+    near(better.rows[0].revenueEcon, N8.rows[0].revenue * 1.2, 1e-6));
+  const subsidised = Social.build(Object.assign(Social.defaults(), neutral, { subsidy: 10000 }), P8, MK5, BG8, S8base, AP8);
+  check('un subsidio recibido se descuenta del ingreso económico',
+    near(subsidised.rows[0].revenueEcon, N8.rows[0].revenue - 10000, 1e-6));
+  check('y el subsidio entra al puente restando, no sumando', subsidised.bridge.transfers < N8.bridge.transfers);
+  const exporter = Social.build(Object.assign(Social.defaults(), neutral, { exportShare: 0.5, exchange: 1.2 }), P8, MK5, BG8, S8base, AP8);
+  check('la divisa que gana una exportación vale más que el tipo de cambio oficial',
+    near(exporter.rows[0].revenueEcon, N8.rows[0].revenue * (1 + 0.5 * 0.2), 1e-6));
+
+  /* --- the conversion factor of the investment --- */
+  check('el factor de la inversión se pondera según de qué está hecha', (() => {
+    const budget = { summary: { byKind: { land: 100, works: 300, machinery: 100 } } };
+    const f = Social.investmentFactor({ standard: 0.9, machinery: 1.0 }, budget);
+    return near(f, (100 * 1 + 300 * 0.9 + 100 * 1.0) / 500, 1e-12);
+  })());
+  check('un factor escrito a mano manda sobre la ponderación',
+    near(Social.investmentFactor({ standard: 0.9, machinery: 1, investment: 0.8 }, { summary: { byKind: { works: 100 } } }), 0.8, 1e-12));
+  check('sin inversión declarada se usa el factor estándar',
+    near(Social.investmentFactor({ standard: 0.85, machinery: 1 }, { summary: { byKind: {} } }), 0.85, 1e-12));
+
+  /* --- social indicators --- */
+  const withJobs = Social.build(Object.assign(Social.defaults(), neutral, { wage: 400, daysPerJob: 250 }), P8, MK5, BG8, S8base, AP8);
+  check('los jornales salen del costo de mano de obra entre el jornal',
+    near(withJobs.rows[0].jobs, 12000 / 400, 1e-9), fmtNum(withJobs.rows[0].jobs, 1) + ' jornales');
+  check('los empleos permanentes son los jornales entre los días de un empleo',
+    near(withJobs.indicators.permanentJobs, (12000 / 400) / 250, 1e-9));
+  check('la inversión por empleo usa la inversión inicial completa',
+    near(withJobs.indicators.investmentPerJob, BG8.summary.initial / withJobs.indicators.permanentJobs, 1e-6));
+  check('sin jornal declarado no se inventan empleos',
+    Social.build(Object.assign(Social.defaults(), neutral, { wage: 0 }), P8, MK5, BG8, S8base, AP8).indicators.permanentJobs === 0);
+
+  /* the distribution of the value added has to add up to the value added */
+  check('el reparto del valor agregado suma exactamente el valor agregado',
+    N8.rows.every(r => near(r.wages + r.taxesPaid + r.interest + r.surplus, r.valueAdded, 1e-6)),
+    'remuneraciones + impuestos + intereses + excedente');
+  check('el valor agregado es la producción menos el consumo intermedio',
+    near(N8.rows[0].valueAdded, 100000 - (18000 + 10000), 1e-9), fmtMoney(N8.rows[0].valueAdded, 0));
+  check('las divisas netas son exportaciones menos importaciones', (() => {
+    const m = Social.build(Object.assign(Social.defaults(), neutral, { exportShare: 0.5, importShare: 0.25 }), P8, MK5, BG8, S8base, AP8);
+    return near(m.rows[0].fx, 100000 * 0.5 - 40000 * 0.25, 1e-9);
+  })());
+
+  /* --- coherence --- */
+  check('si conviene al dueño pero no al país, se avisa', (() => {
+    /* an extreme factor makes the country lose */
+    const m = Social.build(Object.assign(Social.defaults(), neutral, { product: 0.3 }), P8, MK5, BG8, S8base, AP8);
+    return m.economic.npv <= 0 && m.messages.some(x => /no al país|not for the country/.test(x.es + x.en));
+  })());
+  check('si no conviene al dueño pero sí al país, se explica como argumento de apoyo público', (() => {
+    const st = JSON.parse(JSON.stringify(S8base));
+    st.projectFlow = st.projectFlow.map((v, t) => (t === 0 ? v * 3 : v));
+    const ap = Appraisal.build({ rateProject: null, rateEquity: null, treatments: [] }, P8, st);
+    const m = Social.build(Object.assign(Social.defaults(), neutral, { labour: 0.3, inputs: 0.5, services: 0.5, investment: 0.4 }), P8, MK5, BG8, st, ap);
+    return ap.project.npv < 0 && m.economic.npv > 0 && m.messages.some(x => /apoyo público|public support/.test(x.es + x.en));
+  })());
+  check('un factor estándar fuera de rango se cuestiona',
+    Social.build(Object.assign(Social.defaults(), { standard: 0.3 }), P8, MK5, BG8, S8base, AP8)
+      .messages.some(x => /fuera del rango|outside the usual range/.test(x.es + x.en)));
+  check('valuar la mano de obra a su salario de mercado se señala',
+    Social.build(Object.assign(Social.defaults(), { labour: 1 }), P8, MK5, BG8, S8base, AP8)
+      .messages.some(x => /salario de mercado|market wage/.test(x.es + x.en)));
+  check('una tasa social mayor que la privada se cuestiona', (() => {
+    const p = Project.merge(P8, { socialRate: 0.25 });
+    return Social.build(Social.defaults(), p, MK5, BG8, S8base, AP8).messages.some(x => /tasa social|social rate/.test(x.es + x.en));
+  })());
+  check('cada aviso del Bloque 8 viene en los dos idiomas',
+    Social.build(Social.defaults(), P8, MK5, BG8, S8base, AP8).messages.every(x => x.es && x.en && x.level));
+
+  /* --- the figures --- */
+  check('las cuatro figuras del Bloque 8 se dibujan sin error', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    const m = Social.build(Social.defaults(), P8, MK5, BG8, S8base, AP8);
+    try {
+      Plots8.drawBridge(svg, m.bridge);
+      Plots8.drawProfiles(svg, m, S8base.projectFlow);
+      Plots8.drawJobs(svg, m.rows, 270);
+      Plots8.drawValueAdded(svg, m.rows);
+      return svg.childElementCount > 0;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+  check('las figuras aguantan un proyecto sin datos sociales', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      Plots8.drawBridge(svg, null);
+      Plots8.drawJobs(svg, [], 270);
+      Plots8.drawValueAdded(svg, []);
+      return true;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+
+  /* ============================================================
+     the three practice databases
+     ============================================================ */
+  section('Bases de datos para practicar');
+
+  const KEYS = Object.keys(Practice.CASES);
+  check('hay tres bases de datos completas', KEYS.length === 3, KEYS.join(' · '));
+  check('cada una se describe y dice qué practicar con ella', KEYS.every(k => {
+    const c = Practice.CASES[k];
+    return c.es && c.en && c.what.length === 2 && c.teaches.length === 2 && c.what[0] && c.teaches[0];
+  }));
+  check('cada una trae los cinco bloques de datos', KEYS.every(k => {
+    const c = Practice.CASES[k];
+    return c.project && c.market && c.budget && c.finance && c.risk && c.social;
+  }));
+  check('cada serie tiene diez años con precio, rendimiento e índice', KEYS.every(k => {
+    const s = Practice.CASES[k].market.series;
+    return s.length === 10 && s.every(r => +r.year > 2000 && +r.price > 0 && +r.yield > 0 && +r.index > 0);
+  }));
+  check('todas dicen en sus notas que son ficticias',
+    KEYS.every(k => /FICTICIO/i.test(Practice.CASES[k].project.notes || '')));
+
+  /* --- each one becomes a project the app accepts --- */
+  check('cada base produce un proyecto sin errores de coherencia', KEYS.every(k => {
+    const p = Practice.toProject(k);
+    return p && !Project.hasErrors(Project.validate(p));
+  }), KEYS.map(k => k + ': ' + Project.validate(Practice.toProject(k)).filter(m => m.level === 'error').length + ' errores').join(' · '));
+  check('los presupuestos se leen con las palabras que traen', KEYS.every(k => {
+    const b = Practice.CASES[k].budget;
+    return b.investments.every(i => Budget.KINDS[Budget.parseKind(i.kind)]) &&
+      b.operating.every(c => Budget.GROUPS[Budget.parseGroup(c.group)] && Budget.BASES[Budget.parseBase(c.base)]);
+  }));
+
+  /* --- the whole chain runs on each one --- */
+  const runCase = k => {
+    const p = Practice.toProject(k);
+    /* Block 3 */
+    const parsed = Import.numericRows(p.market.series, ['year', 'price', 'yield', 'index']);
+    const rows = parsed.rows.filter(r => r.year != null).sort((a, b) => a.year - b.year);
+    const years = rows.map(r => r.year);
+    const deflated = Market.deflate(years, rows.map(r => r.price), rows.map(r => r.index), p.baseYear, { inflation: p.inflation });
+    const priceDesc = Market.describe(years, deflated.real);
+    const yieldDesc = Market.describe(years, rows.map(r => r.yield));
+    const priceFc = Market.forecast(priceDesc, { method: p.market.priceMethod, horizon: p.horizon, lastN: p.market.priceLastN });
+    const yieldFc = Market.forecast(yieldDesc, { method: p.market.yieldMethod, horizon: p.horizon, lastN: p.market.yieldLastN });
+    const prog = Market.programme({
+      horizon: p.horizon, baseYear: p.baseYear, scale: p.scale, gestation: p.gestation, ramp: p.ramp,
+      yieldFull: yieldFc.values[yieldFc.values.length - 1].value,
+      yieldByYear: yieldFc.values.map((v, i) => v.value * Market.yieldShare(i + 1, p.gestation, p.ramp)),
+      priceByYear: priceFc.values.map(v => v.value),
+      loss: p.market.loss, soldShare: p.market.soldShare,
+      channels: (p.market.channels || []).map(c => ({ share: parseNum(c.share), factor: parseNum(c.factor) })),
+      byproducts: (p.market.byproducts || []).map(b => ({ perUnit: parseNum(b.perUnit), price: parseNum(b.price) })),
+      otherIncome: p.market.otherIncome,
+    });
+    const market = { prog, priceFc, yieldFc, priceDesc, yieldDesc, deflated };
+    /* Block 4 */
+    const budget = Budget.build({
+      investments: p.budget.investments.map(r => ({ name: r.name, kind: r.kind, qty: parseNum(r.qty), unitCost: parseNum(r.unitCost), year: parseNum(r.year), life: parseNum(r.life), salvagePct: (parseNum(r.salvagePct) || 0) / 100, replace: r.replace })),
+      deferred: p.budget.deferred.map(r => ({ name: r.name, amount: parseNum(r.amount), year: parseNum(r.year) })),
+      deferredLife: p.budget.deferredLife,
+      establishment: p.budget.establishment.map(r => ({ group: r.group, base: r.base, qty: parseNum(r.qty), unitCost: parseNum(r.unitCost) })),
+      operating: p.budget.operating.map(r => ({ group: r.group, base: r.base, qty: parseNum(r.qty), unitCost: parseNum(r.unitCost) })),
+      fixed: p.budget.fixed.map(r => ({ name: r.name, amount: parseNum(r.amount) })),
+      wcMethod: p.budget.wcMethod, wcDaysInventory: p.budget.wcDaysInventory,
+      wcDaysReceivable: p.budget.wcDaysReceivable, wcDaysPayable: p.budget.wcDaysPayable,
+    }, p, market);
+    /* Blocks 5, 6, 8 */
+    const st = FinState.build(p.finance, p, market, budget);
+    const ap = Appraisal.build(p.appraisal || { rateProject: null, rateEquity: null, treatments: [] }, p, st);
+    const so = Social.build(p.social, p, market, budget, st, ap);
+    return { p, market, budget, st, ap, so };
+  };
+  const RUN = {};
+  KEYS.forEach(k => { RUN[k] = runCase(k); });
+
+  check('la cadena completa corre en las tres sin ningún error', KEYS.every(k => {
+    const r = RUN[k];
+    return ![r.market.prog && [], r.budget.messages, r.st.messages, r.ap.messages, r.so.messages]
+      .filter(Array.isArray).some(list => list.some(m => m.level === 'error'));
+  }));
+  check('el balance general cuadra en las tres', KEYS.every(k => RUN[k].st.balance.every(b => Math.abs(b.gap || 0) < 1)),
+    KEYS.map(k => k + ' ' + fmtFixed(Math.max(...RUN[k].st.balance.map(b => Math.abs(b.gap || 0))), 6)).join(' · '));
+  check('el puente del Bloque 8 cierra en las tres', KEYS.every(k => {
+    const b = RUN[k].so.bridge;
+    return Math.abs((b.privateAtSocial + b.transfers + b.product + b.costs + b.investment) - b.economic) < 1;
+  }));
+  check('la descomposición del VAN del Bloque 6 cuadra en las tres', KEYS.every(k => {
+    const a = RUN[k].ap.parts;
+    return near(a.revenue - a.cost - a.tax - a.investment + a.salvage, RUN[k].ap.project.npv, 1e-5);
+  }));
+  check('el reconstructor rápido del Bloque 7 reproduce el flujo en las tres', KEYS.every(k => {
+    const r = RUN[k];
+    const base = Risk.baseline(r.p, r.market, r.budget, Object.assign({}, r.st, { rateProject: r.ap.rateProject }));
+    return Risk.rebuild(base, {}).flow.every((v, i) => near(v, r.st.projectFlow[i], 1e-6));
+  }));
+
+  /* --- each case has to strain where its description says --- */
+  check('las tres son viables: VAN positivo a su propia tasa', KEYS.every(k => RUN[k].ap.project.npv > 0),
+    KEYS.map(k => k + ' ' + fmtMoney(RUN[k].ap.project.npv, 0)).join(' · '));
+  check('el nopal es el caso limpio: produce desde el primer año y recupera pronto',
+    RUN.nopal.p.gestation === 0 && RUN.nopal.ap.project.discountedPayback < 6,
+    'recuperación ' + fmtFixed(RUN.nopal.ap.project.discountedPayback, 1) + ' años');
+  check('el café tensiona la gestación: tres años sin cosecha y caja negativa',
+    RUN.cafe.p.gestation === 3 && RUN.cafe.market.prog.rows.slice(0, 3).every(r => r.revenue === 0) && RUN.cafe.st.cashLow < 0);
+  check('y su crédito trae gracia al menos igual a la gestación',
+    RUN.cafe.p.finance.longTermGrace >= RUN.cafe.p.gestation);
+  check('el café exporta, así que el Bloque 8 le reconoce divisas',
+    RUN.cafe.so.indicators.fxPresent > 0, fmtMoney(RUN.cafe.so.indicators.fxPresent, 0));
+  check('la fresa es el caso de la caja: rentable pero sin dinero el primer año',
+    RUN.fresa.ap.project.npv > 0 && RUN.fresa.st.cashLow < 0,
+    'caja ' + fmtMoney(RUN.fresa.st.cashLow, 0) + ' en ' + RUN.fresa.st.cashLowYear);
+  check('la fresa lleva el crédito más pesado de las tres',
+    RUN.fresa.p.finance.longTermShare >= RUN.cafe.p.finance.longTermShare &&
+    RUN.fresa.p.finance.longTermShare >= RUN.nopal.p.finance.longTermShare);
+  check('las tres usan los cuatro modos de tasa entre ellas',
+    new Set(KEYS.map(k => RUN[k].p.rate.mode)).size >= 3,
+    KEYS.map(k => k + ': ' + RUN[k].p.rate.mode).join(' · '));
+
+  /* --- loading into the app --- */
+  check('cargar una base deja el proyecto en el estado de la app', (() => {
+    const savedProject = (() => { try { return localStorage.getItem(Project.KEY); } catch (e) { return null; } })();
+    const before = state.project;
+    const p = Practice.load('nopal');
+    const ok = state.project === p && /nopal/i.test(p.name) && p.market.series.length === 10 && p.budget.investments.length > 0;
+    state.project = before;
+    try { savedProject == null ? localStorage.removeItem(Project.KEY) : localStorage.setItem(Project.KEY, savedProject); } catch (e) { /* ignore */ }
+    return ok;
+  })());
+  check('cargar una base avisa a todos los bloques con un solo evento', (() => {
+    let heard = 0;
+    const listener = () => { heard++; };
+    document.addEventListener('projectloaded', listener);
+    const before = state.project;
+    Practice.load('cafe');
+    document.removeEventListener('projectloaded', listener);
+    state.project = before;
+    return heard === 1;
+  })());
+  check('las escalas y los lugares son distintos entre las tres',
+    new Set(KEYS.map(k => Practice.CASES[k].project.location)).size === 3 &&
+    new Set(KEYS.map(k => Practice.CASES[k].project.kind)).size >= 2);
+
+  /* ============================================================
+     comparison and decisions (Block 9)
+     ============================================================ */
+  section('Comparación y decisiones (Bloque 9)');
+
+  /* --- the flow of an alternative described with four figures --- */
+  check('la alternativa de cuatro cifras se vuelve un flujo', (() => {
+    const f = Decide.flowOf({ investment: 1000, net: 300, horizon: 5, salvage: 200 });
+    return f.length === 6 && f[0] === -1000 && f[1] === 300 && f[4] === 300 && f[5] === 500;
+  })());
+  check('el crecimiento anual se aplica desde el segundo año', (() => {
+    const f = Decide.flowOf({ investment: 100, net: 100, horizon: 3, growth: 0.10 });
+    return near(f[1], 100) && near(f[2], 110) && near(f[3], 121);
+  })());
+  check('un flujo propio pasa tal cual', (() => {
+    const f = Decide.flowOf({ flow: [-500, 200, 200, 200] });
+    return f.length === 4 && f[0] === -500;
+  })());
+
+  /* --- the indicators of each alternative: 300 a year for 5 years at 10 %,
+         the textbook annuity 3.790787 --- */
+  const A9 = Decide.appraise([
+    { name: 'chica', investment: 1000, net: 300, horizon: 5 },
+    { name: 'grande', investment: 2000, net: 550, horizon: 5 },
+  ], 0.10);
+  check('el VAN de una alternativa usa el factor de anualidad de las tablas',
+    near(A9[0].npv, 300 * 3.7907868 - 1000, 1e-3), fmtFixed(A9[0].npv, 4));
+  check('su TIR resuelve la anualidad', near(A9[0].irr, 0.1523, 1e-3), fmtPct(A9[0].irr, 3));
+  check('el valor anual equivalente es el VAN por el factor de recuperación de capital',
+    near(A9[0].eaa, A9[0].npv * Fin.capitalRecovery(0.10, 5), 1e-9));
+  check('el índice de rentabilidad es el valor presente de los ingresos entre la inversión',
+    near(A9[0].pi, (A9[0].npv + 1000) / 1000, 1e-9), fmtFixed(A9[0].pi, 4));
+
+  /* --- the incremental IRR: the extra 1000 returns 250 a year for five years,
+         an annuity factor of 4, which is 7.93 % --- */
+  const C9 = Decide.compare(A9[0], A9[1], 0.10);
+  check('la diferencia se toma de la más barata a la más cara',
+    C9.small === A9[0] && C9.large === A9[1] && near(C9.extraInvestment, 1000));
+  check('la TIR incremental resuelve la anualidad de la diferencia',
+    near(C9.incrementalIRR, 0.07931, 1e-4), fmtPct(C9.incrementalIRR, 3));
+  check('en el cruce de Fisher las dos valen lo mismo', (() => {
+    const r = C9.incrementalIRR;
+    return near(Fin.npv(r, C9.small.flow), Fin.npv(r, C9.large.flow), 1e-6);
+  })());
+  check('arriba del cruce gana la barata y abajo gana la cara', (() => {
+    const above = Decide.compare(A9[0], A9[1], 0.10);
+    const belowList = Decide.appraise([
+      { name: 'chica', investment: 1000, net: 300, horizon: 5 },
+      { name: 'grande', investment: 2000, net: 550, horizon: 5 },
+    ], 0.05);
+    const below = Decide.compare(belowList[0], belowList[1], 0.05);
+    return above.winner === above.small && below.winner === below.large;
+  })());
+  check('la TIR y el VAN pueden desacordar, y el aviso lo dice', (() => {
+    /* abajo del cruce de Fisher el VAN prefiere la grande y la TIR la chica */
+    const alts = Decide.appraise([
+      { name: 'chica', investment: 1000, net: 300, horizon: 5 },
+      { name: 'grande', investment: 2000, net: 550, horizon: 5 },
+    ], 0.05);
+    const msgs = Decide.validate({ alternatives: alts, comparison: Decide.compare(alts[0], alts[1], 0.05) }, 0.05);
+    return alts[0].irr > alts[1].irr && alts[1].npv > alts[0].npv &&
+      msgs.some(x => /TIR incremental|incremental IRR/.test(x.es + x.en));
+  })());
+
+  /* --- different horizons: the NPV lies and the equivalent annual value does not --- */
+  const H9 = Decide.appraise([
+    { name: 'huerto 20 años', investment: 1000, net: 165, horizon: 20 },
+    { name: 'invernadero 8 años', investment: 1000, net: 244, horizon: 8 },
+  ], 0.10);
+  check('con horizontes distintos el VAN prefiere uno y el valor anual equivalente el otro',
+    H9[0].npv > H9[1].npv && H9[1].eaa > H9[0].eaa,
+    `VAN ${fmtFixed(H9[0].npv, 0)} vs ${fmtFixed(H9[1].npv, 0)} · VAE ${fmtFixed(H9[0].eaa, 0)} vs ${fmtFixed(H9[1].eaa, 0)}`);
+  check('y el bloque avisa que ahí manda el valor anual equivalente',
+    Decide.validate({ alternatives: H9 }, 0.10).some(x => /valor anual equivalente|equivalent annual value/.test(x.es + x.en)));
+
+  /* --- capital rationing: the case where the rule of thumb is not the best --- */
+  const R9 = Decide.rationing([
+    { name: 'A', flow: [-60, 110] },
+    { name: 'B', flow: [-50, 90] },
+    { name: 'C', flow: [-50, 89] },
+  ], 100, 0);
+  check('la regla de dedo ordena por índice de rentabilidad',
+    R9.greedy.length === 1 && R9.greedy[0].name === 'A' && near(R9.greedyNpv, 50));
+  check('la búsqueda exhaustiva encuentra el paquete que la regla no ve',
+    R9.best.pick.length === 2 && near(R9.best.npv, 79) && near(R9.best.cost, 100),
+    R9.best.pick.map(x => x.name).join('+'));
+  check('y reporta cuánto VAN dejó la regla sobre la mesa', near(R9.loss, 29), fmtFixed(R9.loss, 2));
+  check('ningún paquete se pasa del presupuesto',
+    R9.best.cost <= R9.budget + 1e-9 && R9.greedyCost <= R9.budget + 1e-9);
+  check('cuando la regla sí acierta, la pérdida es cero', (() => {
+    const r = Decide.rationing([{ name: 'A', flow: [-40, 90] }, { name: 'B', flow: [-40, 80] }], 100, 0);
+    return near(r.loss, 0) && r.greedy.length === 2;
+  })());
+  check('una alternativa con VAN negativo no entra en la regla de dedo', (() => {
+    const r = Decide.rationing([{ name: 'A', flow: [-40, 90] }, { name: 'mala', flow: [-10, 5] }], 100, 0);
+    return !r.greedy.some(x => x.name === 'mala') && !r.best.pick.some(x => x.name === 'mala');
+  })());
+
+  /* --- replacement: the equivalent annual cost of keeping the machine --- */
+  const RP9 = Decide.replacement({ cost: 100000, decline: 0.20, floorValue: 0, running: 10000, rise: 0.10, maxLife: 12, rate: 0.10 });
+  check('el costo anual equivalente del primer año se calcula a mano',
+    near(RP9.rows[0].eac, 40000, 1e-6), fmtFixed(RP9.rows[0].eac, 4));
+  check('sus dos partes suman el costo anual equivalente',
+    RP9.rows.every(x => near(x.capital + x.running, x.eac, 1e-6)));
+  check('la parte de capital baja y la de operación sube', (() => {
+    const c = RP9.rows.map(x => x.capital), o = RP9.rows.map(x => x.running);
+    return c.every((v, i) => i === 0 || v < c[i - 1] + 1e-6) && o.every((v, i) => i === 0 || v > o[i - 1] - 1e-6);
+  })());
+  check('la vida económica es el mínimo de la curva, y es interior',
+    RP9.economicLife > 1 && RP9.economicLife < RP9.rows.length &&
+    RP9.rows.every(x => x.eac >= RP9.best.eac - 1e-9),
+    RP9.economicLife + ' años, ' + fmtFixed(RP9.best.eac, 0));
+  check('conservarlo más allá de su vida económica sale más caro por año',
+    RP9.rows[RP9.economicLife].eac > RP9.best.eac);
+  check('con reparaciones que no suben, conviene conservarlo hasta el final', (() => {
+    const r = Decide.replacement({ cost: 100000, decline: 0.20, floorValue: 0.1, running: 10000, rise: 0, maxLife: 12, rate: 0.10 });
+    return r.economicLife === 12;
+  })());
+  check('y ahí el bloque pide alargar el plazo explorado',
+    Decide.validate({ replacement: Decide.replacement({ cost: 100000, decline: 0.20, floorValue: 0.1, running: 10000, rise: 0, maxLife: 12, rate: 0.10 }) }, 0.10)
+      .some(x => /alarga|lengthen/.test(x.es + x.en)));
+
+  /* --- rotation: Faustmann --- */
+  const RT9 = Decide.rotation({
+    establish: 1000, annual: 0, rate: 0.05,
+    options: [{ years: 8, harvest: 3200 }, { years: 10, harvest: 5000 }, { years: 14, harvest: 7200 }, { years: 18, harvest: 8600 }],
+  });
+  check('el valor de la tierra es el VAN de una rotación capitalizado a perpetuidad',
+    RT9.rows.every(x => near(x.lev, x.npv * Math.pow(1.05, x.years) / (Math.pow(1.05, x.years) - 1), 1e-6)));
+  check('el turno óptimo por Faustmann no es más largo que el que maximiza el VAN de una cosecha',
+    RT9.best.years <= RT9.bestNpv.years, `Faustmann ${RT9.best.years} · VAN ${RT9.bestNpv.years}`);
+  check('y cuando difieren, el bloque explica por qué se corta antes',
+    Decide.validate({ rotation: RT9 }, 0.05).some(x => /cortar antes|cut earlier/.test(x.es + x.en)));
+  check('el mantenimiento anual entra en cada año de la rotación', (() => {
+    const r = Decide.rotation({ establish: 1000, annual: 100, rate: 0.05, options: [{ years: 3, harvest: 5000 }] });
+    return near(r.rows[0].npv, -1000 - 100 / 1.05 - 100 / 1.1025 + (5000 - 100) / 1.157625, 1e-6);
+  })());
+  check('los turnos se ordenan aunque se escriban revueltos', (() => {
+    const r = Decide.rotation({ establish: 1000, annual: 0, rate: 0.05, options: [{ years: 14, harvest: 7200 }, { years: 8, harvest: 3200 }] });
+    return r.rows[0].years === 8 && r.rows[1].years === 14;
+  })());
+
+  /* --- buy or lease --- */
+  check('sin impuestos ni mantenimiento, comprar cuesta el precio y rentar la anualidad', (() => {
+    const b = Decide.buyOrLease({ cost: 100000, life: 5, salvage: 0, maintenance: 0, lease: 25000, leaseMaintenance: 0, rate: 0.10, tax: 0 });
+    return near(b.pvBuy, 100000, 1e-6) && near(b.pvLease, 25000 * 3.7907868, 1e-3) && b.best === 'lease';
+  })());
+  check('el escudo fiscal de la depreciación abarata la compra', (() => {
+    const sin = Decide.buyOrLease({ cost: 100000, life: 5, salvage: 0, maintenance: 0, lease: 25000, rate: 0.10, tax: 0 });
+    const con = Decide.buyOrLease({ cost: 100000, life: 5, salvage: 0, maintenance: 0, lease: 25000, rate: 0.10, tax: 0.30 });
+    return con.pvBuy < sin.pvBuy && near(sin.pvBuy - con.pvBuy, 20000 * 0.30 * 3.7907868, 1e-3);
+  })());
+  check('el valor de reventa se descuenta al final', (() => {
+    const b = Decide.buyOrLease({ cost: 100000, life: 5, salvage: 20000, maintenance: 0, lease: 1, rate: 0.10, tax: 0 });
+    return near(b.pvBuy, 100000 - 20000 / Math.pow(1.10, 5), 1e-6);
+  })());
+  check('los dos costos anuales equivalentes usan el mismo factor', (() => {
+    const b = Decide.buyOrLease({ cost: 100000, life: 5, salvage: 10000, maintenance: 5000, lease: 25000, rate: 0.10, tax: 0.30 });
+    const crf = Fin.capitalRecovery(0.10, 5);
+    return near(b.eacBuy, b.pvBuy * crf, 1e-9) && near(b.eacLease, b.pvLease * crf, 1e-9) &&
+      b.best === (b.pvBuy <= b.pvLease ? 'buy' : 'lease');
+  })());
+
+  /* --- what the block says --- */
+  check('cada aviso del Bloque 9 viene en los dos idiomas',
+    Decide.validate({ alternatives: H9, comparison: C9, rationing: R9, replacement: RP9, rotation: RT9 }, 0.10)
+      .every(x => x.es && x.en && x.level));
+  check('sin alternativas no inventa avisos',
+    Decide.validate({ alternatives: [] }, 0.10).length === 0);
+
+  /* --- the figures --- */
+  check('las cuatro figuras del Bloque 9 se dibujan sin error', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      Plots9.drawCompare(svg, A9, 0.10, C9);
+      Plots9.drawRationing(svg, R9);
+      Plots9.drawReplacement(svg, RP9);
+      Plots9.drawRotation(svg, RT9);
+      return svg.childElementCount > 0;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+  check('las figuras aguantan que no haya nada que dibujar', (() => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    document.body.appendChild(svg);
+    try {
+      Plots9.drawCompare(svg, [], 0.10, null);
+      Plots9.drawRationing(svg, { items: [], budget: 0 });
+      Plots9.drawReplacement(svg, { rows: [] });
+      Plots9.drawRotation(svg, { rows: [] });
+      return true;
+    } catch (e) { return false; } finally { document.body.removeChild(svg); }
+  })());
+
+  /* --- the project of the study enters as one more alternative --- */
+  check('el proyecto de los bloques anteriores se compara con su flujo verdadero', (() => {
+    const r = RUN.nopal;
+    const list = [{ name: r.p.name, flow: r.ap.flows.project }, { name: 'otra', investment: 500000, net: 120000, horizon: r.ap.horizon }];
+    const alts = Decide.appraise(list, r.ap.rateProject);
+    return near(alts[0].npv, r.ap.project.npv, 1e-6) && near(alts[0].irr, r.ap.project.irr, 1e-9) &&
+      alts[0].horizon === r.ap.horizon;
+  })());
+  check('y el racionamiento lo mide con la misma inversión del Bloque 5', (() => {
+    const r = RUN.fresa;
+    const rat = Decide.rationing([{ name: r.p.name, flow: r.ap.flows.project }], 1e12, r.ap.rateProject);
+    return near(rat.items[0].investment, -r.st.projectFlow[0], 1e-6);
+  })());
+
+  /* ============================================================
+     figures, report and package (Block 10)
+     ============================================================ */
+  section('Figuras, informe y paquete (Bloque 10)');
+
+  /* --- the ZIP writer --- */
+  check('el archivo .zip empieza con la firma que espera cualquier descompresor', await (async () => {
+    const z = await Zip.build([{ name: 'a.txt', data: 'hola' }]);
+    const b = new Uint8Array(await z.slice(0, 4).arrayBuffer());
+    return b[0] === 0x50 && b[1] === 0x4B && b[2] === 3 && b[3] === 4;
+  })());
+  check('el .zip se puede volver a leer: nombres, número de archivos y CRC', await (async () => {
+    const z = await Zip.build([
+      { name: 'informe.html', data: 'evaluación económica' },
+      { name: 'tablas/costos.csv', data: 'ano,costo\n2027,1000\n' },
+    ]);
+    const buf = new Uint8Array(await z.arrayBuffer());
+    const dv = new DataView(buf.buffer);
+    let eocd = -1;
+    for (let i = buf.length - 22; i >= 0; i--) if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+    if (eocd < 0) return false;
+    const n = dv.getUint16(eocd + 10, true);
+    const cd = dv.getUint32(eocd + 16, true);
+    const names = [];
+    let p = cd;
+    for (let k = 0; k < n; k++) {
+      const nl = dv.getUint16(p + 28, true);
+      names.push(new TextDecoder().decode(buf.subarray(p + 46, p + 46 + nl)));
+      p += 46 + nl + dv.getUint16(p + 30, true) + dv.getUint16(p + 32, true);
+    }
+    const crcStored = dv.getUint32(cd + 16, true);
+    const crcReal = Zip.crc32(new TextEncoder().encode('evaluación económica'));
+    return n === 2 && names[0] === 'informe.html' && names[1] === 'tablas/costos.csv' && crcStored === crcReal;
+  })());
+  check('el CRC32 coincide con el valor conocido de "123456789"',
+    Zip.crc32(new TextEncoder().encode('123456789')) === 0xCBF43926,
+    '0x' + Zip.crc32(new TextEncoder().encode('123456789')).toString(16));
+
+  /* --- baking the colours --- */
+  check('cada var(--x) se sustituye por su color', (() => {
+    const out = Fig.bake('<rect fill="var(--c1)" stroke="var(--danger)"/>', 'light');
+    return out === '<rect fill="#145e4e" stroke="#c43a2f"/>';
+  })(), Fig.bake('<rect fill="var(--c1)"/>', 'light'));
+  check('la paleta oscura da otros colores',
+    Fig.bake('<rect fill="var(--c1)"/>', 'dark') === '<rect fill="#4fb99b"/>');
+  check('una variable desconocida usa el respaldo escrito en la propia llamada',
+    Fig.bake('<rect fill="var(--no-existe, #123456)"/>', 'light') === '<rect fill="#123456"/>');
+  check('la hoja de estilo que viaja con la figura no deja ninguna variable',
+    !/var\(--/.test(Fig.styleSheet(Fig.PALETTES.light)) && !/var\(--/.test(Fig.styleSheet(Fig.PALETTES.dark)));
+  check('las dos paletas traen los mismos tokens',
+    Object.keys(Fig.PALETTES.light).sort().join() === Object.keys(Fig.PALETTES.dark).sort().join(),
+    Object.keys(Fig.PALETTES.light).length + ' colores');
+
+  /* --- composing the figure that leaves --- */
+  const mkSvg = () => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 700 300');
+    const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    r.setAttribute('fill', 'var(--c1)'); r.setAttribute('width', 10); r.setAttribute('height', 10);
+    s.appendChild(r);
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('class', 'art-txt'); t.textContent = 'flujo neto';
+    s.appendChild(t);
+    return s;
+  };
+  check('la figura compuesta conserva el ancho y crece con el título y la nota', (() => {
+    const bare = Fig.compose(mkSvg(), {});
+    const withTitle = Fig.compose(mkSvg(), { title: 'Perfil del VAN' });
+    const withBoth = Fig.compose(mkSvg(), { title: 'Perfil del VAN', note: 'Fuente: datos propios.' });
+    return +bare.dataset.w === 700 && +withTitle.dataset.h > +bare.dataset.h && +withBoth.dataset.h > +withTitle.dataset.h;
+  })());
+  check('la figura compuesta lleva dentro lo que dibujó el bloque', (() => {
+    const c = Fig.compose(mkSvg(), { title: 'x' });
+    return c.querySelectorAll('rect').length >= 2 && c.querySelector('text.art-txt') != null;
+  })());
+  check('el fondo transparente no pinta el rectángulo de atrás', (() => {
+    const none = Fig.compose(mkSvg(), { background: 'none' });
+    const solid = Fig.compose(mkSvg(), { background: 'card' });
+    return none.querySelectorAll('rect').length === solid.querySelectorAll('rect').length - 1;
+  })());
+  check('la nota al pie se parte en renglones y no crece sin límite',
+    Fig.wrapText('una nota muy larga que hay que partir en varios renglones para que quepa dentro de la figura', 20).length > 1 &&
+    Fig.wrapText(new Array(200).fill('palabra').join(' '), 20).length <= 6);
+  check('el archivo que se descarga no depende de la hoja de estilo de la app', (() => {
+    const s = Fig.serialize(Fig.compose(mkSvg(), { title: 'Perfil', note: 'nota' }));
+    return !/var\(--/.test(s) && /xmlns="http:\/\/www.w3.org\/2000\/svg"/.test(s) && /^<\?xml/.test(s) && /#145e4e/.test(s);
+  })());
+  check('la figura en modo oscuro sale con los colores oscuros', (() => {
+    const s = Fig.serialize(Fig.compose(mkSvg(), { theme: 'dark' }));
+    return /#4fb99b/.test(s) && !/#145e4e/.test(s);
+  })());
+
+  /* --- resolution --- */
+  check('la escala de una resolución parte de los 96 dpi del navegador',
+    near(Fig.scaleFor(96), 1) && near(Fig.scaleFor(300), 3.125) && near(Fig.scaleFor(900), 9.375));
+  check('el PNG lleva su resolución escrita en el archivo (pHYs)', (() => {
+    /* a header that looks like a PNG: signature + IHDR of 13 bytes */
+    const fake = new Uint8Array(60);
+    fake.set([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A], 0);
+    const out = Fig.pngWithDpi(fake.buffer, 300);
+    const dv = new DataView(out.buffer);
+    const tag = String.fromCharCode(out[37], out[38], out[39], out[40]);
+    const ppm = dv.getUint32(41);
+    return out.length === fake.length + 21 && tag === 'pHYs' && ppm === Math.round(300 / 0.0254) && out[49] === 1;
+  })());
+  check('el JPG también carga su resolución en la cabecera JFIF', (() => {
+    const b = new Uint8Array(20);
+    b.set([0xFF, 0xD8, 0xFF, 0xE0, 0, 16, 0x4A, 0x46, 0x49, 0x46, 0], 0);
+    const out = Fig.jpgWithDpi(b.buffer, 300);
+    return out[13] === 1 && ((out[14] << 8) | out[15]) === 300 && ((out[16] << 8) | out[17]) === 300;
+  })());
+
+  /* --- the catalogue --- */
+  check('el catálogo cubre los ocho bloques que producen figuras', (() => {
+    const blocks = new Set(Fig.CATALOG.map(f => f.block));
+    return [2, 3, 4, 5, 6, 7, 8, 9].every(b => blocks.has(b));
+  })(), Fig.CATALOG.length + ' figuras');
+  check('ninguna figura repite identificador y todas están en los dos idiomas',
+    new Set(Fig.CATALOG.map(f => f.id)).size === Fig.CATALOG.length &&
+    Fig.CATALOG.every(f => f.es && f.en));
+  check('una figura solo cuenta como disponible cuando su bloque la dibujó', (() => {
+    const holder = document.createElement('div');
+    const svg = mkSvg();
+    svg.id = 'b6ProfileChart';
+    document.body.appendChild(holder);
+    const before = Fig.available().length;
+    holder.appendChild(svg);
+    const after = Fig.available().length;
+    const found = Fig.sourceOf('b6ProfileChart') === svg;
+    document.body.removeChild(holder);
+    return after === before + 1 && found && Fig.sourceOf('b6ProfileChart') == null;
+  })());
+
+  /* --- the report, built over a whole practice study --- */
+  const REPORT = (() => {
+    const r = RUN.cafe;
+    const keep = {
+      project: state.project, market: state.market, budget: state.budget,
+      statements: state.statements, appraisal: state.appraisal, social: state.social,
+      risk: state.risk, decisions: state.decisions,
+    };
+    state.project = r.p; state.market = r.market; state.budget = r.budget;
+    state.statements = r.st; state.appraisal = r.ap; state.social = r.so;
+    state.risk = null;
+    state.decisions = {
+      rate: r.ap.rateProject,
+      alternatives: Decide.appraise([
+        { name: r.p.name, flow: r.ap.flows.project },
+        { name: 'Riego por goteo', investment: 2600000, net: 520000, horizon: 15 },
+      ], r.ap.rateProject),
+      rationing: Decide.rationing([], null, r.ap.rateProject),
+      replacement: Decide.replacement({ cost: 900000, decline: 0.18, running: 60000, rise: 0.15, maxLife: 12, rate: r.ap.rateProject }),
+      rotation: Decide.rotation({ establish: 0, annual: 0, rate: r.ap.rateProject, options: [] }),
+    };
+    state.decisions.comparison = Decide.compare(state.decisions.alternatives[0], state.decisions.alternatives[1], r.ap.rateProject);
+    const full = Report.build({ author: 'A. Autor', institution: 'Institución de prueba' });
+    const bare = Report.build({ figures: false, methods: false, record: false, references: false });
+    const tables = Report.tables();
+    const review = Block10.review();
+    const readme = Block10.readme();
+    Object.assign(state, keep);
+    return { full, bare, tables, review, readme };
+  })();
+
+  check('el informe se arma con el estudio completo y trae todas sus secciones',
+    REPORT.full.html.length > 10000 && (REPORT.full.html.match(/<h2>/g) || []).length >= 11,
+    (REPORT.full.html.match(/<h2>/g) || []).length + ' secciones, ' + REPORT.full.html.length + ' caracteres');
+  check('el informe lleva el nombre del proyecto y de quien lo firma',
+    /Renovaci/.test(REPORT.full.html) && /A. Autor/.test(REPORT.full.html) && /Institución de prueba/.test(REPORT.full.html));
+  check('ningún número del informe sale como «undefined» o «NaN»',
+    !/undefined|NaN/.test(REPORT.full.html));
+  check('el informe es un archivo que se abre solo: no pide estilos ni variables de la app',
+    /^<!doctype html>/i.test(REPORT.full.html) && /<style>/.test(REPORT.full.html) &&
+    !/var\(--/.test(REPORT.full.html) && !/<script/i.test(REPORT.full.html));
+  check('el informe trae los indicadores que dan el dictamen', (() => {
+    const h = REPORT.full.html;
+    return h.indexOf(fmtMoney(RUN.cafe.ap.project.npv, 0)) > 0 && /12\.4[0-9]%|12\.5%/.test(h);
+  })());
+  check('quitar la metodología, la memoria y las referencias las quita de verdad',
+    REPORT.bare.html.length < REPORT.full.html.length &&
+    !/Memoria de c|Calculation record/.test(REPORT.bare.html) &&
+    !/Metodolog|Methodology/.test(REPORT.bare.html) &&
+    REPORT.bare.html.indexOf('Gittinger') < 0);
+  check('la memoria de cálculo sustituye los números en cada fórmula', (() => {
+    const h = REPORT.full.html;
+    const i = h.indexOf('Memoria de');
+    const rec = h.slice(i, i + 4000);
+    return /VAN = &#x3A3;|VAN = Σ/.test(rec) && /Fisher/.test(rec) && rec.indexOf(fmtMoney(RUN.cafe.ap.project.npv, 0)) > 0;
+  })());
+  check('las tablas del paquete salen en .csv con un renglón por año', (() => {
+    const t = REPORT.tables;
+    const st = t.find(x => /estado-de-resultados/.test(x.name));
+    return t.length >= 4 && st && st.data.split('\n').length === RUN.cafe.st.rows.length + 1;
+  })(), REPORT.tables.map(x => x.name).join(' · '));
+  check('el LEEME explica qué lleva el paquete y cómo se reabre el estudio',
+    /informe\.html/.test(REPORT.readme) && /proyecto\.json/.test(REPORT.readme) && /EconomicsPro/.test(REPORT.readme));
+  check('la revisión final ve los ocho bloques y los da por hechos',
+    REPORT.review.length === 8 && REPORT.review.filter(r => r.done).length >= 7 &&
+    REPORT.review.every(r => r.errors === 0),
+    REPORT.review.filter(r => r.done).length + ' con datos');
+  check('el informe se escribe también en inglés', (() => {
+    const keep = { project: state.project, appraisal: state.appraisal };
+    state.project = RUN.cafe.p; state.appraisal = RUN.cafe.ap;
+    I18N.set('en');
+    const en = Report.build({ figures: false });
+    I18N.set('es');
+    const es = Report.build({ figures: false });
+    Object.assign(state, keep);
+    return /Methodology|Summary/.test(en.html) && /Metodolog|Resumen/.test(es.html) && en.html !== es.html;
+  })());
+
+  /* ============================================================
+     home page content and illustrations
+     ============================================================ */
+  section('Contenido e ilustraciones de la portada');
+  check('la app declara diez bloques', STEPS.length === 10 && STEPS[0].n === 1 && STEPS[9].n === 10);
+  check('la portada describe los nueve bloques restantes', Home.BLOCKS.length === 9);
+  check('cada bloque de la portada tiene su ilustración', Home.BLOCKS.every(b => typeof Art[b.art] === 'function'));
+  check('cada método de la galería tiene ilustración y familia', Home.METHODS.every(m => typeof Art[m.art] === 'function' && m.n.length === 2), Home.METHODS.length + ' métodos');
+  check('cada tipo de proyecto tiene ilustración', Home.MATERIALS.every(m => typeof Art[m.art] === 'function'), Home.MATERIALS.length + ' tipos');
+  check('todas las referencias traen autor y fuente', Home.REFS.every(r => r.length === 3 && r[1] && r[2]), Home.REFS.length + ' referencias');
+  check('el cuadro comparativo cubre los seis indicadores', Home.COMPARE.length === 6);
+  check('las ilustraciones devuelven SVG válido', (() => {
+    const keys = Object.keys(Art).filter(k => typeof Art[k] === 'function' && !['coin', 'coinStack', 'tree', 'ground', 'flowBars', 'mini', 'axes', 'wrap', 'txt', 'poly', 'path', 'rect', 'circ', 'line', 'V'].includes(k));
+    return keys.every(k => {
+      const s = Art[k]();
+      if (typeof s !== 'string' || !s.startsWith('<svg')) return false;
+      const doc = new DOMParser().parseFromString(s, 'image/svg+xml');
+      return !doc.querySelector('parsererror');
+    });
+  })());
+  /* A picture whose label stayed in Spanish is invisible to the eye of whoever
+     reads the app in English, so every illustration is rendered in English and
+     swept for Spanish words. */
+  check('ninguna ilustración conserva palabras en español en modo inglés', (() => {
+    const skip = ['coin', 'coinStack', 'tree', 'ground', 'flowBars', 'mini', 'axes', 'wrap', 'txt', 'poly', 'path', 'rect', 'circ', 'line', 'V'];
+    const spanish = /\b(año|años|flujo|ingreso|costos?|precio|precios|mercado|cuenta|demanda|oferta|cosecha|siembra|insumos|cobro|empleo|divisas|bienestar|rotación|dominado|presupuesto|límite|apalancamiento|anualidad|interés|saldo|deuda|equilibrio|recuperación|inversión|producción|proyecto|tasa|descuento|elástica|inelástica|valor|libros|jornales|conversión)\b/i;
+    I18N.set('en');
+    const hits = [];
+    Object.keys(Art).filter(k => typeof Art[k] === 'function' && !skip.includes(k)).forEach(k => {
+      const doc = new DOMParser().parseFromString(Art[k](), 'image/svg+xml');
+      [...doc.querySelectorAll('text')].forEach(t => { if (spanish.test(t.textContent)) hits.push(k + ': ' + t.textContent); });
+    });
+    I18N.set('es');
+    return hits.length === 0;
+  })());
+  check('ningún rótulo mete un "<" crudo en el SVG', (() => {
+    const skip = ['coin', 'coinStack', 'tree', 'ground', 'flowBars', 'mini', 'axes', 'wrap', 'txt', 'poly', 'path', 'rect', 'circ', 'line', 'V'];
+    return Object.keys(Art).filter(k => typeof Art[k] === 'function' && !skip.includes(k))
+      .every(k => !/>[^<>]*<(?![a-zA-Z\/!])/.test(Art[k]()));
+  })());
+  check('ninguna ilustración deja texto sin traducir al cambiar de idioma', (() => {
+    I18N.set('en');
+    const en = Art.hero() + Art.npvBars() + Art.breakevenCross();
+    I18N.set('es');
+    const es = Art.hero() + Art.npvBars() + Art.breakevenCross();
+    return en !== es && /net cash flow/.test(en) && /flujo neto/.test(es);
+  })());
+
+  document.getElementById('sum').innerHTML = fail === 0
+    ? `<span class="ok">${pass} pruebas, todas pasan</span>`
+    : `<span class="bad">${fail} fallan</span> de ${pass + fail}`;
+})();
+</script>
+</body>
+</html>

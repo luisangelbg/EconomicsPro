@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EconomicsPro · Manual de usuario · Capítulo 6</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../interior.css">
+<script src="../paginar.js"></script>
+<style>
+  .formula { font-family: var(--mono); font-size: 9pt; background: var(--marino-suave); border-radius: 5px; padding: 0.07in 0.12in; margin: 0.08in 0; }
+</style>
+</head>
+<body>
+
+<section class="capitulo" id="cap-b6" data-pestana="B6" data-orden="6" style="--acento: var(--b6)">
+  <div class="cap-apertura">
+    <div class="cap-num">6</div>
+    <div class="cap-etiqueta">Bloque 6 · Evaluación financiera</div>
+    <h1>Evaluación financiera</h1>
+    <div class="cap-regla"></div>
+    <p class="cap-resumen">El bloque que contesta la pregunta del título del estudio. Descuenta los dos flujos —cada uno con su tasa—, entrega los siete indicadores clásicos, desarma el VAN en las piezas que lo forman, escribe un dictamen listo para copiarse y, cuando el estudio compara tecnologías, hace el análisis marginal del CIMMYT.</p>
+    <ul class="cap-contenido">
+      <li><b>6.1</b>Qué hace este bloque y qué no</li>
+      <li><b>6.2</b>El dictamen</li>
+      <li><b>6.3</b>Los indicadores, lado a lado</li>
+      <li><b>6.4</b>De dónde sale el VAN</li>
+      <li><b>6.5</b>Las tres figuras</li>
+      <li><b>6.6</b>Presupuestos parciales y análisis marginal</li>
+      <li><b>6.7</b>Los avisos de este bloque</li>
+    </ul>
+  </div>
+
+  <!-- 6.1 -->
+  <h2 id="s6-1"><span class="num">6.1</span>Qué hace este bloque y qué no</h2>
+  <p class="lead">Aquí no se captura nada: todo lo que este bloque necesita ya está en los cuatro anteriores. Lo único que se puede tocar son las dos tasas —y solo para probar—, porque por omisión usa las del Bloque 2. Lo que hace es descontar, comparar y redactar.</p>
+
+  <p>Y lo que <b>no</b> hace es decidir. Entrega indicadores, un dictamen escrito y las advertencias del caso; la decisión, y la responsabilidad de firmarla, es de quien hace el estudio. Un VAN positivo no obliga a invertir: puede haber razones de mercado, de riesgo o de capacidad que el modelo no ve.</p>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · una sola idea, siete presentaciones</div>
+    <p>Los siete indicadores de este bloque salen del mismo flujo descontado. El <b>VAN</b> lo dice en pesos; la <b>TIR</b>, en porcentaje; la <b>relación beneficio–costo</b>, como razón; el <b>periodo de recuperación</b>, en años; el <b>valor anual equivalente</b>, en pesos por año. No son siete pruebas independientes: si el VAN es positivo, la TIR supera a la tasa y la relación beneficio–costo pasa de uno, siempre. Cuando uno dice algo distinto de otro es porque se están comparando proyectos de distinto tamaño o de distinta duración, y eso lo resuelve el Bloque 9.</p>
+  </div>
+
+  <!-- 6.2 -->
+  <h2 id="s6-2"><span class="num">6.2</span>El dictamen</h2>
+  <p>La primera tarjeta pone los seis números que van en el resumen ejecutivo y, debajo, el dictamen redactado.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b6-dictamen.png" alt="Tarjeta 1 del Bloque 6: los indicadores en recuadros y el dictamen redactado del cafetal"></div>
+    <figcaption><b>Figura 6.1.</b> El dictamen del cafetal. Los recuadros dan el VAN y la TIR del proyecto, la relación beneficio–costo, la recuperación, el valor anual equivalente y el VAN del inversionista. Los dos campos de tasa quedan vacíos mientras se usen las del Bloque 2.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · el dictamen del cafetal, tal como lo escribe la app</div>
+    <p style="font-style:italic">«Con una tasa de 8.41&nbsp;%, el proyecto tiene un valor actual neto de $1,296,243 y una tasa interna de retorno de 12.47&nbsp;%: conviene realizarlo. Cada peso invertido devuelve 1.15 pesos de beneficio en valor presente, la inversión se recupera en 13.4 años y el proyecto equivale a $136,070 al año durante 20 años. Para el dueño, descontando su propio flujo al 11.96&nbsp;%, el valor actual neto es $64,850 y la tasa interna, 12.28&nbsp;%: el crédito empeora el resultado del inversionista.»</p>
+    <p>Ese párrafo se puede copiar tal cual al capítulo de resultados. Cambia solo cuando cambian los números, y la última frase se escribe sola según el crédito ayude o estorbe.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>«El crédito empeora el resultado del inversionista»</div>
+    <p>En el cafetal, el proyecto rinde 12.47&nbsp;% y el crédito cuesta 12.5&nbsp;%: la deuda cuesta más de lo que el proyecto genera, así que endeudarse le quita al dueño en vez de darle. El VAN del inversionista ($64,850) queda muy por debajo del VAN del proyecto ($1,296,243) por eso y porque su tasa de descuento es más alta. Un crédito más barato o un plazo más largo cambiarían esa frase; es exactamente el tipo de prueba que vale la pena hacer antes de firmar.</p>
+  </div>
+
+  <!-- 6.3 -->
+  <h2 id="s6-3"><span class="num">6.3</span>Los indicadores, lado a lado</h2>
+  <p>La segunda tarjeta pone los dos flujos en columnas y añade una tercera que dice cómo se lee cada renglón. Es la tabla que va en el cuerpo de la tesis.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b6-indicadores.png" alt="Tarjeta 2 del Bloque 6: los indicadores de los dos flujos y las figuras del perfil y la recuperación"></div>
+    <figcaption><b>Figura 6.2.</b> Los diez indicadores del cafetal para los dos flujos, y debajo el perfil del VAN contra la tasa con las dos tasas internas marcadas.</figcaption>
+  </figure>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.65in">Indicador</th><th style="width:0.85in">Proyecto</th><th style="width:0.95in">Inversionista</th><th>Cómo se lee</th></tr></thead>
+    <tbody>
+      <tr><td>Tasa de descuento usada</td><td>8.41&nbsp;%</td><td>11.96&nbsp;%</td><td>El costo de todo el capital, y el del dinero del dueño</td></tr>
+      <tr><td><b>Valor actual neto</b></td><td><b>$1,296,243</b></td><td><b>$64,850</b></td><td>Riqueza que agrega, hoy, por encima de la tasa</td></tr>
+      <tr><td>Tasa interna de retorno</td><td>12.47&nbsp;%</td><td>12.28&nbsp;%</td><td>Rendimiento anual mientras el dinero está dentro</td></tr>
+      <tr><td>TIR modificada</td><td>10.46&nbsp;%</td><td>—</td><td>La misma, reinvirtiendo a una tasa realista</td></tr>
+      <tr><td>Relación beneficio–costo</td><td>1.15</td><td>1.03</td><td>Pesos de beneficio por peso de costo, descontados</td></tr>
+      <tr><td>Relación B/C neta</td><td>1.46</td><td>—</td><td>Flujos positivos entre negativos</td></tr>
+      <tr><td>Índice de rentabilidad</td><td>1.86</td><td>—</td><td>Para jerarquizar con presupuesto limitado (Bloque 9)</td></tr>
+      <tr><td>Recuperación simple</td><td>9.1 años</td><td>—</td><td>Sin tomar en cuenta el costo del dinero</td></tr>
+      <tr><td>Recuperación descontada</td><td>13.4 años</td><td>19.5 años</td><td>Ya descontados: la buena</td></tr>
+      <tr><td>Valor anual equivalente</td><td>$136,070</td><td>$8,661</td><td>Lo único comparable entre horizontes distintos</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Por qué la recuperación simple y la descontada difieren tanto</div>
+    <p>Nueve años contra trece y medio. La diferencia es el costo del dinero: la simple suma pesos de años distintos como si valieran lo mismo, y por eso siempre sale antes. En un proyecto perenne, con la inversión al principio y los beneficios lejos, esa diferencia es enorme. Reporta siempre la descontada; la simple, si acaso, como dato.</p>
+  </div>
+
+  <!-- 6.4 -->
+  <h2 id="s6-4"><span class="num">6.4</span>De dónde sale el VAN</h2>
+  <p>La app desarma el VAN en cinco piezas que <b>suman exactamente</b> el resultado. No es una aproximación: es una identidad, y la app la comprueba.</p>
+
+  <div class="formula">VAN = VP(ingresos) − VP(costos) − VP(impuestos) − VP(inversión) + VP(rescate)</div>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · el VAN del cafetal, pieza por pieza</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:56%">Valor presente de los ingresos</td><td class="num">$9,965,702</td></tr>
+      <tr><td>Valor presente de los costos de operación</td><td class="num">−$6,851,986</td></tr>
+      <tr><td>Valor presente de los impuestos</td><td class="num">$0</td></tr>
+      <tr><td>Valor presente de la inversión (inicial y reposiciones)</td><td class="num">−$1,975,930</td></tr>
+      <tr><td>Valor presente del valor de rescate</td><td class="num">+$158,457</td></tr>
+      <tr class="total"><td><b>Valor actual neto</b></td><td class="num"><b>$1,296,243</b></td></tr>
+    </tbody></table>
+    <p>Dos cosas saltan a la vista. El <b>impuesto es cero</b>, por la exención del artículo 74 que vimos en el capítulo anterior. Y el <b>rescate aporta apenas $158,457</b> de los casi $797,000 nominales: un peso del año 20 descontado al 8.41&nbsp;% vale 20 centavos. Es la mejor demostración de que el valor residual casi nunca salva un proyecto.</p>
+  </div>
+
+  <!-- 6.5 -->
+  <h2 id="s6-5"><span class="num">6.5</span>Las tres figuras</h2>
+  <table class="compacta">
+    <thead><tr><th style="width:1.75in">Figura</th><th>Qué muestra y cómo se lee</th></tr></thead>
+    <tbody>
+      <tr><td><b>Perfil del VAN</b></td><td>El VAN de los dos flujos a cada tasa posible. Donde cada curva corta el eje está su TIR; las líneas verticales marcan las dos tasas que usa el estudio. Cuanto más pegada esté la tasa a la TIR, más frágil es el proyecto —en el cafetal, 8.41 contra 12.47: hay cuatro puntos de margen.</td></tr>
+      <tr><td><b>Cascada del VAN</b></td><td>Las cinco piezas de la sección anterior, en barras que suben y bajan hasta el VAN. Es la figura que mejor explica un resultado en una defensa.</td></tr>
+      <tr><td><b>Recuperación</b></td><td>El acumulado del flujo, sin descontar y descontado. Donde cada línea cruza el cero está su periodo de recuperación; la distancia entre las dos es, otra vez, el costo del dinero.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 6.6 -->
+  <h2 id="s6-6"><span class="num">6.6</span>Presupuestos parciales y análisis marginal</h2>
+  <p>La tercera tarjeta ya no evalúa el proyecto: compara <b>tecnologías</b>. Es el método de Perrin, Winkelmann, Moscardi y Anderson para el CIMMYT (1976), el que se pide en una tesis agronómica cuando hay tratamientos y hay que recomendar uno.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b6-marginal.png" alt="Tarjeta 3 del Bloque 6: el análisis marginal del CIMMYT con cinco tratamientos de fertilización"></div>
+    <figcaption><b>Figura 6.3.</b> El análisis marginal con el ejemplo de fertilización que trae la app: cinco tratamientos, dos dominados y una recomendación que sorprende. Abajo, la curva de beneficios netos: la pendiente entre dos puntos <i>es</i> la tasa de retorno marginal.</figcaption>
+  </figure>
+
+  <h3>Los tres ajustes que pide el método</h3>
+  <table class="compacta">
+    <thead><tr><th style="width:1.7in">Campo</th><th>Por qué existe</th></tr></thead>
+    <tbody>
+      <tr><td><b>Precio de campo</b></td><td>Lo que el productor <b>recibe en la parcela</b>, ya descontados fletes y comisiones; no el precio del mercado mayorista.</td></tr>
+      <tr><td><b>Ajuste del rendimiento</b></td><td>Una parcela experimental rinde más que la de un productor: se baja un 10&nbsp;% por costumbre, y se declara.</td></tr>
+      <tr><td><b>Tasa mínima de retorno</b></td><td>Lo que el productor exige por cada peso extra que arriesga. Suele pedirse <b>100&nbsp;%</b>: un peso más de costo tiene que devolver dos.</td></tr>
+    </tbody>
+  </table>
+
+  <p>En «costos que varían» entra <b>solo</b> lo que cambia entre tratamientos: el fertilizante, el herbicida, los jornales de más. Lo que se hace igual en todos —la siembra, la renta de la tierra— no entra, porque no cambia la comparación.</p>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · cinco dosis de nitrógeno</div>
+    <table class="compacta">
+      <thead><tr><th>Tratamiento</th><th class="num">Rendimiento</th><th class="num">Ajustado</th><th class="num">Costos que varían</th><th class="num">Beneficio neto</th><th class="num">Retorno marginal</th></tr></thead>
+      <tbody>
+        <tr><td><b>Sin fertilizar</b></td><td class="num">3.0</td><td class="num">2.70</td><td class="num">$0</td><td class="num">$15,120</td><td class="num">—</td></tr>
+        <tr><td>60 kg N</td><td class="num">4.2</td><td class="num">3.78</td><td class="num">$3,600</td><td class="num">$17,568</td><td class="num">68&nbsp;%</td></tr>
+        <tr><td>120 kg N</td><td class="num">5.0</td><td class="num">4.50</td><td class="num">$7,200</td><td class="num">$18,000</td><td class="num">12&nbsp;%</td></tr>
+        <tr><td>120 kg N + herbicida</td><td class="num">5.1</td><td class="num">4.59</td><td class="num">$9,000</td><td class="num">$16,704</td><td class="num">dominado</td></tr>
+        <tr><td>180 kg N</td><td class="num">5.2</td><td class="num">4.68</td><td class="num">$10,800</td><td class="num">$15,408</td><td class="num">dominado</td></tr>
+      </tbody>
+    </table>
+    <p>Con un ajuste del 10&nbsp;% y una tasa mínima del 100&nbsp;%, la recomendación es <b>no fertilizar</b>. Pasar a 60 kg de nitrógeno devuelve 68 centavos por cada peso invertido —un 68&nbsp;% de retorno marginal, que en cualquier otro contexto sería excelente— pero no llega al 100&nbsp;% que el productor exige por arriesgar su dinero. Y de 60 a 120 kg el retorno cae a 12&nbsp;%.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · dominancia, y por qué se descarta sin discutir</div>
+    <p>Un tratamiento está <b>dominado</b> cuando cuesta más y deja menos que otro más barato. No hace falta calcular su tasa de retorno: nadie pagaría más por ganar menos. En el ejemplo, los 180 kg de nitrógeno cuestan $10,800 y dejan $15,408, mientras que 120 kg cuestan $7,200 y dejan $18,000. Se descartan, y la curva de beneficios netos solo une los que quedan —por eso la frontera de la figura tiene tres puntos y no cinco.</p>
+    <p>La <b>tasa de retorno marginal</b> entre dos tratamientos consecutivos es el aumento del beneficio neto entre el aumento del costo. Geométricamente es la pendiente de la curva: cada tramo más plano es un escalón que rinde menos.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>El análisis marginal no compite con el VAN: contesta otra pregunta</div>
+    <p>El VAN dice si el <b>proyecto</b> conviene. El análisis marginal dice qué <b>tecnología</b> recomendarle al productor dentro de ese proyecto. Son dos secciones distintas de una tesis y se reportan por separado: el primero con el flujo de veinte años, el segundo con un solo ciclo y sin descontar, porque todo ocurre dentro del mismo año.</p>
+  </div>
+
+  <!-- 6.7 -->
+  <h2 id="s6-7"><span class="num">6.7</span>Los avisos de este bloque</h2>
+  <table class="compacta">
+    <thead><tr><th style="width:0.95in">Clase</th><th>Lo que revisa</th></tr></thead>
+    <tbody>
+      <tr><td><b>Error</b></td><td>No hay flujos que evaluar: falta algo de los bloques anteriores.</td></tr>
+      <tr><td><b>Advertencia</b></td><td>El flujo cambia de signo más de una vez y <b>puede haber varias tasas internas</b>: en ese caso manda el VAN y se reporta la TIR modificada; la tasa del inversionista es menor que la del proyecto, lo que normalmente es al revés; el VAN del proyecto es positivo pero el del inversionista negativo, o al contrario.</td></tr>
+      <tr><td><b>Nota</b></td><td>Cuál de los dos flujos manda según lo que se quiera sustentar; que el valor de rescate pesa poco una vez descontado; en el análisis marginal, cuántos tratamientos quedaron dominados y con qué tasa mínima se hizo la recomendación.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión · qué reportar en la tesis</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Si</b> el estudio es para justificar el proyecto</td><td><b>entonces</b> el flujo del proyecto manda, y el del inversionista va como complemento.</td></tr>
+      <tr><td><b>Si</b> el estudio es para pedir un crédito</td><td><b>entonces</b> los dos: el banco mira el del proyecto para la capacidad de pago y el del dueño para su compromiso.</td></tr>
+      <tr><td><b>Si</b> la TIR no existe o es múltiple</td><td><b>entonces</b> reporta el VAN y la TIR modificada, y explica por qué en una nota.</td></tr>
+      <tr><td><b>Si</b> hay tratamientos comparados</td><td><b>entonces</b> el análisis marginal va en su propia sección, con el precio de campo y la tasa mínima declarados.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">El dictamen de este bloque es el que el informe del Bloque 10 imprime como resumen. Lo que quede aquí es lo que se publica.</p>
+  </div>
+</section>
+
+</body>
+</html>

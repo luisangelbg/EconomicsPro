@@ -1,0 +1,29 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "EconomicsPro",
+  "description": "A browser-based platform for the economic and financial appraisal of agricultural and agro-industrial projects: project assumptions and discount rate (MARR, WACC, CAPM), deflated price and yield series with five projection methods, sales programme, investment with automatic replacement, operating budget and working capital, loans and pro-forma statements with the project and the investor cash flows, NPV, IRR, MIRR, B/C, payback and equivalent annual value, partial budgets and CIMMYT marginal analysis, switching values, tornado, scenarios and Monte Carlo with rank correlation, conversion factors and an exact bridge to the economic NPV, comparison of alternatives, replacement, Faustmann rotation and buy-or-lease, figure studio, self-contained report and a reproducible package. No installation, no third-party libraries, Spanish and English.",
+  "version": "1.0.6",
+  "dateCreated": "2026-09-22",
+  "datePublished": "2026-09-27",
+  "codeRepository": "https://github.com/luisangelbg/EconomicsPro",
+  "url": "https://luisangelbg.github.io/EconomicsPro/",
+  "license": "https://spdx.org/licenses/GPL-3.0-or-later",
+  "programmingLanguage": ["JavaScript", "HTML", "CSS"],
+  "runtimePlatform": "Web browser",
+  "operatingSystem": "Any",
+  "applicationCategory": "Agricultural economics",
+  "keywords": ["project appraisal", "agricultural economics", "cost-benefit analysis", "net present value", "internal rate of return", "pro-forma statements", "risk analysis", "Monte Carlo simulation", "shadow prices", "capital rationing", "Faustmann rotation", "agrifood projects"],
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Luis Ángel",
+      "familyName": "Barrera-Guzmán",
+      "email": "lbarrerag@chapingo.mx",
+      "@id": "https://orcid.org/0000-0001-8057-2583"
+    }
+  ],
+  "softwareRequirements": ["A modern web browser (Chrome, Edge, Firefox or Safari)"],
+  "readme": "README.md",
+  "developmentStatus": "active"
+}

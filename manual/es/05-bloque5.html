@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EconomicsPro · Manual de usuario · Capítulo 5</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../interior.css">
+<script src="../paginar.js"></script>
+<style>
+  .formula { font-family: var(--mono); font-size: 9pt; background: var(--marino-suave); border-radius: 5px; padding: 0.07in 0.12in; margin: 0.08in 0; }
+</style>
+</head>
+<body>
+
+<section class="capitulo" id="cap-b5" data-pestana="B5" data-orden="5" style="--acento: var(--b5)">
+  <div class="cap-apertura">
+    <div class="cap-num">5</div>
+    <div class="cap-etiqueta">Bloque 5 · Estados proforma</div>
+    <h1>Financiamiento y estados proforma</h1>
+    <div class="cap-regla"></div>
+    <p class="cap-resumen">Aquí el proyecto deja de ser un presupuesto y se vuelve una empresa: pide crédito, lo paga, calcula su impuesto, arrastra sus pérdidas y levanta un balance que tiene que cuadrar. De este bloque salen los dos flujos de efectivo que el Bloque 6 va a descontar, y el saldo de caja que decide si el proyecto puede arrancar.</p>
+    <ul class="cap-contenido">
+      <li><b>5.1</b>Donde aparece el dinero de verdad</li>
+      <li><b>5.2</b>Los dos créditos</li>
+      <li><b>5.3</b>Lo que resulta del financiamiento</li>
+      <li><b>5.4</b>El estado de resultados</li>
+      <li><b>5.5</b>Los dos flujos de efectivo</li>
+      <li><b>5.6</b>El balance que se comprueba solo</li>
+      <li><b>5.7</b>El punto de equilibrio</li>
+      <li><b>5.8</b>La deuda y las razones financieras</li>
+      <li><b>5.9</b>Los avisos de este bloque</li>
+    </ul>
+  </div>
+
+  <!-- 5.1 -->
+  <h2 id="s5-1"><span class="num">5.1</span>Donde aparece el dinero de verdad</h2>
+  <p class="lead">Los bloques 3 y 4 dijeron cuánto entra y cuánto sale. Este dice <b>cuándo</b>, <b>de quién</b> y <b>qué queda</b>. Es el bloque que convierte un presupuesto en estados financieros, y el único que puede decirte que un proyecto rentable no es viable porque se queda sin dinero antes de la primera cosecha.</p>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.9in">Lo que sale de aquí</th><th>Para qué sirve</th></tr></thead>
+    <tbody>
+      <tr><td><b>Flujo del proyecto</b></td><td>El Bloque 6 lo descuenta al costo de todo el capital: dice si la idea es buena.</td></tr>
+      <tr><td><b>Flujo del inversionista</b></td><td>El Bloque 6 lo descuenta al costo del dinero del dueño: dice cuánto gana él.</td></tr>
+      <tr><td><b>Saldo de caja año por año</b></td><td>Dice si el proyecto arranca. Es el número que un banco mira primero.</td></tr>
+      <tr><td><b>Punto de equilibrio</b></td><td>Cuánto hay que vender para no perder; el Bloque 7 lo vuelve un valor límite.</td></tr>
+      <tr><td><b>Cobertura del servicio de la deuda</b></td><td>El indicador con el que una institución financiera decide si presta.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5.2 -->
+  <h2 id="s5-2"><span class="num">5.2</span>Los dos créditos</h2>
+  <p>La app modela el financiamiento como se financia de verdad un proyecto rural: un crédito <b>refaccionario</b>, a varios años, para la inversión fija y diferida, y uno de <b>avío</b>, que se dispone cada ciclo para el capital de trabajo y se paga con la cosecha. Lo que no cubra el crédito lo aporta el dueño.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b5-credito.png" alt="Tarjeta 1 del Bloque 5: los parámetros del crédito refaccionario y del crédito de avío"></div>
+    <figcaption><b>Figura 5.1.</b> El financiamiento del cafetal: la mitad de la inversión fija y diferida a 12 años y 12.5&nbsp;%, con tres años de gracia en los que se pagan los intereses, y un avío que cubre el 60&nbsp;% del capital de trabajo al 15.5&nbsp;%.</figcaption>
+  </figure>
+
+  <h3>El crédito refaccionario</h3>
+  <table class="compacta">
+    <thead><tr><th style="width:1.75in">Campo</th><th>Qué hace</th></tr></thead>
+    <tbody>
+      <tr><td><b>Porcentaje financiado</b></td><td>Qué parte de la inversión fija y diferida se pide prestada. En el cafetal, 50&nbsp;% de $1,377,000 son <b>$688,500</b>.</td></tr>
+      <tr><td><b>Tasa anual</b></td><td>La misma que usó el CPPC del Bloque 2, si se armó así. Si aquí cambias la tasa, conviene volver al Bloque 2 y cambiarla también.</td></tr>
+      <tr><td><b>Plazo</b></td><td>Años del crédito. No tiene que coincidir con el horizonte; si lo pasa, la app avisa cuánto queda por pagar al final.</td></tr>
+      <tr><td><b>Periodo de gracia</b></td><td>Años sin amortizar capital. <b>En perennes, al menos los años que tarda en producir.</b></td></tr>
+      <tr><td><b>Durante la gracia</b></td><td>Tres formas: se pagan los intereses, se capitalizan —se suman al saldo y se pagan después— o se condonan.</td></tr>
+      <tr><td><b>Forma de pago</b></td><td>Pagos iguales, capital constante o todo el capital al final.</td></tr>
+      <tr><td><b>Comisión de apertura</b></td><td>Se capitaliza con la inversión diferida y se amortiza. En el cafetal, 1.5&nbsp;% de $688,500 son $10,328.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · la tabla de amortización del cafetal</div>
+    <table class="compacta">
+      <thead><tr><th>Año</th><th class="num">Pago</th><th class="num">Interés</th><th class="num">Capital</th><th class="num">Saldo</th></tr></thead>
+      <tbody>
+        <tr><td>1 a 3 (gracia)</td><td class="num">$86,063</td><td class="num">$86,063</td><td class="num">$0</td><td class="num">$688,500</td></tr>
+        <tr><td>4</td><td class="num">$131,683</td><td class="num">$86,063</td><td class="num">$45,620</td><td class="num">$642,880</td></tr>
+        <tr><td>5</td><td class="num">$131,683</td><td class="num">$80,360</td><td class="num">$51,323</td><td class="num">$591,557</td></tr>
+        <tr><td>6</td><td class="num">$131,683</td><td class="num">$73,945</td><td class="num">$57,738</td><td class="num">$533,820</td></tr>
+      </tbody>
+    </table>
+    <p>Durante la gracia el saldo no baja: se paga el interés ($688,500 × 12.5&nbsp;%) y nada más. A partir del año 4 el pago es igual todos los años, pero por dentro cambia: cada vez menos interés y más capital. El crédito entero cuesta <b>$754,830</b> de intereses, más de lo que se pidió prestado, y eso es lo normal en un plazo de doce años.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>La gracia no es un favor: es lo que hace viable a una perenne</div>
+    <p>Un cafetal no produce hasta el año 4. Si el crédito empieza a amortizar en el año 1, el proyecto tiene que pagar capital con dinero que todavía no gana, y la caja se hunde. Por eso la app avisa cuando la gracia es menor que la gestación. Pero la gracia tampoco es gratis: con intereses capitalizados el saldo crece, y lo que no se pagó antes se paga después y con intereses sobre intereses.</p>
+  </div>
+
+  <h3>El crédito de avío</h3>
+  <p>Es de otra naturaleza: se dispone al empezar el ciclo y se liquida al vender, así que no tiene tabla de amortización sino un <b>saldo que va y viene cada año</b>. Se declara como porcentaje del capital de trabajo que calculó el Bloque 4 —60&nbsp;% en el cafetal— y su tasa suele ser más alta que la del refaccionario, porque es dinero de corto plazo.</p>
+
+  <!-- 5.3 -->
+  <h2 id="s5-3"><span class="num">5.3</span>Lo que resulta del financiamiento</h2>
+  <p>La segunda tarjeta resume de dónde sale cada peso de la inversión y qué compromisos deja.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b5-resulta.png" alt="Tarjeta 2 del Bloque 5: monto del crédito, aportación del dueño, pago anual y caja más baja"></div>
+    <figcaption><b>Figura 5.2.</b> El financiamiento del cafetal en números: $688,500 de crédito, $753,025 que pone el dueño, un pago anual de $131,683 a partir del cuarto año y el saldo de caja más bajo del horizonte.</figcaption>
+  </figure>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>El número que hay que mirar antes que el VAN</div>
+    <p>En el cafetal, la caja acumulada toca fondo en <b>−$1,987,349 en 2030</b>, el año de la primera cosecha. Eso quiere decir que, además de la inversión inicial, alguien tiene que poner casi dos millones más a lo largo de los tres años de gestación —o conseguir más crédito— o el proyecto no llega a producir. Un VAN positivo no sirve de nada si el proyecto muere en el año 3.</p>
+  </div>
+
+  <!-- 5.4 -->
+  <h2 id="s5-4"><span class="num">5.4</span>El estado de resultados</h2>
+  <p>La tercera tarjeta arma el estado de resultados año por año, con la estructura de siempre y dos particularidades del sector primario mexicano.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b5-resultados.png" alt="Tarjeta 3 del Bloque 5: el estado de resultados año por año del cafetal"></div>
+    <figcaption><b>Figura 5.3.</b> El estado de resultados del cafetal. Los tres primeros años no tienen ingreso pero sí costo, depreciación e intereses: la pérdida se acumula y se descuenta de las utilidades de los años buenos.</figcaption>
+  </figure>
+
+  <div class="formula">ingreso − costo − depreciación − amortización = utilidad de operación<br>− intereses = utilidad antes de impuestos<br>− reparto de utilidades − impuesto = utilidad neta</div>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.65in">Particularidad</th><th>Qué hace la app</th></tr></thead>
+    <tbody>
+      <tr><td><b>Pérdidas que se arrastran</b></td><td>La pérdida de un año se guarda y se resta de las utilidades de los años siguientes antes de calcular el impuesto. En el cafetal son tres años de pérdidas de gestación que cubren varios años de utilidades después.</td></tr>
+      <tr><td><b>Exención del sector primario</b></td><td>Del ingreso anual se descuenta la parte exenta que declaraste en el Bloque 2 antes de calcular el impuesto.</td></tr>
+      <tr><td><b>Reparto de utilidades</b></td><td>Si el proyecto lo paga, se resta antes del impuesto, como manda la ley.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · por qué el cafetal no paga impuesto</div>
+    <p>La sociedad del cafetal tiene doce socios, así que su exención del artículo 74 llega al tope de 200 UMA: <b>$8,259,220</b> de ingreso libre al año. El ingreso del proyecto a plena producción es $1,586,774 —menos de la quinta parte de esa exención—, de modo que <b>toda</b> su utilidad queda exenta y el impuesto es cero en los veinte años. La app lo dice con una nota en la tarjeta de revisión.</p>
+    <p>Ese solo dato cambia el proyecto: sin exención, con 30&nbsp;% de impuesto sobre una utilidad de $568,761 al año, el proyecto pagaría unos $170,000 anuales. Por eso el régimen fiscal del Bloque 2 no es un trámite.</p>
+  </div>
+
+  <!-- 5.5 -->
+  <h2 id="s5-5"><span class="num">5.5</span>Los dos flujos de efectivo</h2>
+  <p>La app construye <b>dos</b> flujos a partir del mismo estado de resultados, y la diferencia entre ellos es la idea más importante de todo el manual.</p>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.35in">&nbsp;</th><th>Flujo del proyecto</th><th>Flujo del inversionista</th></tr></thead>
+    <tbody>
+      <tr><td><b>Qué pregunta</b></td><td>¿Es buena la idea?</td><td>¿Cuánto gano yo con mi dinero?</td></tr>
+      <tr><td><b>El crédito</b></td><td>No aparece: ni entra ni se paga.</td><td>Entra cuando se recibe y sale cuando se paga.</td></tr>
+      <tr><td><b>Los intereses</b></td><td>No se restan.</td><td>Se restan.</td></tr>
+      <tr><td><b>El impuesto</b></td><td>Se calcula <b>como si no hubiera deuda</b>.</td><td>El real, ya con el escudo fiscal de los intereses.</td></tr>
+      <tr><td><b>La inversión</b></td><td>Completa.</td><td>Solo la parte que pone el dueño.</td></tr>
+      <tr><td><b>Con qué tasa se descuenta</b></td><td>El CPPC, o la TREMA si no hay deuda.</td><td>El costo del capital propio, que es más caro.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · por qué el impuesto se calcula dos veces</div>
+    <p>Los intereses son deducibles, así que endeudarse baja el impuesto. Ese ahorro es un beneficio del <b>financiamiento</b>, no del proyecto. Si se metiera en el flujo del proyecto, la idea se vería mejor solo por estar endeudada, y además el CPPC ya descuenta ese mismo beneficio al multiplicar la deuda por (1 − t): se contaría dos veces. Por eso la app calcula el impuesto del flujo del proyecto <b>sin</b> deuda, y el del inversionista con ella.</p>
+  </div>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · los dos flujos del cafetal en tres años</div>
+    <table class="compacta">
+      <thead><tr><th>Año</th><th class="num">Ingreso</th><th class="num">Costo</th><th class="num">Intereses</th><th class="num">Utilidad neta</th><th class="num">Flujo del proyecto</th><th class="num">Flujo del inversionista</th></tr></thead>
+      <tbody>
+        <tr><td>2027 · gestación</td><td class="num">$0</td><td class="num">$471,000</td><td class="num">$98,663</td><td class="num">−$687,762</td><td class="num">−$471,000</td><td class="num">−$569,663</td></tr>
+        <tr><td>2030 · primera cosecha</td><td class="num">$555,371</td><td class="num">$652,960</td><td class="num">$103,531</td><td class="num">−$319,219</td><td class="num">−$124,291</td><td class="num">−$257,421</td></tr>
+        <tr><td>2032 · plena producción</td><td class="num">$1,586,774</td><td class="num">$838,600</td><td class="num">$96,380</td><td class="num">$568,761</td><td class="num">$748,174</td><td class="num">$594,056</td></tr>
+      </tbody>
+    </table>
+    <p>Los dos flujos son positivos a plena producción, pero el del inversionista es menor: la diferencia son los intereses y el capital que se le pagan al banco. En el último año, el flujo del proyecto salta a $1,544,749 porque recoge el valor de rescate.</p>
+  </div>
+
+  <!-- 5.6 -->
+  <h2 id="s5-6"><span class="num">5.6</span>El balance que se comprueba solo</h2>
+  <p>La app levanta un balance general año por año —activo, pasivo y capital— y comprueba la identidad contable en cada uno. No es un adorno: es la prueba de que el modelo no perdió un peso por el camino.</p>
+
+  <div class="formula">activo = pasivo + capital, en todos y cada uno de los años</div>
+
+  <p>En el cafetal, el mayor desajuste de los veintiún años es de <b>menos de una millonésima de peso</b>: el balance cuadra exactamente. Si alguna vez no cuadrara, la app lo reporta como <b>error</b> y dice en qué año y por cuánto, porque sería un defecto del programa, no de tus datos.</p>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Qué hace que un balance así no cuadre</div>
+    <p>En la construcción de esta app, dos cosas lo rompieron y las dos eran del mismo tipo: el <b>capital de trabajo se invierte el año anterior</b> al que se necesita, y el saldo del crédito de avío hay que llevarlo como «recibido menos pagado» y no recalcularlo. Un desajuste de $56,920 en un año fue lo que delató el primer error. Por eso la comprobación se quedó en la app.</p>
+  </div>
+
+  <!-- 5.7 -->
+  <h2 id="s5-7"><span class="num">5.7</span>El punto de equilibrio</h2>
+  <p>Cuánto hay que vender para no perder. La app lo calcula <b>para cada año</b>, porque en un proyecto con maduración el punto de equilibrio se mueve: los costos fijos son casi los mismos, pero la producción cambia.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b5-equilibrio.png" alt="Tarjeta 4 del Bloque 5: el punto de equilibrio año por año del cafetal"></div>
+    <figcaption><b>Figura 5.4.</b> El punto de equilibrio del cafetal en un año pleno. La recta verde es el ingreso, la roja el costo total y la punteada los costos fijos; donde se cruzan las dos primeras está el equilibrio. La línea vertical marca lo que el proyecto vende de verdad, y la distancia entre ambas es su margen de seguridad. El selector de arriba cambia de año.</figcaption>
+  </figure>
+
+  <div class="formula">Q* = costos fijos / (precio − costo variable unitario)</div>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · el equilibrio de un año pleno</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:56%">Costos fijos del año (fijos + por hectárea + depreciación + intereses)</td><td>$732,413</td></tr>
+      <tr><td>Precio efectivo por tonelada</td><td>$102,178</td></tr>
+      <tr><td>Costo variable por tonelada (pizca, beneficiado, flete)</td><td>$17,500</td></tr>
+      <tr class="total"><td><b>Punto de equilibrio</b></td><td><b>8.65 t</b> · $883,778</td></tr>
+      <tr><td>Se venden</td><td>15.50 t</td></tr>
+      <tr><td><b>Margen de seguridad</b></td><td>el equilibrio es el <b>56&nbsp;%</b> de lo que se vende</td></tr>
+    </tbody></table>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Aquí «fijo» no es lo mismo que en el Bloque 4</div>
+    <p>Para el punto de equilibrio, <b>fijo es todo lo que no sigue al volumen vendido</b>: los costos fijos del año, sí, pero también los jornales por hectárea, la depreciación y los intereses. Variable es solo lo que se paga por tonelada. Por eso el costo fijo de $732,413 de este cuadro es mucho mayor que los $185,000 de costos fijos del Bloque 4.</p>
+  </div>
+
+  <!-- 5.8 -->
+  <h2 id="s5-8"><span class="num">5.8</span>La deuda y las razones financieras</h2>
+  <p>La última tarjeta de cálculo mira el proyecto con los ojos de quien presta: no le interesa el VAN, le interesa si el proyecto genera suficiente para pagarle.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b5-razones.png" alt="Tarjeta 5 del Bloque 5: el servicio de la deuda y su cobertura"></div>
+    <figcaption><b>Figura 5.5.</b> El servicio de la deuda del cafetal y su cobertura año por año. La franja marca el umbral de 1.2 que suele pedir una institución financiera.</figcaption>
+  </figure>
+
+  <table class="compacta">
+    <thead><tr><th style="width:2.1in">Razón</th><th>Qué dice</th><th style="width:1.1in">Cafetal 2032</th></tr></thead>
+    <tbody>
+      <tr><td><b>Cobertura del servicio de la deuda</b></td><td>Cuántas veces el flujo de operación cubre el pago del año. Debajo de 1.2 casi ninguna institución presta.</td><td>4.85</td></tr>
+      <tr><td><b>Cobertura de intereses</b></td><td>Cuántas veces la utilidad de operación cubre los intereses.</td><td>6.9</td></tr>
+      <tr><td><b>Margen neto</b></td><td>Qué parte del ingreso queda como utilidad.</td><td>36&nbsp;%</td></tr>
+      <tr><td><b>Servicio de la deuda</b></td><td>Capital más intereses del año.</td><td>$154,118</td></tr>
+    </tbody>
+  </table>
+
+  <p>En los años de gestación la cobertura es negativa —no hay ingreso y sí hay pagos— y eso es normal en una perenne; lo que importa es que se recupere en cuanto entra la producción. En el cafetal pasa de 2.15 en 2031 a 4.85 en 2032.</p>
+
+  <!-- 5.9 -->
+  <h2 id="s5-9"><span class="num">5.9</span>Los avisos de este bloque</h2>
+  <table class="compacta">
+    <thead><tr><th style="width:0.95in">Clase</th><th>Lo que revisa</th></tr></thead>
+    <tbody>
+      <tr><td><b>Error</b></td><td>Faltan los ingresos del Bloque 3 o el presupuesto del Bloque 4; el crédito es mayor que la inversión que financia; <b>el balance no cuadra</b> —y dice en qué año y por cuánto—.</td></tr>
+      <tr><td><b>Advertencia</b></td><td>La caja se queda en negativo y en qué año; la cobertura del servicio de la deuda queda por debajo de 1.2 en algún año; el proyecto no produce hasta cierto año pero el crédito ya amortiza —pide más gracia—; el proyecto pierde dinero todos los años del horizonte.</td></tr>
+      <tr><td><b>Nota</b></td><td>La tasa del crédito está por debajo de la inflación: es un crédito subsidiado y conviene decirlo; el crédito no termina de pagarse dentro del horizonte y cuánto queda; cuántos años usan pérdidas acumuladas; que <b>la exención del sector primario cubre todo el ingreso</b> de al menos un año.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión · antes de pasar al Bloque 6</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Si</b> la caja se queda negativa</td><td><b>entonces</b> resuélvelo aquí: sube la gracia, alarga el plazo, pide más avío o reconoce que el dueño tiene que aportar más. No es un detalle que se arregle después.</td></tr>
+      <tr><td><b>Si</b> la cobertura baja de 1.2</td><td><b>entonces</b> ningún banco prestaría en esas condiciones: cambia plazo o monto antes de presentar el estudio.</td></tr>
+      <tr><td><b>Si</b> el balance no cuadra</td><td><b>entonces</b> es un error del programa, no tuyo: repórtalo.</td></tr>
+      <tr><td><b>Si</b> todo está en orden</td><td><b>entonces</b> los dos flujos ya están listos para descontarse, cada uno con su tasa.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">Un consejo de presentación: en la tesis, el estado de resultados y el balance van completos en anexos, y en el cuerpo solo los tres o cuatro renglones que sostienen el argumento.</p>
+  </div>
+</section>
+
+</body>
+</html>

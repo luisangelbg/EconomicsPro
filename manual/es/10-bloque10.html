@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EconomicsPro · Manual de usuario · Capítulo 10</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../interior.css">
+<script src="../paginar.js"></script>
+<style>
+  .formula { font-family: var(--mono); font-size: 9pt; background: var(--marino-suave); border-radius: 5px; padding: 0.07in 0.12in; margin: 0.08in 0; }
+  .arbol { font-family: var(--mono); font-size: 8.8pt; line-height: 1.5; background: var(--marino-suave); border-radius: 5px; padding: 0.1in 0.14in; margin: 0.08in 0; }
+</style>
+</head>
+<body>
+
+<section class="capitulo" id="cap-b10" data-pestana="B10" data-orden="10" style="--acento: var(--b10)">
+  <div class="cap-apertura">
+    <div class="cap-num">10</div>
+    <div class="cap-etiqueta">Bloque 10 · Figuras, informe y paquete</div>
+    <h1>Figuras, informe y paquete</h1>
+    <div class="cap-regla"></div>
+    <p class="cap-resumen">Este bloque no calcula nada nuevo: recoge lo que los nueve anteriores hicieron y lo convierte en cosas que se entregan. Cada figura sale como archivo publicable con su título y su resolución; todo el estudio sale como un informe de un solo archivo que se lee y se imprime sin Word ni internet; y el conjunto sale como un paquete .zip que incluye el archivo del proyecto, que es lo que permite a otra persona <i>rehacer</i> los cálculos en vez de solo leerlos.</p>
+    <ul class="cap-contenido">
+      <li><b>10.1</b>Qué hace este bloque y qué no</li>
+      <li><b>10.2</b>El estudio de figuras</li>
+      <li><b>10.3</b>Resolución, formato y tamaño impreso</li>
+      <li><b>10.4</b>El informe</li>
+      <li><b>10.5</b>Qué lleva el informe por dentro</li>
+      <li><b>10.6</b>El paquete del estudio</li>
+      <li><b>10.7</b>La revisión final</li>
+    </ul>
+  </div>
+
+  <!-- 10.1 -->
+  <h2 id="s10-1"><span class="num">10.1</span>Qué hace este bloque y qué no</h2>
+  <p class="lead">Un estudio que solo existe dentro de una app no sirve para nada. Este bloque lo saca: en figuras que se pegan en una tesis, en un informe que se lee sin la app y en un paquete que otra persona puede abrir dentro de cinco años. Lo único que se escribe aquí es quién firma el estudio.</p>
+
+  <p>Lo que <b>no</b> hace es cambiar un solo número. Si algo no cuadra, se arregla en el bloque que lo produjo y este bloque lo vuelve a recoger. Tampoco escribe la tesis: entrega párrafos redactados que se pueden copiar, pero la redacción, el orden y las conclusiones son de quien firma.</p>
+
+  <p>El capítulo sigue usando el cafetal de Huatusco, ya completo hasta el Bloque 9 con las tres obras de riego cargadas.</p>
+
+  <!-- 10.2 -->
+  <h2 id="s10-2"><span class="num">10.2</span>El estudio de figuras</h2>
+  <p>La primera tarjeta toma cualquier figura que el estudio haya dibujado y la convierte en un archivo que ya no depende de la app.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b10-estudio.png" alt="Tarjeta 1 del Bloque 10 con el selector de figura, el título, la nota al pie, los colores, el fondo, el formato, la resolución y la vista previa"></div>
+    <figcaption><b>Figura 10.1.</b> El estudio de figuras con la línea de tiempo del cafetal. Lo que se ve en la vista previa es <i>exactamente</i> el archivo que se va a descargar, con su título ya puesto.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · treinta figuras de un catálogo de treinta y tres</div>
+    <p>En el cafetal completo la app dice: <i>«Hay 30 figuras dibujadas en este estudio»</i>, de las 33 que trae el catálogo. Las tres que faltan no son un error: son las que necesitan una acción que nadie pidió.</p>
+    <table class="compacta">
+      <thead><tr><th>Figura ausente</th><th>Por qué</th></tr></thead>
+      <tbody>
+        <tr><td>Análisis marginal (CIMMYT)</td><td>el estudio no comparó tratamientos en el Bloque 6</td></tr>
+        <tr><td>Simulación de Monte Carlo</td><td>nadie pulsó <span class="ui">Simular</span> en el Bloque 7</td></tr>
+        <tr><td>Qué explica la dispersión del VAN</td><td>la misma razón: sin simulación no hay dispersión que explicar</td></tr>
+      </tbody>
+    </table>
+    <p>Es decir: el catálogo no se rellena con figuras vacías. Si una figura debería estar y no aparece, es porque ese análisis no se hizo, y conviene volver a su bloque antes de entregar.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · por qué los colores se «hornean» en el archivo</div>
+    <p>Dentro de la app, cada figura está dibujada con nombres de color —<span class="ruta">var(--primary)</span>, <span class="ruta">var(--leaf)</span>— que la hoja de estilo resuelve al momento. Un archivo exportado así saldría en blanco y negro, o directamente en negro, porque fuera de la app esos nombres no significan nada.</p>
+    <p>Por eso, antes de escribir el archivo, la app <b>sustituye cada nombre por su color real</b> según el tema elegido. El resultado es un SVG o un PNG que se ve igual en Word, en LaTeX, en el navegador y dentro de diez años, sin la app y sin internet.</p>
+  </div>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>El título y la nota al pie no son adorno</div>
+    <p>El título que se escriba aquí queda <b>dentro</b> de la imagen, y la nota al pie también. Eso importa cuando la figura viaja sola —en una presentación, en un correo, en un anexo— y nadie tiene alrededor el texto que la explicaba. La nota es el lugar para poner la fuente de los datos y el supuesto que haga falta.</p>
+  </div>
+
+  <!-- 10.3 -->
+  <h2 id="s10-3"><span class="num">10.3</span>Resolución, formato y tamaño impreso</h2>
+  <p>Debajo de la vista previa, la app dice en una línea lo que casi nadie calcula y todas las revistas exigen.</p>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · qué significa «300 dpi»</div>
+    <p style="font-style:italic">«A 300 dpi saldrá de 2188 × 769 píxeles, que impresos miden 18.5 × 6.5 cm.»</p>
+    <p>La figura mide 700 × 246 puntos en pantalla. A 300 puntos por pulgada se multiplica por 3.125 —porque la pantalla trabaja a 96— y da 2188 × 769 píxeles; esos 2188 píxeles, impresos a 300 por pulgada, ocupan 7.3 pulgadas, que son <b>18.5 cm</b>: justo el ancho de una caja de texto de tesis. Si la figura se imprimiera más chica, su resolución efectiva sería aún mayor; si se estirara al doble, bajaría a 150 dpi y se notaría.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · cuál de los tres formatos usar</div>
+    <table class="compacta">
+      <thead><tr><th style="width:0.7in">Formato</th><th>Cuándo</th></tr></thead>
+      <tbody>
+        <tr><td><b>SVG</b></td><td>Es vectorial: no tiene resolución, se puede ampliar sin límite y el texto sigue siendo texto. Es el mejor archivo si la revista o la plantilla lo acepta, y el único que se puede seguir editando.</td></tr>
+        <tr><td><b>PNG</b></td><td>La opción segura. Lo abre todo, no pierde calidad al guardarse y admite fondo transparente. Es lo que va en el paquete .zip, a 300 dpi.</td></tr>
+        <tr><td><b>JPG</b></td><td>Solo si alguien lo exige. Comprime perdiendo información y en una gráfica de líneas y texto eso se nota como una suciedad alrededor de los trazos.</td></tr>
+      </tbody>
+    </table>
+    <p>La resolución queda escrita <b>dentro</b> del archivo —en un trozo <span class="ruta">pHYs</span> si es PNG, en la cabecera JFIF si es JPG—, que es exactamente lo que lee un editor cuando pide «300 dpi» y lo que hace que la figura entre con el tamaño correcto en vez de gigante.</p>
+  </div>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Claros para imprimir, oscuros para presentar</div>
+    <p>El selector de colores no cambia los datos ni las formas: cambia la paleta con la que se hornea el archivo. Los <b>claros</b> son para papel; los <b>oscuros</b>, para una diapositiva con fondo negro, donde una figura clara deslumbra. El fondo <b>transparente</b> sirve para montar la figura sobre el color de la plantilla, y el <b>suave</b> para que se distinga del papel sin encuadrarla.</p>
+  </div>
+
+  <!-- 10.4 -->
+  <h2 id="s10-4"><span class="num">10.4</span>El informe</h2>
+  <p>La segunda tarjeta arma el estudio entero en un solo archivo .html, con cuatro partes que se pueden quitar.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b10-informe.png" alt="Tarjeta 2 del Bloque 10 con los campos del autor, las cuatro casillas de contenido y los tres botones"></div>
+    <figcaption><b>Figura 10.2.</b> Las opciones del informe. Las cuatro casillas quitan o ponen las figuras, la metodología, la memoria de cálculo y las referencias; lo demás va siempre.</figcaption>
+  </figure>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Por qué un .html y no un .docx</div>
+    <p>Un .docx obligaría a instalar algo, se vería distinto en cada versión de Word y arrastraría las figuras como objetos que se mueven solos. El informe es un <b>único archivo .html</b>: pesa unos 269 KB en el cafetal, lleva las figuras dentro, se abre con doble clic en cualquier computadora del mundo y desde el navegador se imprime a PDF con el tamaño de página que se quiera.</p>
+    <p>Quien necesite Word tiene dos caminos: imprimir a PDF y anexarlo, o abrir el .html en Word, que lo importa con su formato. Lo que la app garantiza es que el informe <b>no dependa de la app</b>, y eso un .docx generado a medias no lo garantiza.</p>
+  </div>
+
+  <!-- 10.5 -->
+  <h2 id="s10-5"><span class="num">10.5</span>Qué lleva el informe por dentro</h2>
+  <p>El informe empieza donde debe empezar un estudio: con el veredicto, no con la metodología.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b10-hoja.png" alt="La primera hoja del informe del cafetal, con la portada, el resumen redactado y la tabla de indicadores de los dos flujos"></div>
+    <figcaption><b>Figura 10.3.</b> La primera hoja del informe del cafetal, tal como sale. El párrafo del resumen es el dictamen del Bloque 6, y la tabla de abajo da los siete indicadores para los dos flujos, lado a lado.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · las trece secciones del informe del cafetal</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:52%">Portada y <b>Resumen</b></td><td>el dictamen y los siete indicadores</td></tr>
+      <tr><td>1. El proyecto y sus supuestos</td><td>Bloque 2</td></tr>
+      <tr><td>2. Mercado, precios e ingresos</td><td>Bloque 3</td></tr>
+      <tr><td>3. Inversión, costos y capital de trabajo</td><td>Bloque 4</td></tr>
+      <tr><td>4. Financiamiento y estados proforma</td><td>Bloque 5</td></tr>
+      <tr><td>5. Evaluación financiera</td><td>Bloque 6</td></tr>
+      <tr><td>6. Riesgo e incertidumbre</td><td>Bloque 7</td></tr>
+      <tr><td>7. Evaluación económica y social</td><td>Bloque 8</td></tr>
+      <tr><td>8. Comparación y decisiones</td><td>Bloque 9</td></tr>
+      <tr><td>9. <b>Metodología</b></td><td>qué se hizo y con qué citas</td></tr>
+      <tr><td><b>Memoria de cálculo</b></td><td>cada fórmula con sus números sustituidos</td></tr>
+      <tr><td><b>Referencias</b> y <b>Cómo citar la herramienta</b></td><td>lo que cierra el documento</td></tr>
+    </tbody></table>
+    <p>Las secciones se numeran <b>en el orden en que sobreviven</b>. Si un bloque no tiene nada que reportar —por ejemplo, si solo hay una alternativa y no hay nada que comparar—, su sección no se escribe y las demás se recorren: el informe nunca sale con un hueco en la numeración.</p>
+  </div>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · la memoria de cálculo</div>
+    <p>Es la parte que distingue un informe de una hoja de resultados. En vez de decir que el VAN es $1,296,243, muestra <b>la fórmula y la fórmula con los números puestos</b>, para cada cálculo importante: la tasa de descuento, la tasa real de Fisher, la inversión inicial, el punto de equilibrio, el VAN término a término, la TIR, el valor anual equivalente y el puente al VAN económico.</p>
+    <p>Un ejemplo de cómo se ve un renglón:</p>
+    <div class="formula">Tasa real (Fisher) · (1 + i_real) = (1 + i_nominal) / (1 + inflación)<br>(1 + 0.1329) / (1 + 0.0450) − 1 = 8.41&nbsp;%</div>
+    <p>Eso es lo que un jurado revisa cuando duda de un resultado, y lo que convierte una cifra en algo verificable.</p>
+  </div>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>La metodología viene redactada, con sus citas</div>
+    <p>La sección de metodología no es una plantilla vacía: describe el método que <i>de hecho</i> se usó en este estudio —qué método de proyección, qué modo de tasa, qué distribución en la simulación, qué factores de conversión— y cita a los autores correspondientes. Las referencias que aparecen al final son solo las que el estudio realmente usó.</p>
+  </div>
+
+  <!-- 10.6 -->
+  <h2 id="s10-6"><span class="num">10.6</span>El paquete del estudio</h2>
+  <p>La tercera tarjeta es un botón. Lo que baja es un .zip con cuatro cosas, y la cuarta es la importante.</p>
+
+  <div class="arbol">renovacion-de-cafetal-…-estudio.zip<br>
+  &nbsp;&nbsp;informe.html<br>
+  &nbsp;&nbsp;proyecto.json<br>
+  &nbsp;&nbsp;figuras/ &nbsp;&nbsp;&nbsp;&nbsp;(30 archivos PNG a 300 dpi)<br>
+  &nbsp;&nbsp;tablas/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;programa-de-ventas.csv, costos.csv,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;estado-de-resultados.csv, flujo-economico.csv,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alternativas.csv<br>
+  &nbsp;&nbsp;LEEME.txt</div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>El <span class="ruta">proyecto.json</span> es lo que hace reproducible el anexo</div>
+    <p>Un anexo con figuras y tablas se puede leer; uno con el archivo del proyecto se puede <b>rehacer</b>. Quien reciba el paquete abre ese .json en el Bloque 2 de la app y recupera el estudio completo: puede cambiar un precio y ver qué pasa, comprobar una cuenta o partir de ahí para otro proyecto.</p>
+    <p>Eso es lo que separa un anexo reproducible de una carpeta de imágenes, y es lo que cada vez más comités y revistas piden. El <span class="ruta">LEEME.txt</span> lo explica en diez renglones, para quien abra el .zip dentro de cinco años sin saber qué es.</p>
+  </div>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Las tablas van en .csv a propósito</div>
+    <p>Un .csv se abre en Excel, en LibreOffice, en R y en un editor de texto, y seguirá abriéndose cuando las versiones de hoy ya no existan. Las cinco tablas del paquete son las que un lector querrá revisar número por número: el programa de ventas, los costos, el estado de resultados, el flujo económico y las alternativas comparadas.</p>
+  </div>
+
+  <!-- 10.7 -->
+  <h2 id="s10-7"><span class="num">10.7</span>La revisión final</h2>
+  <p>La última tarjeta es una lista de verificación que el estudio hace sobre sí mismo: qué bloques tienen datos y cuántos avisos quedan pendientes en cada uno.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b10-paquete.png" alt="Tarjetas 3 y 4 del Bloque 10: el botón del paquete y la tabla de revisión final con los ocho bloques"></div>
+    <figcaption><b>Figura 10.4.</b> El paquete y la revisión final del cafetal. Ocho bloques listos, ningún error y cinco avisos repartidos: los avisos no impiden entregar, pero hay que haberlos leído.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · el veredicto sobre el propio estudio</div>
+    <p style="font-style:italic">«El estudio está completo y sin errores: ya se puede entregar.»</p>
+    <p>Debajo, la tabla dice dónde quedaron los avisos: <b>2</b> en el Bloque 5 (financiamiento y estados), <b>1</b> en el Bloque 8 (evaluación social, la tasa social mayor que la privada) y <b>2</b> en el Bloque 9 (horizontes distintos y el desacuerdo VAN–TIR). Ninguno es un error, y los tres capítulos anteriores explicaron qué decir de cada uno.</p>
+  </div>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Un aviso no leído es un aviso que el jurado va a leer</div>
+    <p>La app nunca bloquea la entrega por un aviso: no le corresponde decidir qué es aceptable en un estudio. Pero cada aviso señala exactamente el tipo de cosa que un lector cuidadoso pregunta en la defensa, y todos están redactados de forma que se puedan contestar con una frase en el texto. Entregar con avisos está bien; entregar sin haberlos leído, no.</p>
+  </div>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión · antes de entregar</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Si</b> la revisión final marca algún <b>error</b></td><td><b>entonces</b> no se entrega: vuelve al bloque que lo señala y arréglalo.</td></tr>
+      <tr><td><b>Si</b> quedan avisos</td><td><b>entonces</b> léelos todos y contesta cada uno con una frase en el texto del estudio.</td></tr>
+      <tr><td><b>Si</b> falta una figura que esperabas</td><td><b>entonces</b> es que ese análisis no se hizo; vuelve a su bloque antes de exportar.</td></tr>
+      <tr><td><b>Si</b> la tesis pide figuras a 300 dpi</td><td><b>entonces</b> exporta en PNG a 300 y comprueba el tamaño impreso que dice la app.</td></tr>
+      <tr><td><b>Si</b> el anexo tiene que ser reproducible</td><td><b>entonces</b> entrega el .zip completo, con el <span class="ruta">proyecto.json</span> dentro.</td></tr>
+      <tr><td><b>Si</b> vas a publicar</td><td><b>entonces</b> copia la cita de la herramienta que el propio informe trae al final.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">Con esto se cierran los diez bloques. Lo que sigue en el manual son los apéndices: los formatos de archivo que la app lee y escribe, las reglas de decisión reunidas, el glosario, qué hacer cuando algo no sale y las referencias.</p>
+  </div>
+</section>
+
+</body>
+</html>

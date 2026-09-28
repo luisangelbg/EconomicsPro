@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EconomicsPro · Manual de usuario · Capítulo 2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../interior.css">
+<script src="../paginar.js"></script>
+<style>
+  .formula { font-family: var(--mono); font-size: 9pt; background: var(--marino-suave); border-radius: 5px; padding: 0.07in 0.12in; margin: 0.08in 0; }
+</style>
+</head>
+<body>
+
+<section class="capitulo" id="cap-b2" data-pestana="B2" data-orden="2" style="--acento: var(--b2)">
+  <div class="cap-apertura">
+    <div class="cap-num">2</div>
+    <div class="cap-etiqueta">Bloque 2 · Proyecto</div>
+    <h1>El proyecto y sus supuestos</h1>
+    <div class="cap-regla"></div>
+    <p class="cap-resumen">Qué se evalúa, durante cuántos años, en pesos de cuándo, con qué tasa y bajo qué reglas fiscales. Son seis decisiones y ninguna es de trámite: gobiernan todos los números de los ocho bloques siguientes, y el informe final las cita tal como quedaron aquí.</p>
+    <ul class="cap-contenido">
+      <li><b>2.1</b>Por qué este bloque manda</li>
+      <li><b>2.2</b>Identificación y tipo de proyecto</li>
+      <li><b>2.3</b>El horizonte de evaluación</li>
+      <li><b>2.4</b>Moneda y base de precios</li>
+      <li><b>2.5</b>La tasa de descuento</li>
+      <li><b>2.6</b>El régimen fiscal</li>
+      <li><b>2.7</b>La ficha y el archivo del proyecto</li>
+      <li><b>2.8</b>Los avisos de este bloque</li>
+    </ul>
+  </div>
+
+  <!-- 2.1 -->
+  <h2 id="s2-1"><span class="num">2.1</span>Por qué este bloque manda</h2>
+  <p class="lead">Este es el único bloque que no calcula nada y, aun así, el que más pesa en el resultado. Aquí se declaran las reglas del juego: el tipo de proyecto, cuántos años se miran, en pesos de qué año se escriben los flujos, qué tasa los descuenta y qué impuestos paga. Todo lo que los bloques 3 a 10 calculen sale de estas seis decisiones.</p>
+
+  <p>Cambiar cualquiera de ellas a mitad del estudio obliga a revisar todo lo demás, y por eso conviene discutirlas antes de escribir el primer presupuesto. La app las guarda tal como quedan y el informe del Bloque 10 las escribe textualmente en su ficha de supuestos: lo que se declara aquí es lo que se defiende ante el jurado o el banco.</p>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>Dos decisiones que se revisan siempre</div>
+    <p>De las seis, hay dos que un revisor mira antes que nada: <b>la coherencia entre la base de precios y la tasa</b> (sección 2.4) y <b>de dónde salió la tasa</b> (sección 2.5). Si esas dos están bien justificadas, el estudio ya se lee en serio; si están mal, no importa lo cuidadoso que sea el resto.</p>
+  </div>
+
+  <!-- 2.2 -->
+  <h2 id="s2-2"><span class="num">2.2</span>Identificación y tipo de proyecto</h2>
+  <p>La primera tarjeta pide lo que va en la portada del estudio —nombre, responsable y lugar— y dos cosas que sí entran en los cálculos: el <b>tipo de proyecto</b> y la <b>escala</b>.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b2-identificacion.png" alt="Tarjeta 1 del Bloque 2: identificación, los ocho tipos de proyecto y la escala"></div>
+    <figcaption><b>Figura 2.1.</b> La tarjeta de identificación, con el estudio de práctica del café ya cargado. Los ocho tipos no son etiquetas: al elegir uno, la app propone el horizonte, la gestación, la maduración y el valor residual que ese tipo de proyecto suele tener.</figcaption>
+  </figure>
+
+  <p>La <b>escala</b> es la cantidad de unidades productivas: hectáreas, cabezas, líneas de proceso, beneficiarios. Todo el estudio se construye por unidad y se multiplica por la escala, de modo que los presupuestos del Bloque 4 se escriben una sola vez, por hectárea, y valen para tres o para trescientas.</p>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.6in">Tipo</th><th style="width:0.75in">Unidad</th><th style="width:0.65in">Horizonte</th><th style="width:0.75in">Gestación</th><th style="width:0.85in">Maduración</th><th>Valor residual</th></tr></thead>
+    <tbody>
+      <tr><td><b>Cultivo anual</b></td><td>ha</td><td>10 años</td><td>0 años</td><td>1 año</td><td>20&nbsp;%</td></tr>
+      <tr><td><b>Plantación perenne</b></td><td>ha</td><td>20 años</td><td>4 años</td><td>4 años</td><td>25&nbsp;%</td></tr>
+      <tr><td><b>Agricultura protegida</b></td><td>ha</td><td>12 años</td><td>1 año</td><td>2 años</td><td>15&nbsp;%</td></tr>
+      <tr><td><b>Producción pecuaria</b></td><td>cabeza</td><td>8 años</td><td>0 años</td><td>1 año</td><td>20&nbsp;%</td></tr>
+      <tr><td><b>Planta agroindustrial</b></td><td>línea</td><td>15 años</td><td>1 año</td><td>3 años</td><td>20&nbsp;%</td></tr>
+      <tr><td><b>Riego, maquinaria u obra</b></td><td>ha</td><td>15 años</td><td>0 años</td><td>2 años</td><td>10&nbsp;%</td></tr>
+      <tr><td><b>Forestal o agroforestal</b></td><td>ha</td><td>25 años</td><td>8 años</td><td>3 años</td><td>30&nbsp;%</td></tr>
+      <tr><td><b>Proyecto social o público</b></td><td>beneficiario</td><td>20 años</td><td>1 año</td><td>2 años</td><td>10&nbsp;%</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Los valores del tipo son una propuesta, no una imposición</div>
+    <p>Al cambiar de tipo, la app rellena esos cinco campos con lo que es habitual; después puedes modificar cualquiera. Lo que el tipo sí decide en firme es el <b>lenguaje</b> del resto de la app —la unidad, el nombre de la producción— y la ilustración que acompaña al proyecto en el informe.</p>
+  </div>
+
+  <!-- 2.3 -->
+  <h2 id="s2-3"><span class="num">2.3</span>El horizonte de evaluación</h2>
+  <p>El horizonte no es un número redondo: tiene que alcanzar a que el proyecto produzca y rara vez conviene pasar de la vida útil del activo principal. En perennes se acostumbra la vida productiva de la plantación; en agroindustria, la vida útil de la maquinaria.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b2-horizonte.png" alt="Tarjeta 2 del Bloque 2: horizonte, año base, gestación, maduración, valor residual y la línea de tiempo"></div>
+    <figcaption><b>Figura 2.2.</b> El horizonte del cafetal: 20 años a partir de 2026, tres sin cosecha y tres más hasta la plena producción. La línea de tiempo de abajo reparte el horizonte en sus cuatro etapas y marca el valor residual del último año; se redibuja cada vez que cambias un campo.</figcaption>
+  </figure>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.9in">Campo</th><th>Qué significa y cómo se elige</th></tr></thead>
+    <tbody>
+      <tr><td><b>Horizonte</b></td><td>Cuántos años se evalúan. Con una tasa del 10&nbsp;%, lo que ocurre después del año 30 casi no cambia el VAN, así que alargar el horizonte para «mejorar» el resultado es un truco que un revisor detecta de inmediato.</td></tr>
+      <tr><td><b>Año base</b></td><td>El año 0 del proyecto y el año de los precios constantes. Es el año en que se firma la inversión, no el año en que se escribe la tesis.</td></tr>
+      <tr><td><b>Años antes de la primera producción</b></td><td>La <b>gestación</b>: los años en que el proyecto solo cuesta. Cero si vende desde el primer año.</td></tr>
+      <tr><td><b>Años hasta la plena producción</b></td><td>La <b>maduración</b>: cuántos años tarda en llegar al rendimiento pleno una vez que empieza a producir. El Bloque 3 reparte la producción a lo largo de estos años.</td></tr>
+      <tr><td><b>Valor residual</b></td><td>Lo que valen la tierra, la obra y el equipo al terminar el horizonte, como porcentaje de la inversión. No es un regalo: es el activo que sigue existiendo y que alguien podría comprar.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · por qué el horizonte tiene un límite natural</div>
+    <p>Descontar al 10&nbsp;% hace que un peso del año 30 valga hoy 5.7 centavos, y uno del año 50, menos de un centavo. Alargar el horizonte de 30 a 50 años agrega números, no información. La regla práctica es tomar la vida útil del activo que define el proyecto —la plantación, el invernadero, la maquinaria— y cerrar ahí, reconociendo lo que queda como valor residual.</p>
+  </div>
+
+  <!-- 2.4 -->
+  <h2 id="s2-4"><span class="num">2.4</span>Moneda y base de precios</h2>
+  <p>Aquí se toma la decisión más silenciosa del estudio. Un proyecto puede escribirse de dos maneras y las dos son correctas, pero no se mezclan:</p>
+
+  <figure class="media">
+    <div class="marco"><img src="../img/b2-precios.png" alt="Tarjeta 3 del Bloque 2: moneda, base de precios e inflación esperada"></div>
+    <figcaption><b>Figura 2.3.</b> Moneda, base de precios e inflación. Si el proyecto compra o vende en divisas, se abre además el campo del tipo de cambio.</figcaption>
+  </figure>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.5in">Base</th><th>Qué significa</th><th style="width:1.1in">Tasa que corresponde</th></tr></thead>
+    <tbody>
+      <tr><td><b>Precios constantes</b></td><td>Todos los flujos se escriben en pesos del año base. El precio del año 10 es el de hoy: la inflación no aparece en ninguna celda.</td><td>La tasa <b>real</b></td></tr>
+      <tr><td><b>Precios corrientes</b></td><td>Cada año lleva su propia inflación, tanto en los ingresos como en los costos. Es lo que pide un banco que quiere ver pesos de caja.</td><td>La tasa <b>nominal</b></td></tr>
+    </tbody>
+  </table>
+
+  <p>La app no deja que esto se desordene: en cuanto eliges la base, el recuadro de resultados de la tarjeta 4 marca <span class="ui">tasa que usará el estudio</span> con la que corresponde, y la ficha del proyecto lo escribe con todas sus letras. La inflación esperada sirve, a precios constantes, para una sola cosa: convertir la tasa nominal en real.</p>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>El error más común de las tesis</div>
+    <p>Escribir los flujos a precios de hoy y descontarlos con la tasa que cobra el banco —que es nominal— castiga al proyecto dos veces por la inflación. Con 4.5&nbsp;% de inflación y una tasa nominal de 13.29&nbsp;%, la tasa real es 8.41&nbsp;%: descontar flujos constantes al 13.29&nbsp;% equivale a exigirle al proyecto casi cinco puntos de más. En proyectos perennes eso basta para volver negativo un VAN que era positivo.</p>
+  </div>
+
+  <!-- 2.5 -->
+  <h2 id="s2-5"><span class="num">2.5</span>La tasa de descuento</h2>
+  <p>La tasa es el precio que le pones al tiempo y a tu riesgo. La app ofrece cuatro maneras de armarla; todas terminan en lo mismo —una tasa nominal y su equivalente real— pero cada una se defiende de distinta forma.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b2-tasa.png" alt="Tarjeta 4 del Bloque 2: los cuatro modos de la tasa, los resultados y las dos figuras"></div>
+    <figcaption><b>Figura 2.4.</b> La tasa del cafetal, armada como costo de capital promedio ponderado. Los cuatro recuadros dan la tasa nominal, la real, la que usará el estudio y lo que vale hoy un peso del último año. Abajo, de qué se compone la tasa y qué le hace al futuro: a 8.41&nbsp;% un peso vale la mitad a los 8.6 años.</figcaption>
+  </figure>
+
+  <h3>Los cuatro modos</h3>
+
+  <p><b>TREMA</b> — la tasa de rendimiento mínima aceptable. Se declara el premio al riesgo que se exige <i>por encima de conservar el poder de compra</i>, y la app le suma la inflación:</p>
+  <div class="formula">TREMA = premio + inflación + premio × inflación</div>
+  <p>Con el estudio del nopal —premio real del 12&nbsp;% e inflación del 4.50&nbsp;%— la tasa nominal es 17.04&nbsp;% y la real, 12.00&nbsp;% exacta. Es el modo más honesto cuando el proyecto se financia con recursos propios y no hay un costo de capital que calcular.</p>
+
+  <p><b>CPPC</b> — el costo de capital promedio ponderado, para cuando una parte se financia con crédito:</p>
+  <div class="formula">CPPC = (E/V)·k<sub>e</sub> + (D/V)·k<sub>d</sub>·(1 − t)</div>
+  <p>El cafetal se financia con 55&nbsp;% de capital propio al 17&nbsp;% y 45&nbsp;% de deuda al 12.50&nbsp;%, deducible al 30&nbsp;%: 0.55 × 17.00 + 0.45 × 12.50 × 0.70 = <b>13.29&nbsp;%</b> nominal, equivalente a <b>8.41&nbsp;%</b> real. La deuda entra <i>después de impuestos</i> porque el interés se deduce, y esa es precisamente la tasa del crédito que usará la tabla de amortización del Bloque 5.</p>
+
+  <p><b>CAPM</b> — el modelo de valuación de activos de capital, para cuando hay que justificar el costo del capital propio con referencias de mercado:</p>
+  <div class="formula">k<sub>e</sub> = r<sub>f</sub> + β × (prima de mercado) + riesgo país</div>
+  <p>En el estudio de la fresa: 7.50&nbsp;% libre de riesgo, β de 1.15, prima de mercado de 5.50&nbsp;% y riesgo país de 2.00&nbsp;% dan un costo del capital propio de 15.83&nbsp;%. Como ese proyecto lleva 60&nbsp;% de deuda al 14.50&nbsp;%, la app pondera las dos fuentes igual que en el CPPC y llega a <b>12.42&nbsp;%</b> nominal y <b>7.58&nbsp;%</b> real.</p>
+
+  <p><b>La escribo yo</b> — la tasa viene dada: la fija la institución que evalúa, el comité de inversión o el término de referencia del estudio. Solo hay que declarar si el número dado es real o nominal, porque de eso depende todo lo demás.</p>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · Fisher, y por qué no se restan</div>
+    <p>La tasa real no es la nominal menos la inflación: es</p>
+    <div class="formula" style="background:#fff">(1 + i<sub>nominal</sub>) = (1 + i<sub>real</sub>) × (1 + π)</div>
+    <p>Con 13.29&nbsp;% nominal y 4.50&nbsp;% de inflación, la resta daría 8.79&nbsp;% y la fórmula correcta da <b>8.41&nbsp;%</b>. La diferencia —el término cruzado— crece con la inflación: al 25&nbsp;% ya no es un detalle. La app usa siempre la relación exacta y la resta no aparece en ningún cálculo.</p>
+  </div>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión · qué modo usar</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Si</b> el proyecto es del productor y se paga con recursos propios</td><td><b>entonces</b> TREMA, y justifica el premio al riesgo con lo que rinden alternativas comparables de la región.</td></tr>
+      <tr><td><b>Si</b> hay crédito de por medio</td><td><b>entonces</b> CPPC, con la misma tasa de crédito que vas a poner en el Bloque 5.</td></tr>
+      <tr><td><b>Si</b> tienes que sustentar el costo del capital propio ante un comité</td><td><b>entonces</b> CAPM, y cita la fuente de la beta y del riesgo país.</td></tr>
+      <tr><td><b>Si</b> la tasa te la dieron</td><td><b>entonces</b> escríbela, declara si es real o nominal, y di quién la fijó.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">En los cuatro casos, la app escribe en la ficha la frase completa de cómo se obtuvo, y el informe la repite: la tasa nunca queda sin explicación.</p>
+  </div>
+
+  <!-- 2.6 -->
+  <h2 id="s2-6"><span class="num">2.6</span>El régimen fiscal</h2>
+  <p>El impuesto no cambia si el proyecto es bueno, pero sí cuánto queda para el dueño, y en el sector primario mexicano hay una exención que cambia el resultado de muchos proyectos pequeños.</p>
+
+  <figure class="media">
+    <div class="marco"><img src="../img/b2-fiscal.png" alt="Tarjeta 5 del Bloque 2: impuesto sobre la renta, reparto de utilidades, régimen del sector primario e IVA"></div>
+    <figcaption><b>Figura 2.5.</b> El régimen fiscal. Al elegir persona física o moral se abren los campos que la exención necesita: el número de socios y el valor de la unidad de medida y actualización.</figcaption>
+  </figure>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.8in">Campo</th><th>Qué hace</th></tr></thead>
+    <tbody>
+      <tr><td><b>Impuesto sobre la renta</b></td><td>La tasa que se aplica a la utilidad gravable del Bloque 5. Arriba de 35&nbsp;% la app pide que la revises.</td></tr>
+      <tr><td><b>Reparto de utilidades</b></td><td>Si el proyecto lo paga, se resta antes del impuesto, como manda la ley.</td></tr>
+      <tr><td><b>Régimen del sector primario</b></td><td>La exención del artículo 74: <b>persona física</b>, 40 UMA anuales; <b>persona moral</b>, 20 UMA por socio hasta un tope de 200.</td></tr>
+      <tr><td><b>UMA diaria</b></td><td>Se actualiza cada febrero, así que es un campo y no una constante escondida en el programa.</td></tr>
+      <tr><td><b>IVA</b></td><td>Si es acreditable —lo normal en un proyecto formal— no entra en los flujos, porque se recupera. Solo se incluye cuando de verdad es un costo.</td></tr>
+      <tr><td><b>Tasa social de descuento</b></td><td>No se usa en la evaluación financiera: la espera el Bloque 8 para la evaluación económica.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · las dos exenciones, con los tres estudios de práctica</div>
+    <p>Con una UMA diaria de $113.14, una UMA anual vale $41,296.10.</p>
+    <ul>
+      <li>El <b>nopal</b> es persona física: 40 UMA exentas al año, es decir <b>$1,651,844</b> de ingreso libre de impuesto.</li>
+      <li>El <b>cafetal</b> es una sociedad de 12 socios: 12 × 20 = 240 UMA, pero el tope son 200, así que quedan exentos <b>$8,259,220</b>.</li>
+      <li>La <b>fresa</b> está en el régimen general: sin exención, y con reparto de utilidades al 10&nbsp;%.</li>
+    </ul>
+    <p>En el nopal esa exención cubre casi todo el ingreso de los primeros años, y por eso su flujo del inversionista casi no paga impuesto hasta que la plantación madura.</p>
+  </div>
+
+  <!-- 2.7 -->
+  <h2 id="s2-7"><span class="num">2.7</span>La ficha y el archivo del proyecto</h2>
+  <p>La última tarjeta reúne las seis decisiones en una ficha que se lee de un vistazo. Es la que conviene imprimir y llevar a la revisión: contesta, en catorce renglones, todo lo que un jurado pregunta antes de mirar un solo peso.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b2-ficha.png" alt="Tarjeta 6 del Bloque 2: la ficha del proyecto, las notas y los botones de guardar y abrir"></div>
+    <figcaption><b>Figura 2.6.</b> La ficha del cafetal. Arriba, los avisos de coherencia; en medio, la ficha completa; abajo, las notas del estudio y los botones que guardan y abren el proyecto. A la derecha dice cuándo se guardó por última vez en este navegador.</figcaption>
+  </figure>
+
+  <ol class="pasos">
+    <li><b>Se guarda solo.</b> Conforme escribes, el proyecto queda en la memoria del navegador, y al volver a abrir la app lo encuentra. Eso vive en esa computadora y en ese navegador.</li>
+    <li><b>Guardar el proyecto (.json)</b> baja el archivo del estudio. Es el único que garantiza que puedas seguir en otra máquina, y el que hay que archivar antes de cada cambio grande.</li>
+    <li><b>Abrir un proyecto</b> lee un <code>.json</code> guardado y repuebla los diez bloques de una vez: las series del 3, los presupuestos del 4, el crédito del 5, los escenarios del 7.</li>
+    <li><b>Cargar un ejemplo</b> trae uno de los seis proyectos tipo o uno de los tres estudios de práctica, con todos sus datos.</li>
+    <li><b>Empezar de cero</b> borra lo guardado y deja la app como recién abierta. No se puede deshacer, así que conviene haber bajado el <code>.json</code> antes.</li>
+  </ol>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Las notas del proyecto acaban en el informe</div>
+    <p>El campo <span class="ui">Notas y supuestos adicionales</span> no es un bloc de apuntes: lo que escribas ahí aparece en la ficha del informe del Bloque 10. Es el lugar para dejar dicho de dónde salieron los precios, qué se supuso sobre el mercado o qué queda fuera del estudio.</p>
+  </div>
+
+  <!-- 2.8 -->
+  <h2 id="s2-8"><span class="num">2.8</span>Los avisos de este bloque</h2>
+  <p>La ficha va encabezada por los avisos de coherencia. Son de tres clases: los <b>errores</b> impiden seguir porque el estudio no se puede calcular, las <b>advertencias</b> señalan algo posible pero raro, y las <b>notas</b> explican una decisión que la app tomó por ti.</p>
+
+  <table class="compacta">
+    <thead><tr><th style="width:0.9in">Clase</th><th>Lo que revisa</th></tr></thead>
+    <tbody>
+      <tr><td><b>Error</b></td><td>Escala en cero o negativa; horizonte menor a un año; una tasa que no se pudo calcular con los datos dados; capital propio y deuda que suman cero; divisas declaradas sin tipo de cambio.</td></tr>
+      <tr><td><b>Error</b></td><td>Un horizonte que <b>termina antes de la primera producción</b>: con tres años de horizonte y cuatro de gestación, el proyecto nunca vendería nada.</td></tr>
+      <tr><td><b>Advertencia</b></td><td>El proyecto sin nombre; un horizonte que deja muy pocos años a plena producción; una tasa real negativa; una tasa usada demasiado alta —castiga tanto el futuro que ningún perenne pasa— o demasiado baja para un proyecto privado; deuda más cara que el capital propio; impuesto arriba del 35&nbsp;%.</td></tr>
+      <tr><td><b>Nota</b></td><td>Qué implica la base de precios elegida y con qué tasa se descontará; cuánto queda exento por el régimen del sector primario; que más allá de 30 años el descuento vuelve casi irrelevante lo que ocurra.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · un proyecto imposible</div>
+    <p>Un proyecto con escala cero, tres años de horizonte y cuatro de gestación, escrito a precios corrientes, produce estos cuatro avisos:</p>
+    <ul>
+      <li><b>Error:</b> la escala del proyecto tiene que ser mayor que cero.</li>
+      <li><b>Error:</b> el horizonte (3 años) termina antes de la primera producción (año 5): el proyecto nunca vendería nada.</li>
+      <li><b>Advertencia:</b> el proyecto no tiene nombre; el informe y los archivos lo necesitan.</li>
+      <li><b>Nota:</b> a precios corrientes cada año llevará su inflación y se descuenta con la tasa nominal (17.04&nbsp;%). Los ingresos y los costos tienen que inflarse los dos.</li>
+    </ul>
+  </div>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión · antes de pasar al Bloque 3</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Si</b> queda algún error en rojo</td><td><b>entonces</b> resuélvelo aquí: los bloques siguientes calcularían sobre un supuesto imposible.</td></tr>
+      <tr><td><b>Si</b> hay advertencias</td><td><b>entonces</b> léelas y decide: una advertencia atendida y explicada en las notas vale más que una advertencia escondida.</td></tr>
+      <tr><td><b>Si</b> todo está en verde</td><td><b>entonces</b> descarga el <code>.json</code> antes de seguir: es el punto de partida al que querrás volver.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">La ficha de este bloque es la que el informe del Bloque 10 imprime como sección de supuestos. Lo que quede aquí es lo que se publica.</p>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>EconomicsPro · Manual de usuario · Capítulo 3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;1,500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../interior.css">
+<script src="../paginar.js"></script>
+<style>
+  .formula { font-family: var(--mono); font-size: 9pt; background: var(--marino-suave); border-radius: 5px; padding: 0.07in 0.12in; margin: 0.08in 0; }
+</style>
+</head>
+<body>
+
+<section class="capitulo" id="cap-b3" data-pestana="B3" data-orden="3" style="--acento: var(--b3)">
+  <div class="cap-apertura">
+    <div class="cap-num">3</div>
+    <div class="cap-etiqueta">Bloque 3 · Mercado</div>
+    <h1>Mercado, precios e ingresos</h1>
+    <div class="cap-regla"></div>
+    <p class="cap-resumen">De aquí sale la primera línea del estado de resultados, y con ella la mitad del VAN. El bloque toma la serie de precios y rendimientos que consigas, la deflacta, la describe, la proyecta con el método que elijas y la convierte en un programa de ventas año por año que reconoce la gestación, la merma y los canales.</p>
+    <ul class="cap-contenido">
+      <li><b>3.1</b>De dónde sale el ingreso</li>
+      <li><b>3.2</b>La serie histórica</li>
+      <li><b>3.3</b>Lo que la serie dice de sí misma</li>
+      <li><b>3.4</b>La proyección y sus cinco métodos</li>
+      <li><b>3.5</b>El mercado en el que entra el proyecto</li>
+      <li><b>3.6</b>El programa de producción y ventas</li>
+      <li><b>3.7</b>Los avisos de este bloque</li>
+    </ul>
+  </div>
+
+  <!-- 3.1 -->
+  <h2 id="s3-1"><span class="num">3.1</span>De dónde sale el ingreso</h2>
+  <p class="lead">El ingreso de un proyecto agrícola es un producto de tres números —precio × rendimiento × escala— y los tres son inciertos. Este bloque no los adivina: toma lo que ha pasado, lo pone en pesos comparables, dice qué tan confiable es esa historia y te deja elegir, con conocimiento de causa, qué vas a suponer hacia adelante.</p>
+
+  <p>El resultado es una sola tabla —el <b>programa de producción y ventas</b>— con un renglón por año del horizonte. Esa tabla es lo único que los bloques siguientes leen de aquí: el Bloque 4 la usa para calcular los costos que siguen a la producción, el 5 para levantar el estado de resultados y el 8 para saber cuánto se exporta.</p>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>El bloque donde más se miente sin querer</div>
+    <p>Suponer un precio optimista no se siente como una mentira: se siente como confianza. Pero un 10&nbsp;% de más en el precio es, casi siempre, el doble o el triple de eso en el VAN, porque el costo no se mueve. Por eso este capítulo insiste tanto en dejar registrado <b>de dónde salió cada número</b>: la serie, el método de proyección y el año base van a acabar impresos en el informe del Bloque 10.</p>
+  </div>
+
+  <!-- 3.2 -->
+  <h2 id="s3-2"><span class="num">3.2</span>La serie histórica</h2>
+  <p>La primera tarjeta es una mini-hoja de cuatro columnas: <code>año</code>, <code>precio nominal</code>, <code>rendimiento</code> e <code>índice de precios</code>. Se puede escribir a mano, pegar un bloque copiado de una hoja de cálculo —el pegado se reparte solo sobre las celdas— o importar un <code>.csv</code>.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b3-serie.png" alt="Tarjeta 1 del Bloque 3: la serie histórica del café y los seis recuadros que la describen"></div>
+    <figcaption><b>Figura 3.1.</b> La serie del cafetal: diez años de precio nominal, rendimiento e índice nacional de precios. Abajo, los seis recuadros que la describen una vez deflactada, y la nota que dice a pesos de qué año quedó.</figcaption>
+  </figure>
+
+  <h3>Por qué se deflacta</h3>
+  <p>Un precio de 2016 y uno de 2025 no son comparables: entre ellos hay casi 57&nbsp;% de inflación acumulada. Mirar la serie nominal lleva a ver crecimiento donde solo hubo inflación. Deflactar es llevar todos los años a pesos del mismo año con el índice de precios:</p>
+  <div class="formula">precio real<sub>t</sub> = precio nominal<sub>t</sub> × (índice del año base / índice<sub>t</sub>)</div>
+
+  <p>La app deflacta al <b>año base del Bloque 2</b>, no al último año de la serie. Si el año base es posterior al último dato —lo normal: la serie termina en 2025 y el proyecto arranca en 2026—, extiende el índice hacia adelante con la inflación declarada y lo dice en la nota al pie de la tarjeta.</p>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · el café, en nominal y en real</div>
+    <p>El precio del cafetal pasa de $42,000 en 2016 a $94,000 en 2025: más del doble en nominal, un crecimiento aparente del 9.4&nbsp;% anual. Deflactado a pesos de 2026 con el índice —de 91.6 a 143.4, extendido a 2026 con el 4.50&nbsp;%— el crecimiento real es de <b>4.1&nbsp;%</b> al año. Sigue siendo un producto que se encareció, pero menos de la mitad de lo que parecía.</p>
+  </div>
+
+  <h3>Cuánta serie hace falta</h3>
+  <table class="compacta">
+    <thead><tr><th style="width:1.1in">Años</th><th>Qué se puede hacer con ella</th></tr></thead>
+    <tbody>
+      <tr><td><b>Menos de 2</b></td><td>Nada: la app marca error. No hay serie que describir ni tendencia que probar.</td></tr>
+      <tr><td><b>2 a 4</b></td><td>Se puede promediar, pero la app advierte: una tendencia estimada con tan pocos datos es frágil, y conviene quedarse con el promedio o con el último valor.</td></tr>
+      <tr><td><b>5 a 7</b></td><td>Suficiente para un promedio defendible; la tendencia solo si la prueba sale significativa.</td></tr>
+      <tr><td><b>8 o más</b></td><td>Lo deseable. Permite ver ciclos, distinguir tendencia de ruido y justificar el método elegido.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja nota">
+    <div class="caja-t"><span class="ico">i</span>Seis series de ejemplo, ilustrativas</div>
+    <p>El botón <span class="ui">Cargar una serie de ejemplo</span> trae diez años de aguacate, maíz de temporal, jitomate de invernadero, bovino en pie, queso artesanal y el rendimiento adicional de un riego. Tienen el orden de magnitud y la variabilidad reales, pero <b>no son cifras oficiales</b>: para un estudio de verdad, las series se toman del servicio de información agroalimentaria, del sistema de precios de mercados mayoristas o del registro del propio productor.</p>
+  </div>
+
+  <!-- 3.3 -->
+  <h2 id="s3-3"><span class="num">3.3</span>Lo que la serie dice de sí misma</h2>
+  <p>Debajo de la mini-hoja aparecen seis recuadros. No son decoración: son el argumento con el que se justifica el método de proyección de la tarjeta siguiente.</p>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.7in">Recuadro</th><th>Qué dice</th><th style="width:1.35in">En el café</th></tr></thead>
+    <tbody>
+      <tr><td><b>Precio real medio</b></td><td>El promedio de la serie deflactada y su coeficiente de variación. Arriba de 25&nbsp;% la app advierte que el riesgo pesará más que la media.</td><td>$84,882 · CV 19&nbsp;%</td></tr>
+      <tr><td><b>Tendencia del precio</b></td><td>La pendiente de la recta de mínimos cuadrados, en pesos por año, con el valor p de su prueba t y el r². Es la que decide si «tendencia» es un método legítimo.</td><td>+$4,232.13 al año<br>p = 0.0044 · r² = 0.66</td></tr>
+      <tr><td><b>Crecimiento real anual</b></td><td>La tasa de crecimiento media anual entre el primer y el último dato. Sirve para el método de crecimiento compuesto.</td><td>4.1&nbsp;%</td></tr>
+      <tr><td><b>Rendimiento medio</b></td><td>Lo mismo para el rendimiento, con su máximo observado. La app compara ese máximo con el rendimiento pleno que supongas.</td><td>1.95 t/ha · CV 8&nbsp;%<br>máximo 2.2</td></tr>
+      <tr><td><b>Precio proyectado</b></td><td>Lo que el método elegido da para el primer año, y con qué método se obtuvo.</td><td>$98,248</td></tr>
+      <tr><td><b>Rendimiento pleno</b></td><td>El rendimiento al que llega el proyecto cuando madura.</td><td>2.04 t/ha</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · qué significa ese valor p</div>
+    <p>La app ajusta una recta al precio real contra el año y prueba si su pendiente es distinta de cero. El valor p es la probabilidad de ver una pendiente así de grande si en realidad el precio no tuviera tendencia. Con p = 0.0044, como en el café, esa probabilidad es de 4 en mil: la tendencia es real. Con p = 0.30 no lo es, y proyectar «tendencia» sería inventar un crecimiento que los datos no sostienen. El r² dice otra cosa distinta: cuánta de la variación explica la recta —0.66 en el café, es decir que un tercio de lo que pasó sigue siendo ruido.</p>
+  </div>
+
+  <!-- 3.4 -->
+  <h2 id="s3-4"><span class="num">3.4</span>La proyección y sus cinco métodos</h2>
+  <p>Ninguna proyección es neutral. Elegir «tendencia» cuando la pendiente no es significativa es inventar crecimiento; elegir «promedio» cuando el precio lleva diez años subiendo es tirar información. La tarjeta 2 te deja elegir, por separado para el precio y para el rendimiento, y la tarjeta 1 ya te dijo cuál de los dos casos tienes.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b3-proyeccion.png" alt="Tarjeta 2 del Bloque 3: método de proyección del precio y del rendimiento, con las dos figuras y su banda"></div>
+    <figcaption><b>Figura 3.2.</b> La proyección del cafetal con el promedio de los últimos cinco años. La línea continua es lo observado, la punteada lo proyectado y la franja es una desviación estándar: con el método de tendencia se ensancha conforme se aleja de los datos, que es lo que de verdad le pasa a la confianza de un pronóstico.</figcaption>
+  </figure>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.55in">Método</th><th>Qué hace</th><th style="width:1.9in">Cuándo es el correcto</th></tr></thead>
+    <tbody>
+      <tr><td><b>Promedio de los últimos años</b></td><td>Promedia los últimos <i>k</i> años y repite ese valor todo el horizonte. La banda es su desviación estándar.</td><td>Cuando no hay tendencia significativa, que es el caso más común en precios agrícolas.</td></tr>
+      <tr><td><b>Tendencia de mínimos cuadrados</b></td><td>Extiende la recta ajustada. La banda se ensancha al alejarse del centro de los datos, como manda el intervalo de predicción.</td><td>Solo si la prueba de la tarjeta 1 salió significativa, y aun así con cuidado a veinte años.</td></tr>
+      <tr><td><b>Crecimiento compuesto</b></td><td>Aplica una tasa constante año con año, la de la serie o la que escribas.</td><td>Cuando hay una razón estructural para esperar crecimiento: un mercado que se abre, una demanda que crece.</td></tr>
+      <tr><td><b>Último valor observado</b></td><td>Repite el último dato.</td><td>Series muy cortas, o cuando el último año refleja un cambio de nivel permanente.</td></tr>
+      <tr><td><b>Valor que yo indico</b></td><td>El número lo pones tú.</td><td>Cuando hay un contrato, un precio de garantía o un precio meta que gobierna el proyecto. Se justifica con el documento, no con la serie.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión · qué método elegir</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Si</b> la tendencia salió significativa y la serie es larga</td><td><b>entonces</b> tendencia, y reporta la pendiente y su valor p en el estudio.</td></tr>
+      <tr><td><b>Si</b> la tendencia no es significativa</td><td><b>entonces</b> promedio de los últimos años: es la opción honesta, y la app te avisa si eliges otra.</td></tr>
+      <tr><td><b>Si</b> el precio lo fija un contrato o un programa</td><td><b>entonces</b> valor indicado, citando el documento que lo fija.</td></tr>
+      <tr><td><b>Si</b> dudas entre dos</td><td><b>entonces</b> elige el conservador y deja el otro para el análisis de sensibilidad del Bloque 7.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">A precios constantes, hacer crecer el precio <i>real</i> significa suponer que el producto se encarecerá frente a todo lo demás durante veinte años. La app lo advierte, porque es un supuesto fuerte que casi nunca se justifica.</p>
+  </div>
+
+  <!-- 3.5 -->
+  <h2 id="s3-5"><span class="num">3.5</span>El mercado en el que entra el proyecto</h2>
+  <p>La tercera tarjeta responde una pregunta que todo jurado hace: <b>¿y a quién le vas a vender?</b> Con cuatro números —demanda actual, oferta actual y el crecimiento de cada una— la app dibuja la brecha entre las dos y calcula qué parte de ella cubre el proyecto.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b3-mercado.png" alt="Tarjeta 3 del Bloque 3: demanda, oferta, brecha y participación del proyecto"></div>
+    <figcaption><b>Figura 3.3.</b> El mercado del cafetal. Los cuatro recuadros dan la demanda insatisfecha del primer año, la participación del proyecto en el mercado total, qué parte de la brecha cubre y el efecto que tendría sobre el precio según la elasticidad declarada.</figcaption>
+  </figure>
+
+  <table class="compacta">
+    <thead><tr><th style="width:1.9in">Indicador</th><th>Cómo se lee</th><th style="width:0.9in">En el café</th></tr></thead>
+    <tbody>
+      <tr><td><b>Demanda insatisfecha</b></td><td>Demanda menos oferta en el primer año. Si sale negativa, el mercado ya está cubierto y el proyecto tendría que desplazar a alguien.</td><td>857 t</td></tr>
+      <tr><td><b>Participación del proyecto</b></td><td>Volumen del proyecto entre demanda total. Arriba del 5&nbsp;% la app advierte que el precio deja de ser un dato dado.</td><td>0.16&nbsp;%</td></tr>
+      <tr><td><b>Cubre de la brecha</b></td><td>Qué parte de la demanda insatisfecha absorbe el proyecto. Es el argumento de mercado más directo.</td><td>1.8&nbsp;%</td></tr>
+      <tr><td><b>Efecto sobre el precio</b></td><td>Con la elasticidad precio de la demanda, cuánto movería el precio la producción del proyecto.</td><td>−0.2&nbsp;%</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja teoria">
+    <div class="caja-t"><span class="ico">θ</span>Teoría en breve · cuándo el precio deja de ser un dato</div>
+    <p>Un proyecto pequeño es <i>tomador de precios</i>: vende lo que quiera al precio del mercado, porque su volumen no lo mueve. Uno grande no. Con una elasticidad de −0.5, un proyecto que agrega 10&nbsp;% al volumen del mercado tira el precio 20&nbsp;%, y ese golpe se lo aplica también a sí mismo. La app calcula ese efecto y lo reporta; si tu participación es pequeña —como el 0.16&nbsp;% del cafetal— el efecto es despreciable y el precio se puede tratar como dado.</p>
+  </div>
+
+  <!-- 3.6 -->
+  <h2 id="s3-6"><span class="num">3.6</span>El programa de producción y ventas</h2>
+  <p>La última tarjeta arma la tabla que los bloques siguientes leen. Parte del rendimiento pleno y del precio proyectado, y les aplica, en este orden, la maduración, la merma, los canales y los subproductos.</p>
+
+  <figure>
+    <div class="marco"><img src="../img/b3-programa.png" alt="Tarjeta 4 del Bloque 3: merma, canales, subproductos y las primeras filas del programa"></div>
+    <figcaption><b>Figura 3.4.</b> Los controles del programa y sus primeros años. La merma y la parte que se vende se aplican al volumen; los canales, al precio; los subproductos se suman aparte.</figcaption>
+  </figure>
+
+  <h3>Cómo se construye cada renglón</h3>
+  <ol class="pasos">
+    <li><b>La maduración reparte el rendimiento.</b> Durante la gestación no hay nada. El primer año de cosecha entra con el 35&nbsp;% del rendimiento pleno y de ahí sube en partes iguales hasta el 100&nbsp;%. En el cafetal —tres años de gestación y tres de maduración— eso da 0.71, 1.38 y 2.04 t/ha en 2030, 2031 y 2032.</li>
+    <li><b>La merma baja el volumen.</b> Con 5&nbsp;% de merma, las 16.32 toneladas producidas por las ocho hectáreas se convierten en 15.504 vendibles. Si además solo se vende una parte, se aplica después.</li>
+    <li><b>Los canales corrigen el precio.</b> Cada canal lleva su porcentaje del volumen y un factor sobre el precio. El cafetal vende 70&nbsp;% por exportación con un premio del 10&nbsp;% y 30&nbsp;% al mercado nacional con un castigo del 10&nbsp;%: el precio efectivo sube de $98,247.80 a <b>$102,177.71</b>, es decir un 4&nbsp;% de premio ponderado.</li>
+    <li><b>Los subproductos se suman.</b> Se declaran por unidad de producto: 0.4 toneladas de pulpa por tonelada de café a $400 dan $2,611 al año a plena producción.</li>
+    <li><b>Otros ingresos</b> entran como una cantidad fija al año, para apoyos, renta de maquinaria o servicios.</li>
+  </ol>
+
+  <figure class="media">
+    <div class="marco"><img src="../img/b3-prog-fig.png" alt="Figura del programa de producción y ventas del cafetal"></div>
+    <figcaption><b>Figura 3.5.</b> El programa completo del cafetal. Las barras son el ingreso por año —producto principal y subproductos— y la línea, la producción. Se ven los tres años de gestación en cero, los dos de maduración y la meseta a partir de 2032.</figcaption>
+  </figure>
+
+  <div class="caja ejemplo">
+    <div class="caja-t"><span class="ico">▸</span>Ejemplo · el renglón de un año pleno, paso a paso</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:52%">Rendimiento pleno × escala</td><td>2.04 t/ha × 8 ha = <b>16.32 t</b></td></tr>
+      <tr><td>Menos 5&nbsp;% de merma</td><td>= <b>15.504 t</b> vendibles</td></tr>
+      <tr><td>Precio proyectado</td><td>$98,247.80 / t</td></tr>
+      <tr><td>× factor de canales (0.7 × 1.1 + 0.3 × 0.9)</td><td>= <b>$102,177.71</b> / t</td></tr>
+      <tr><td>Ingreso del producto principal</td><td>15.504 × 102,177.71 = <b>$1,584,163</b></td></tr>
+      <tr><td>Subproducto (16.32 × 0.4 × $400)</td><td>= <b>$2,611</b></td></tr>
+      <tr class="total"><td><b>Ingreso total del año</b></td><td><b>$1,586,774</b></td></tr>
+    </tbody></table>
+    <p>Multiplicado por los quince años plenos y sumados los dos de maduración, el horizonte entero deja $25,428,060 de ingreso —la cifra que el Bloque 5 empieza a repartir entre costos, impuestos y crédito.</p>
+  </div>
+
+  <!-- 3.7 -->
+  <h2 id="s3-7"><span class="num">3.7</span>Los avisos de este bloque</h2>
+  <p>La tarjeta de revisión reúne lo que la app encontró raro. Vale la pena leerlos todos: casi todos señalan una decisión que habrá que justificar por escrito.</p>
+
+  <table class="compacta">
+    <thead><tr><th style="width:0.95in">Clase</th><th>Lo que revisa</th></tr></thead>
+    <tbody>
+      <tr><td><b>Error</b></td><td>Menos de dos años de precios; un programa de ventas que no genera ingreso —revisa rendimiento, precio y escala—.</td></tr>
+      <tr><td><b>Advertencia</b></td><td>Serie demasiado corta para estimar una tendencia; <b>pendiente no significativa</b> con el método de tendencia elegido; precio real muy variable (CV alto); años sin índice que se quedaron en nominal; un precio real que crece a precios constantes; participación de mercado tan grande que el precio deja de ser un dato; oferta que ya cubre la demanda; rendimiento pleno por encima del máximo observado; merma desproporcionada; canales que no suman 100&nbsp;%.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caja importante">
+    <div class="caja-t"><span class="ico">!</span>El aviso que más se ignora</div>
+    <p>«El rendimiento pleno queda por encima del máximo que se ha observado.» Suponer que la parcela del proyecto va a superar el mejor año de la serie es posible —tecnología nueva, material mejorado— pero hay que decir por qué. Si no se explica, es el primer número que un jurado va a bajar, y con él se cae el VAN.</p>
+  </div>
+
+  <div class="caja regla">
+    <div class="caja-t"><span class="ico">✓</span>Regla de decisión · antes de pasar al Bloque 4</div>
+    <table class="compacta"><tbody>
+      <tr><td style="width:44%"><b>Si</b> la serie tiene menos de cinco años</td><td><b>entonces</b> usa promedio o último valor, y dilo en el estudio; no proyectes tendencias.</td></tr>
+      <tr><td><b>Si</b> el CV del precio pasa de 25&nbsp;%</td><td><b>entonces</b> planea desde ahora el Bloque 7: el riesgo va a pesar más que la media.</td></tr>
+      <tr><td><b>Si</b> el proyecto toma más del 5&nbsp;% del mercado</td><td><b>entonces</b> baja el precio por el efecto de la elasticidad, o justifica por qué no aplica.</td></tr>
+      <tr><td><b>Si</b> el programa ya cuadra</td><td><b>entonces</b> descárgalo en <code>.csv</code>: es el anexo de mercado del estudio.</td></tr>
+    </tbody></table>
+    <p class="regla-pie">El Bloque 4 va a leer la producción de esta tabla para calcular los costos que siguen al volumen: si vuelves aquí y cambias el rendimiento, los costos se recalculan solos.</p>
+  </div>
+</section>
+
+</body>
+</html>
