@@ -9,6 +9,7 @@
 (function () {
 
   /* Ticks a human would choose: 1, 2 or 5 times a power of ten. */
+  let clipSerial = 0;                 /* ids of the plot clips never repeat */
   function niceTicks(lo, hi, n) {
     if (!(hi > lo)) hi = lo + 1;
     const raw = (hi - lo) / (n || 5), mag = Math.pow(10, Math.floor(Math.log10(raw))), e = raw / mag;
@@ -54,7 +55,7 @@
     if (o.xlab) g.appendChild(svgEl('text', { x: (m.l + W - m.r) / 2, y: H - 6, 'font-size': 10.5, 'text-anchor': 'middle', class: 'art-txt', 'font-weight': 600 }, o.xlab));
     if (o.ylab) g.appendChild(svgEl('text', { x: 13, y: (m.t + H - m.b) / 2, 'font-size': 10.5, 'text-anchor': 'middle', class: 'art-txt', 'font-weight': 600, transform: `rotate(-90 13 ${(m.t + H - m.b) / 2})` }, o.ylab));
     /* the clip keeps a line from spilling over the axes */
-    const id = 'clip' + Math.random().toString(36).slice(2, 8);
+    const id = 'clip' + (++clipSerial) + Math.random().toString(36).slice(2, 6);
     const defs = svgEl('defs'), cp = svgEl('clipPath', { id });
     cp.appendChild(svgEl('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b }));
     defs.appendChild(cp); svg.appendChild(defs);

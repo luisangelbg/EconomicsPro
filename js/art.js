@@ -7,7 +7,22 @@
 
   const f1 = v => (+v).toFixed(1);
   const V = n => `var(--${n})`;
-  function wrap(vb, inner, extra) { return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" ${extra || ''}>${inner}</svg>`; }
+  /* the same picture may be drawn more than once on the page (gallery, theory
+     cards): every id inside it gets a suffix of its own so ids stay unique and
+     each url(#…) points to the marker or gradient of its own picture */
+  let artSerial = 0;
+  function uniqueIds(inner) {
+    const ids = [];
+    inner.replace(/\sid="([^"]+)"/g, (m, id) => { ids.push(id); return m; });
+    if (!ids.length) return inner;
+    const k = '-' + (++artSerial);
+    ids.forEach(id => {
+      const e = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      inner = inner.replace(new RegExp('(\\sid="|url\\(#|href="#)' + e + '(["\\)])', 'g'), '$1' + id + k + '$2');
+    });
+    return inner;
+  }
+  function wrap(vb, inner, extra) { return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" ${extra || ''}>${uniqueIds(inner)}</svg>`; }
   function txt(x, y, s, fill, size, anchor, extra) {
     return `<text x="${f1(x)}" y="${f1(y)}" fill="${fill || V('text-muted')}" font-size="${size || 8}" text-anchor="${anchor || 'start'}" class="art-font" ${extra || ''}>${s}</text>`;
   }

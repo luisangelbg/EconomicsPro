@@ -78,6 +78,14 @@
     shown.removeAttribute('width');
     shown.removeAttribute('height');
     shown.setAttribute('style', 'width:100%;height:auto');
+    /* the preview is a copy of a figure that is still on the page: its ids
+       (the clip of the plot area) get a suffix so they are not repeated */
+    const renamed = {};
+    shown.querySelectorAll('[id]').forEach(n => { renamed[n.id] = n.id + '-pv'; n.id = renamed[n.id]; });
+    if (Object.keys(renamed).length) shown.querySelectorAll('*').forEach(n => [...n.attributes].forEach(a => {
+      const v = a.value.replace(/url\(#([^)]+)\)|^#(.+)$/g, (m, u, h) => renamed[u || h] ? (u ? 'url(#' + renamed[u] + ')' : '#' + renamed[h]) : m);
+      if (v !== a.value) n.setAttribute(a.name, v);
+    }));
     /* the preview lives inside the app, where the variables do resolve, but the
        figure that leaves must not depend on them: it is shown already baked */
     const holder = document.createElement('div');

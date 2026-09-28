@@ -106,6 +106,11 @@
     const api = {};
 
     function cellAt(r, c) { return host.querySelector(`input[data-r="${r}"][data-c="${c}"]`); }
+    /* the name a screen reader says for a cell: its column and its row */
+    function cellName(c, r) { return (T(c.es, c.en) || c.key) + ', ' + T('fila', 'row') + ' ' + (r + 1); }
+    document.addEventListener('langchange', () => host.querySelectorAll('input[data-r]').forEach(inp => {
+      const c = cols[+inp.dataset.c]; if (c) inp.setAttribute('aria-label', cellName(c, +inp.dataset.r));
+    }));
 
     function draw() {
       const n = Math.max(opt.rows || 0, values.length);
@@ -117,7 +122,7 @@
         html += '<tr>' + (opt.rowLabel ? `<td class="grid-rh">${opt.rowLabelOf ? opt.rowLabelOf(r, v) : r + 1}</td>` : '');
         html += cols.map((c, ci) => {
           const raw = v[c.key];
-          return `<td${c.wide ? ' class="grid-wide"' : c.med ? ' class="grid-med"' : ''}><input type="text" inputmode="decimal" data-r="${r}" data-c="${ci}" value="${esc(raw == null ? '' : raw)}"${c.ph ? ` placeholder="${esc(c.ph)}"` : ''}></td>`;
+          return `<td${c.wide ? ' class="grid-wide"' : c.med ? ' class="grid-med"' : ''}><input type="text" inputmode="decimal" data-r="${r}" data-c="${ci}" aria-label="${esc(cellName(c, r))}" value="${esc(raw == null ? '' : raw)}"${c.ph ? ` placeholder="${esc(c.ph)}"` : ''}></td>`;
         }).join('');
         html += '</tr>';
       }

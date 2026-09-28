@@ -426,7 +426,7 @@ h2{font-size:1.22rem;margin:2.1em 0 .5em;padding-bottom:.25em;border-bottom:2px 
 h3{font-size:1.02rem;margin:1.5em 0 .4em;color:#0e4639}
 p{margin:.55em 0}
 .cover{border-bottom:3px solid #145e4e;padding-bottom:18px;margin-bottom:8px}
-.kicker{font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;color:#b06e0c;font-weight:700}
+.kicker{font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;color:#8f5a0a;font-weight:700}
 .sub{font-size:.95rem;color:#3c4d45}
 .muted{color:#5b6b63;font-size:.86rem}
 table{border-collapse:collapse;width:100%;margin:.9em 0;font-size:.83rem}
