@@ -61,8 +61,8 @@ sub, sup { line-height: 0; }
     linear-gradient(180deg, var(--card-bg), var(--bg-soft));
   border: 1px solid var(--border); box-shadow: var(--shadow);
 }
-.hero-inner { display: grid; grid-template-columns: 1.02fr 1fr; gap: 24px; align-items: center; padding: 46px 46px 38px; }
-@media (max-width: 920px) { .hero-inner { grid-template-columns: 1fr; padding: 28px 18px; } }
+.hero-inner { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr); gap: 24px; align-items: center; padding: 46px 46px 38px; }
+@media (max-width: 920px) { .hero-inner { grid-template-columns: minmax(0, 1fr); padding: 28px 18px; } }
 .hero h1 { font-size: 2.95rem; line-height: 1.06; margin: 0 0 14px; letter-spacing: -1.3px; font-weight: 800; }
 @media (max-width: 640px) { .hero h1 { font-size: 2.1rem; } }
 .hero h1 .accent { color: var(--primary-text); }
