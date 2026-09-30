@@ -140,8 +140,9 @@
     const opt = o || {};
     const files = [];
     const list = Fig.available();
-    let fellBack = 0;
+    let fellBack = 0, done = 0;
     for (const f of list) {
+      if (opt.progress) await opt.progress(done++ / Math.max(1, list.length));
       const src = Fig.sourceOf(f.id);
       if (!src) continue;
       const svg = Fig.compose(src, { title: T(f.es, f.en), theme: opt.theme || 'light', background: opt.background || 'card' });
@@ -158,22 +159,39 @@
     return files;
   }
 
+  /* Inline LABG bar under the row of the button: the page stays usable while
+     the figures are turned into images, and it ends with the check mark. */
+  function zipBar(btn, es, en) {
+    if (!window.LABG || !LABG.progressBar || !btn || !btn.parentNode) return null;
+    const row = btn.parentNode;
+    let host = row.nextElementSibling;
+    if (!host || !host.classList.contains('ec-zipbar')) { host = document.createElement('div'); host.className = 'ec-zipbar'; row.after(host); }
+    return LABG.progressBar(host, { label: T(es, en) });
+  }
+  const figStep = bar => (bar ? async f => { bar.update(0.9 * f, T(`Convirtiendo figuras: ${Math.round(90 * f)} %`, `Converting figures: ${Math.round(90 * f)} %`)); await LABG.nextPaint(); } : null);
+
   async function downloadAllFigures() {
     const btn = el('b10AllFigures');
     if (btn) btn.disabled = true;
+    const bar = zipBar(btn, 'Figuras en .zip', 'Figures as .zip');
+    let ok = false;
     try {
       const files = await figureFiles({
         format: el('b10Format').value === 'svg' ? 'svg' : el('b10Format').value,
         dpi: Number(el('b10Dpi').value), theme: el('b10Theme').value, background: el('b10Background').value,
+        progress: figStep(bar),
       });
       if (!files.length) {
         notice(el('b10Messages'), 'warning', L2('Todavía no hay figuras que descargar.', 'There are no figures to download yet.'));
         return;
       }
+      if (bar) bar.update(0.95, T('Comprimiendo…', 'Compressing…'));
       const blob = await Zip.build(files);
       download(blob, slug(P().name) + '-figuras.zip');
+      ok = true;
       notice(el('b10Messages'), 'info', L2(`Se descargaron ${files.length} figuras.`, `${files.length} figures were downloaded.`));
     } finally {
+      if (bar) { if (ok) bar.done(); else bar.fail(T('Sin archivo', 'No file')); }
       if (btn) btn.disabled = false;
     }
   }
@@ -216,22 +234,27 @@
   async function downloadPackage() {
     const btn = el('b10Package');
     if (btn) { btn.disabled = true; }
+    const bar = zipBar(btn, 'Estudio completo en .zip', 'Whole study as .zip');
     try {
+      if (bar) { bar.update(null, T('Redactando el informe…', 'Writing the report…')); await LABG.nextPaint(); }
       const p = P();
       const opt = reportOptions();
       const r = Report.build(opt);
       const files = [{ name: 'informe.html', data: r.html }];
       files.push({ name: 'proyecto.json', data: JSON.stringify(p, null, 2) });
       Report.tables().forEach(t => files.push(t));
-      const figs = await figureFiles({ format: 'png', dpi: 300 });
+      const figs = await figureFiles({ format: 'png', dpi: 300, progress: figStep(bar) });
       figs.forEach(f => files.push(f));
       files.push({ name: 'LEEME.txt', data: readme() });
+      if (bar) bar.update(0.95, T('Comprimiendo…', 'Compressing…'));
       const blob = await Zip.build(files);
       download(blob, slug(p.name) + '-estudio.zip');
+      if (bar) bar.done();
       notice(el('b10Messages'), 'info', L2(
         `El paquete lleva el informe, ${figs.length} figuras, las tablas en .csv y el archivo del proyecto.${figs.fellBack ? ` ${figs.fellBack} salieron como SVG porque el navegador no pudo convertirlas a imagen.` : ''}`,
         `The package carries the report, ${figs.length} figures, the tables as .csv and the project file.${figs.fellBack ? ` ${figs.fellBack} came out as SVG because the browser could not turn them into an image.` : ''}`));
     } catch (e) {
+      if (bar) bar.fail(T('No se pudo armar el paquete', 'The package could not be built'));
       notice(el('b10Messages'), 'error', L2('No se pudo armar el paquete.', 'The package could not be built.'));
     } finally {
       if (btn) btn.disabled = false;

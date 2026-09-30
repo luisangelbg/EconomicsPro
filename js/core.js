@@ -72,7 +72,19 @@ function svgEl(tag, attrs, text) {
   if (text != null) n.textContent = text;
   return n;
 }
+/* Waiting window of the LABG Suite: ecWork opens it (it only shows up when the
+   wait lasts more than 300 ms) and ecAfterPaint lets it paint, runs the task
+   (synchronous or async) and closes it with the check mark, or quietly when the
+   task failed. The tests load core.js without labg-core.js: everything is
+   guarded with window.LABG. */
+function ecWork(es, en) { if (!window.LABG || !LABG.work) return null; const w = LABG.work({ title: LABG.t(es, en || es), delay: 300 }); ecWork.current = w; return w; }
+ecWork.current = null;
+function ecAfterPaint(f, w) {
+  const done = () => { if (ecWork.current === w) ecWork.current = null; if (w && !w.ended) { if (w._failed) w.close(); else w.done(); } };
+  return (window.LABG ? LABG.nextPaint() : new Promise(r => setTimeout(r, 30))).then(f).then(done, e => { console.error(e); if (w) w._failed = true; done(); });
+}
 function showMessage(container, type, text) {
+  if (type === 'error' && ecWork.current) ecWork.current._failed = true;
   if (typeof container === 'string') container = el(container);
   if (!container) return null;
   const div = mk('div', { class: 'msg msg-' + type }, text);
@@ -292,6 +304,14 @@ function storageWorks() {
    file without labg-core.js, so everything waits for window.LABG. */
 function initSuiteBar() {
   if (!window.LABG) return;
+  if (LABG.work) {
+    LABG.work.scene = 'fit';
+    LABG.work.tips = [
+      ['La simulación de Monte Carlo usa una semilla fija: el mismo proyecto da siempre el mismo histograma.', 'The Monte Carlo simulation uses a fixed seed: the same project always gives the same histogram.'],
+      ['El paquete .zip del Bloque 10 lleva el archivo del proyecto que reproduce todo el estudio.', 'The .zip package of Block 10 carries the project file that reproduces the whole study.'],
+      ['Para practicar hay tres proyectos ficticios: nopal, café y fresa.', 'To practise there are three fictitious projects: prickly pear cactus, coffee and strawberry.']
+    ];
+  }
   LABG.theme.init('economicspro:theme');    /* same key as Theme in i18n.js */
   document.addEventListener('themechange', () => LABG.theme.paint());
   const hb = el('helpBtn');

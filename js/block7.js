@@ -314,8 +314,10 @@
     on('b7Simulate', 'click', () => {
       const btn = el('b7Simulate');
       if (btn) btn.classList.add('is-busy');
-      /* let the button paint before the browser goes quiet for a moment */
-      setTimeout(() => { touch(true); if (btn) btn.classList.remove('is-busy'); }, 20);
+      /* the LABG waiting window paints first; the draws live in Fin.monteCarlo
+         (seeded), so the results are exactly those of before */
+      const w = ecWork('Simulación de Monte Carlo', 'Monte Carlo simulation');
+      ecAfterPaint(() => { try { touch(true); } finally { if (btn) btn.classList.remove('is-busy'); } }, w);
     });
     on('b7ScenarioExample', 'click', () => {
       R().scenarios = defaultScenarios();
