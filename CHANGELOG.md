@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- **The brand link is named by the text it shows.** It was announced as "EconomicsPro home", a name that did not
+  contain its visible text (WCAG 2.5.3, Label in Name). `I18N.apply` in `js/i18n.js` copied every tooltip
+  (`data-es-title` / `data-en-title`) to `aria-label`; it still does, except where a link, button or tab already
+  shows a readable text that the tooltip does not contain: there the control is named by that text and the tooltip
+  stays as its description. Nothing looks or computes differently; the 583 tests still pass.
+
 ## 1.0.7 — 2026-09-28
 
 - **Published, and the citation now carries its DOI.** The source is on GitHub, the app runs on GitHub Pages and
